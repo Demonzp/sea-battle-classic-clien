@@ -1,20 +1,27 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import LoaderScene from '../../game/scenes/LoaderScene';
-import GameInstance from '../../gameLib/Game';
+import MainScene from '../../game/scenes/MainScene';
+import Game from '../../gameLib/Game';
 
 const GameComp = ()=>{
   const refCanvas = useRef<HTMLCanvasElement>(null);
+  const [game, setGame] = useState<Game|null>(null);
 
   useEffect(()=>{
-    if(refCanvas.current){
-      GameInstance.init({
-        canvas: refCanvas.current,
-        width: 200,
-        height: 200,
-        scenes: [LoaderScene],
-      })
+    if(refCanvas.current&&!game){
+      console.log('GameComp init game!');
+      //try {
+        const tempGame =new Game({
+          canvas: refCanvas.current,
+          width: 200,
+          height: 200,
+          scenes: [LoaderScene, MainScene],
+        });
+      //} catch (error) {}
+      
+      setGame(tempGame);
     }
-  }, [refCanvas]);
+  }, []);
   
   return(
     <div>

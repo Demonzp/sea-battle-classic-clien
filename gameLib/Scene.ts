@@ -1,31 +1,59 @@
-import { TGame } from './Game';
+import Game from './Game';
+import LoaderManagerScene from './LoaderManagerScene';
+import Manager from './Manager';
+import { ISceneManager } from './ScenesManager';
 
 export default class Scene{
-  private _game: TGame|null = null;
-  name: string;
+  private _game: Game|null = null;
+  key: string;
   canvas: HTMLCanvasElement|null = null;
   ctx: CanvasRenderingContext2D|null = null;
+  load = new LoaderManagerScene(this);
+  add: Manager = new Manager(this);
+  isActive: boolean = false;
 
-  constructor(name?: string){
-    if(name){
-      this.name = name;
+  constructor(key?: string){
+    if(key){
+      this.key = key;
     }else{
-      this.name = 'Scene';
+      this.key = 'Scene';
     }
     
   }
 
-  get game():TGame{
+  get game():Game{
     return this._game!;
   }
 
-  baseInit(game: TGame, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
+  get width():number{
+    return this._game!.width;
+  }
+
+  get height():number{
+    return this._game!.height;
+  }
+
+  get scene(): ISceneManager{
+    return this._game!.scene;
+  }
+
+  baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     this._game = game;
     this.canvas = canvas;
     this.ctx = ctx;
   }
 
+  init(){
+    this.isActive = true;
+  }
+
   preload(){}
 
+  create(){}
+
   update(){}
+
+  render(){
+    this.add.gameObjects.forEach(obj=>obj.render());
+  }
 }
