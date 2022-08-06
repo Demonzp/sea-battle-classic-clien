@@ -27,9 +27,9 @@ export default class Game{
   constructor({canvas, width = 300, height = 200, scenes}:TGameInit){
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+    this.setSize(width, height);
 
     this._scenes.init(scenes);
-    this.setSize(width, height);
     this.preload();
     this.prevTime = performance.now();
     this.currentDelta = Math.floor((1/this.numFrames)*1000);
@@ -67,6 +67,7 @@ export default class Game{
   }
 
   private async preload(){
+    console.log('game width = ', this.width);
     await this.load.preloadImages();
     this._scenes.initFirstScene();
   }

@@ -19,12 +19,13 @@ export default class ScenesManager{
       newScene.baseInit(this.game, this.game.canvas!, this.game.ctx!);
       this.scenes.push(newScene);
     });
+    this.scenes[0].init();
     this.scenes[0].preload();
   }
 
   initFirstScene():void{
-    this.scenes[0].create();
     this.scenes[0].init();
+    this.scenes[0].create(); 
   }
 
   getScene(key: string){
@@ -38,6 +39,7 @@ export default class ScenesManager{
   start(key: string):void{
     const scene = this.getScene(key);
     if(scene){
+      this.setStopAllScenes();
       scene.create();
       scene.init();
     }else{

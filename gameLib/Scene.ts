@@ -54,6 +54,7 @@ export default class Scene{
   update(){}
 
   render(){
+    console.log('rizuu scenu = ', this.key);
     this.add.gameObjects.forEach(obj=>obj.render());
   }
 }

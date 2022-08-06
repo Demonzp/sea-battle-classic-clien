@@ -1,3 +1,4 @@
+import { ELoadEvents } from '../../gameLib/Loader';
 import Scene from '../../gameLib/Scene';
 
 export default class LoaderScene extends Scene{
@@ -6,8 +7,122 @@ export default class LoaderScene extends Scene{
   }
 
   preload(){
+    //const graphics = this.add.graphics();
+    // this.load.on(ELoadEvents.progress, (value)=>{
+    //     graphics.fillStyle(0xffffff);
+    //     graphics.fillRect(10,10,this.width*value,20);
+    // });
+    // graphics.fillStyle(0xffffff);
+    // graphics.fillRect(10,10,this.width,20);
+
     this.load.image('first', './assets/logo512.png');
     this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
+    // this.load.image('first', './assets/logo512.png');
+    // this.load.image('second', './assets/fon2.png');
   }
 
   create(){

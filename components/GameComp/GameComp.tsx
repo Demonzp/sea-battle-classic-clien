@@ -13,8 +13,8 @@ const GameComp = ()=>{
       //try {
         const tempGame =new Game({
           canvas: refCanvas.current,
-          width: 200,
-          height: 200,
+          width: 400,
+          height: 400,
           scenes: [LoaderScene, MainScene],
         });
       //} catch (error) {}

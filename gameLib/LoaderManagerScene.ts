@@ -1,4 +1,4 @@
-import { ILoadItemBase } from './Loader';
+import { ELoadEvents, ILoadItemBase } from './Loader';
 import Scene from './Scene';
 
 export default class LoaderManagerScene{
@@ -7,6 +7,10 @@ export default class LoaderManagerScene{
 
   constructor(scene: Scene){
     this.scene = scene;
+  }
+
+  on(event: ELoadEvents, callback: (value: number)=>void, context?: any){
+    this.scene.game.load.on(event, callback, context);
   }
 
   image(key:string, path:string){
