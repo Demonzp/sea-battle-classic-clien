@@ -3,6 +3,7 @@ import Scene from './Scene';
 export default class GameObject{
   scene: Scene;
   key: string;
+  id: string;
   x: number;
   y: number;
   width: number;
@@ -11,6 +12,7 @@ export default class GameObject{
 
   constructor(scene: Scene, key: string, x=0, y=0, width=0, height=0, angle=0){
     this.scene = scene;
+    this.id = scene.game.createId();
     this.key = key;
     this.x = x;
     this.y = y;

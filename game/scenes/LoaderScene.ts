@@ -17,7 +17,7 @@ export default class LoaderScene extends Scene{
     this.load.image('first', './assets/logo512.png');
     this.load.image('second', './assets/fon2.png');
     this.load.image('ship-type-3', './assets/ship-type-3.png');
-    this.load.image('gun', './assets/gun-type-3.png');
+    this.load.image('gun-type-3', './assets/gun-type-3.png');
     
     // this.load.image('first', './assets/logo512.png');
     // this.load.image('second', './assets/fon2.png');

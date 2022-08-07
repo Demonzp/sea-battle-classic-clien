@@ -7,10 +7,12 @@ export type TComands = {
 
 export default class Graphics{
   scene: Scene;
+  id: string;
   arr: TComands[] = [];
 
   constructor(scene: Scene){
     this.scene = scene;
+    this.id = scene.game.createId();
     scene.add.registerGameObject(this);
   }
 

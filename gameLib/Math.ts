@@ -6,7 +6,4 @@ export default class GameMath{
     this.game = game;
   }
 
-  HexToRGBA(hex: number, alpha?:number){
-    return `rgba{}`
-  }
 }
