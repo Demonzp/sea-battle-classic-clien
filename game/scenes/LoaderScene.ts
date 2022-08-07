@@ -1,4 +1,3 @@
-import { ELoadEvents } from '../../gameLib/Loader';
 import Scene from '../../gameLib/Scene';
 
 export default class LoaderScene extends Scene{
@@ -17,6 +16,9 @@ export default class LoaderScene extends Scene{
 
     this.load.image('first', './assets/logo512.png');
     this.load.image('second', './assets/fon2.png');
+    this.load.image('ship-type-3', './assets/ship-type-3.png');
+    this.load.image('gun', './assets/gun-type-3.png');
+    
     // this.load.image('first', './assets/logo512.png');
     // this.load.image('second', './assets/fon2.png');
     // this.load.image('first', './assets/logo512.png');

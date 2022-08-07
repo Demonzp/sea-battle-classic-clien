@@ -117,7 +117,7 @@ export default class Graphics{
           this.scene.ctx!.lineWidth = comand.val.width;
           break;
         case 'lineWidth':
-          console.log('render lineWidth!!! = ', comand.val);
+          //console.log('render lineWidth!!! = ', comand.val);
           this.scene.ctx!.lineWidth = comand.val;
           break;
         case 'moveTo':
