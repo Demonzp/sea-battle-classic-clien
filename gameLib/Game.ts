@@ -9,6 +9,11 @@ export type TGameInit = {
   scenes: typeof Scene[];
 }
 
+export type TPoint = {
+  x: number,
+  y: number
+}
+
 export default class Game{
 
   canvas: HTMLCanvasElement|null = null;

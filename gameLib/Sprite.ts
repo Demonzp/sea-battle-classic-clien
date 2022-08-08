@@ -3,6 +3,7 @@ import Scene from './Scene';
 
 export default class Sprite extends GameObject{
   image: HTMLImageElement|undefined;
+  pi = Math.PI/180;
   constructor(scene: Scene, key:string, x=0, y=0, width?:number, height?:number){
     super(scene, key, x, y);
     this.image = scene.load.getImage(key);
@@ -21,13 +22,25 @@ export default class Sprite extends GameObject{
     if(width&&!height){
       this.height = width;
     }
+
+    this.center = {
+      x: this.x-this.width/2,
+      y: this.y-this.height/2
+    };
   }
 
   render(){
     
     if(this.image){
-      console.log('renderSprite!');
-      this.scene.ctx?.drawImage(this.image, this.x-this.width/2, this.y-this.height/2, this.width, this.height);
+      //console.log('renderSprite!');
+      this.scene.ctx?.save();
+      
+      this.scene.ctx?.translate(this.x, this.y);
+      this.scene.ctx?.rotate(this.pi*this.angle);
+      this.scene.ctx?.translate(-(this.x), -(this.y));
+      this.scene.ctx?.drawImage(this.image, this.center.x, this.center.y, this.width, this.height);
+      
+      this.scene.ctx?.restore();
     }
   }
 }
