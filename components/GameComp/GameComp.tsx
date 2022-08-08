@@ -16,8 +16,8 @@ const GameComp = ()=>{
       //try {
         const tempGame =new Game({
           canvas: refCanvas.current,
-          width: 340*2+30,
-          height: 340,
+          width: 360*2+30,
+          height: 360,
           scenes: [LoaderScene, MainScene],
         });
       //} catch (error) {}

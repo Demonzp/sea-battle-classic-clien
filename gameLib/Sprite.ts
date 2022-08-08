@@ -34,7 +34,7 @@ export default class Sprite extends GameObject{
     if(this.image){
       //console.log('renderSprite!');
       this.scene.ctx?.save();
-      
+
       this.scene.ctx?.translate(this.x, this.y);
       this.scene.ctx?.rotate(this.pi*this.angle);
       this.scene.ctx?.translate(-(this.x), -(this.y));

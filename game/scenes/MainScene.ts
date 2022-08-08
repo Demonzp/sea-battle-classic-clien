@@ -5,6 +5,7 @@ import Sprite from '../../gameLib/Sprite';
 export default class MainScene extends Scene{
   img: Sprite|null = null;
   ship: Sprite|null = null;
+  contGun: Container|null = null;
   contShip: Container|null = null;
   constructor(){
     super('MainScene');
@@ -43,21 +44,23 @@ export default class MainScene extends Scene{
       posY-=step;
     }
 
-    this.ship = this.add.sprite('ship-type-3', 0, 0, step*3-2, step-6);
-    const gun = this.add.sprite('gun-type-3', -28, 0, 18, 10);
-
+    this.ship = this.add.sprite('ship-type-3', 0, 0, step*3, step-2);
+    this.contGun = this.add.container(-25,0);
+    const gun = this.add.sprite('gun-type-3', -3, 0, 18, 10);
+    this.contGun.add(gun);
     //const cont = this.add.container(2*step-step/2, 1*step/2);
     this.contShip = this.add.container(200, 200);
-    this.contShip.add([this.ship, gun]);
+    this.contShip.add([this.ship, this.contGun]);
+    //this.contShip.angle = 0;
   }
 
   update(): void {
-    // if(this.ship){
-    //   this.ship.angle+=1;
-    // }
-    if(this.contShip){
-      this.contShip.angle+=1;
+    if(this.contGun){
+      this.contGun.angle+=1;
     }
+    // if(this.contShip){
+    //   this.contShip.angle+=1;
+    // }
     // if(this.img){
     //   this.img.x++;
     // }
