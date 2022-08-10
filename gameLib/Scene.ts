@@ -1,4 +1,5 @@
 import Game from './Game';
+import InputEvent from './InputEvent';
 import LoaderManagerScene from './LoaderManagerScene';
 import Manager from './Manager';
 import { ISceneManager } from './ScenesManager';
@@ -23,6 +24,10 @@ export default class Scene{
 
   get game():Game{
     return this._game!;
+  }
+
+  get input():InputEvent{
+    return this._game!.input;
   }
 
   get width():number{

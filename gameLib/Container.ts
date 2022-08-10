@@ -1,4 +1,3 @@
-import { realpath } from 'fs';
 import GameObject from './GameObject';
 import Graphics from './Graphics';
 import Scene from './Scene';
@@ -8,17 +7,25 @@ export default class Container extends GameObject{
   children: (GameObject|Graphics)[] = [];
   pi = Math.PI/180;
   constructor(scene: Scene, x=0, y=0, width?:number, height?:number){
-    super(scene, 'container', x, y, width, height);
+    super(scene, 'container', 'Container', x, y, width, height);
   }
 
-  add(data: GameObject|Graphics|(GameObject|Graphics)[]){
+  add(data: GameObject|GameObject[]){
     this.scene.add.remove(data);
     if(Array.isArray(data)){
+      data.forEach(obj=>{
+        obj.parent = this;
+      })
       this.children = this.children.concat(data);
     }else{
+      data.parent = this;
       this.children.push(data);
     }
     this.render();
+  }
+
+  setInteractiveRect(width: number, height: number, x?:number, y?:number){
+    super.setInteractiveRect(width, height, x, y);
   }
 
   render(): void {

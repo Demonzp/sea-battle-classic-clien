@@ -1,10 +1,12 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import sliceApp from './slices/app';
+import sliceGame from './slices/game';
 
 export function makeStore(){
     return configureStore({
         reducer: {
             app: sliceApp.reducer,
+            game: sliceGame.reducer
         }
     });
 }

@@ -5,7 +5,7 @@ export default class Sprite extends GameObject{
   image: HTMLImageElement|undefined;
   pi = Math.PI/180;
   constructor(scene: Scene, key:string, x=0, y=0, width?:number, height?:number){
-    super(scene, key, x, y);
+    super(scene, key, 'Sprite', x, y);
     this.image = scene.load.getImage(key);
     if(width){
       this.width = width;
@@ -23,6 +23,8 @@ export default class Sprite extends GameObject{
       this.height = width;
     }
 
+    super.setInteractiveRect(this.width, this.height);
+    
     this.center = {
       x: this.x-this.width/2,
       y: this.y-this.height/2

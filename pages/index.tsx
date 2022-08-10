@@ -1,6 +1,6 @@
 import jwtDecode from 'jwt-decode';
 import type { NextPage } from 'next';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import GameComp from '../components/GameComp';
 import SignInWithGoogleBtn from '../components/SignInWithGoogleBtn';
 import { TGoogleAuthData, TGoogleAuthRes } from '../components/SignInWithGoogleBtn/SignInWithGoogleBtn';

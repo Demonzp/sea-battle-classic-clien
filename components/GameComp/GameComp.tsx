@@ -1,30 +1,37 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import useSWR from 'swr';
 import LoaderScene from '../../game/scenes/LoaderScene';
-import MainScene from '../../game/scenes/MainScene';
+import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { createGame } from '../../store/slices/game';
+
 
 const GameComp = ()=>{
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game|null>(null);
-
+  const {isInitClienGame} = useAppSelector(state=>state.game);
+  const dispatch = useAppDispatch();
+//750
   useEffect(()=>{
-    if(refCanvas.current&&!game){
-      console.log('GameComp init game!');
-      //const width = (document.documentElement.clientWidth)*0.9;
-      //const height = (document.documentElement.clientHeight)*0.9;
-
-      //try {
-        const tempGame =new Game({
-          canvas: refCanvas.current,
-          width: 360*2+30,
-          height: 360,
-          scenes: [LoaderScene, MainScene],
-        });
-      //} catch (error) {}
-      
-      setGame(tempGame);
+    if(!game){
+      setGame(new Game({
+        canvas: refCanvas.current!,
+        width: 360*2+30,
+        height: 360,
+        scenes: [LoaderScene, Shipyard],
+      }));
     }
   }, []);
+
+  useEffect(()=>{
+    return ()=>{
+      if(game){
+        console.log('killGame!!!');
+        game.destroy();
+      }
+    }
+  }, [game]);
   
   return(
     <div>

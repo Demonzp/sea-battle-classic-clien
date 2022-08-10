@@ -1,3 +1,4 @@
+import InputEvent from './InputEvent';
 import Loader from './Loader';
 import Scene from './Scene';
 import ScenesManager, { ISceneManager } from './ScenesManager';
@@ -19,6 +20,7 @@ export default class Game{
   canvas: HTMLCanvasElement|null = null;
   ctx: CanvasRenderingContext2D|null = null;
   load = new Loader();
+  input:InputEvent;
   width = 0;
   height = 0;
   private _scenes = new ScenesManager(this);
@@ -32,6 +34,7 @@ export default class Game{
   constructor({canvas, width = 300, height = 200, scenes}:TGameInit){
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
+    this.input = new InputEvent(this);
     this.setSize(width, height);
 
     this._scenes.init(scenes);
@@ -39,6 +42,10 @@ export default class Game{
     this.prevTime = performance.now();
     this.currentDelta = Math.floor((1/this.numFrames)*1000);
     this.requestAnimateId = requestAnimationFrame(this.render.bind(this));
+  }
+
+  destroy():void{
+    this.input.destroy();
   }
 
   get scene():ISceneManager{

@@ -1,4 +1,5 @@
 import Container from '../../gameLib/Container';
+import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
 
@@ -51,15 +52,25 @@ export default class MainScene extends Scene{
     //const cont = this.add.container(2*step-step/2, 1*step/2);
     this.contShip = this.add.container(200, 200);
     this.contShip.add([this.ship, this.contGun]);
+    //this.contShip.setInteractiveRect(step*3, step-2);
+    //this.ship.on('pointerdown', this.click, this);
+    //this.contGun.angle=90;
+    //this.input.on('', this.click, this);
     //this.contShip.angle = 0;
   }
 
+  click(pointer: TPointer){
+    console.log('pointer = ', pointer);
+    //this.input.off(EInputEvents.pointerdown, this.click, this);
+    //this.input.off(EInputEvents.pointerdown, ()=>{console.log()}, this);
+  }
+
   update(): void {
-    if(this.contGun){
-      this.contGun.angle+=1;
-    }
+    // if(this.contGun){
+    //   this.contGun.angle+=1;
+    // }
     // if(this.contShip){
-    //   this.contShip.angle+=1;
+    //   this.contShip.x+=0.2;
     // }
     // if(this.img){
     //   this.img.x++;
