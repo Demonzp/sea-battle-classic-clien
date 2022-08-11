@@ -9,7 +9,7 @@ export default class Shipyard extends Scene{
   }
 
   create(): void {
-
-    this.ship1 = new Ship(this, 100, 100, 3);
+    const fon = this.add.sprite('shipyard', this.width/2, this.height/2);
+    this.ship1 = new Ship(this, 300, 200, 3, -18);
   }
 }

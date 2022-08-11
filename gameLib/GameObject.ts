@@ -167,10 +167,11 @@ export default class GameObject{
     this.pointerDownCallbacks = this.pointerDownCallbacks.filter(callData=>callData.id!==id);
   }
 
-  onPointerdown(pointer: TPointer){
+  isOnPointerDown(pointer: TPointer): GameObject|undefined{
     if(this.pointerDownCallbacks.length<=0){
       return;
     }
+
     if(this._parent instanceof Container){
       const globalPos = this.getGlobalPos();
       const x0 = globalPos.x - this._interactiveBodyRect.halfWidth;
@@ -179,17 +180,42 @@ export default class GameObject{
       const y1 = globalPos.y + this._interactiveBodyRect.halfHeight;
 
       if((pointer.x>=x0&&pointer.x<=x1)&&(pointer.y>=y0&&pointer.y<=y1)){
-        this.pointerDownCallbacks.forEach(callData=>{
-          callData.handler(pointer);
-        });
+        return this;
       }
     }else{
       if((pointer.x>=this.x-this._interactiveBodyRect.halfWidth&&pointer.x<=this.x+this._interactiveBodyRect.halfWidth)&&(pointer.y>=this.y-this._interactiveBodyRect.halfHeight&&pointer.y<=this.y+this._interactiveBodyRect.halfHeight)){
-        this.pointerDownCallbacks.forEach(callData=>{
-          callData.handler(pointer);
-        });
+        return this;
       }
     }
+  }
+
+  onPointerdown(pointer: TPointer){
+    // if(this.pointerDownCallbacks.length<=0){
+    //   return;
+    // }
+    // if(this._parent instanceof Container){
+    //   const globalPos = this.getGlobalPos();
+    //   const x0 = globalPos.x - this._interactiveBodyRect.halfWidth;
+    //   const y0 = globalPos.y - this._interactiveBodyRect.halfHeight;
+    //   const x1 = globalPos.x + this._interactiveBodyRect.halfWidth;
+    //   const y1 = globalPos.y + this._interactiveBodyRect.halfHeight;
+
+    //   if((pointer.x>=x0&&pointer.x<=x1)&&(pointer.y>=y0&&pointer.y<=y1)){
+    //     this.pointerDownCallbacks.forEach(callData=>{
+    //       callData.handler(pointer);
+    //     });
+    //   }
+    // }else{
+    //   if((pointer.x>=this.x-this._interactiveBodyRect.halfWidth&&pointer.x<=this.x+this._interactiveBodyRect.halfWidth)&&(pointer.y>=this.y-this._interactiveBodyRect.halfHeight&&pointer.y<=this.y+this._interactiveBodyRect.halfHeight)){
+    //     this.pointerDownCallbacks.forEach(callData=>{
+    //       callData.handler(pointer);
+    //     });
+    //   }
+    // }
+
+    this.pointerDownCallbacks.forEach(callData=>{
+      callData.handler(pointer);
+    });
     
   }
 

@@ -9,15 +9,17 @@ export default class Ship{
   scene: Scene;
   x: number;
   y: number;
+  angle: number;
   type: TShips;
   mainContainer: Container;
   bodySprite: Sprite|null = null;
   guns: GunTower|null = null;
 
-  constructor(scene: Scene, x: number, y: number, type:TShips){
+  constructor(scene: Scene, x: number, y: number, type:TShips, angle=0){
     this.scene = scene;
     this.x = x;
     this.y = y;
+    this.angle = angle;
     this.type = type;
     this.mainContainer = scene.add.container(x, y);
 
@@ -32,6 +34,7 @@ export default class Ship{
         const step = (min-lineWidth)/11;
         this.bodySprite = this.scene.add.sprite('ship-type-3', 0,0, step*3, step-2);
         this.mainContainer.add(this.bodySprite);
+        this.mainContainer.angle = this.angle;
         break;
     
       default:

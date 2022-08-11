@@ -1,5 +1,6 @@
 import GameObject from './GameObject';
 import Graphics from './Graphics';
+import { TPointer } from './InputEvent';
 import Scene from './Scene';
 
 export default class Container extends GameObject{
@@ -26,6 +27,23 @@ export default class Container extends GameObject{
 
   setInteractiveRect(width: number, height: number, x?:number, y?:number){
     super.setInteractiveRect(width, height, x, y);
+  }
+
+  isOnPointerDown(pointer: TPointer): GameObject|undefined{
+    let colligionObj = super.isOnPointerDown(pointer);
+    if(colligionObj){
+      return this;
+    }
+
+    for (let i = this.children.length-1; i >= 0; i--) {
+      const obj = this.children[i];
+      if(obj instanceof GameObject){
+        colligionObj = obj.isOnPointerDown(pointer);
+        if(colligionObj){
+          return colligionObj;
+        }
+      }
+    }
   }
 
   render(): void {

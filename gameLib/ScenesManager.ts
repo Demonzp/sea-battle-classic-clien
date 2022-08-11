@@ -32,6 +32,10 @@ export default class ScenesManager{
     return this.scenes.find(scene=>scene.key===key);
   }
 
+  getActiveScenes(){
+    return this.scenes.filter(scene=>scene.isActive);
+  }
+
   setStopAllScenes(){
     this.scenes.forEach(scene=>scene.isActive=false);
   }

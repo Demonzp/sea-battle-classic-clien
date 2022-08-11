@@ -1,6 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 import LoaderScene from '../../game/scenes/LoaderScene';
+import MainScene from '../../game/scenes/MainScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -19,7 +20,7 @@ const GameComp = ()=>{
         canvas: refCanvas.current!,
         width: 360*2+30,
         height: 360,
-        scenes: [LoaderScene, Shipyard],
+        scenes: [LoaderScene, Shipyard, MainScene],
       }));
     }
   }, []);

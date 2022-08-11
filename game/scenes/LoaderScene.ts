@@ -19,7 +19,7 @@ export default class LoaderScene extends Scene{
     this.load.image('ship-type-3', './assets/ship-type-3.png');
     this.load.image('gun-type-3', './assets/gun-type-3.png');
     
-    // this.load.image('first', './assets/logo512.png');
+    this.load.image('shipyard', './assets/shipyard.png');
     // this.load.image('second', './assets/fon2.png');
     // this.load.image('first', './assets/logo512.png');
     // this.load.image('second', './assets/fon2.png');
@@ -132,5 +132,6 @@ export default class LoaderScene extends Scene{
     //this.add.sprite('second');
     //this.add.sprite('first', 10,0, 40);
     this.scene.start('Shipyard');
+    //this.scene.start('MainScene');
   }
 }

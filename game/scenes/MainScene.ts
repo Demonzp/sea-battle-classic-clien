@@ -53,7 +53,11 @@ export default class MainScene extends Scene{
     this.contShip = this.add.container(200, 200);
     this.contShip.add([this.ship, this.contGun]);
     //this.contShip.setInteractiveRect(step*3, step-2);
-    //this.ship.on('pointerdown', this.click, this);
+    //this.contShip.on('pointerdown', this.click, this);
+    this.ship.on('pointerdown', this.click, this);
+    gun.on('pointerdown', ()=>{
+      console.log('click on gun'); 
+    });
     //this.contGun.angle=90;
     //this.input.on('', this.click, this);
     //this.contShip.angle = 0;
