@@ -7,6 +7,7 @@ export default class Sprite extends GameObject{
   constructor(scene: Scene, key:string, x=0, y=0, width?:number, height?:number){
     super(scene, key, 'Sprite', x, y);
     this.image = scene.load.getImage(key);
+    
     if(width){
       this.width = width;
     }else{
@@ -29,6 +30,7 @@ export default class Sprite extends GameObject{
       x: this.x-this.width/2,
       y: this.y-this.height/2
     };
+    //console.log(key, ' = ', this.image);
   }
 
   render(){
