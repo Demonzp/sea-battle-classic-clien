@@ -48,7 +48,7 @@ export default class Ship{
         ];
         for (let i = 0; i < arrPosGuns.length; i++) {
           const gunPos = arrPosGuns[i];
-          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 3, gunPos.angle, this.scale);
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 4, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
@@ -66,12 +66,45 @@ export default class Ship{
         ];
         for (let i = 0; i < arrPosGuns2.length; i++) {
           const gunPos = arrPosGuns2[i];
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 3, gunPos.angle, this.scale);
+          this.mainContainer.add(gunTower.mainContainer);
+          this.gunTowers.push(gunTower);
+        }
+        break;
+      case 2:
+
+        this.bodySprite = this.scene.add.sprite('ship-body-type-2', 0,0, (step*2)*this.scale, (step-8)*this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0,0, (step*2)*this.scale, (step-8)*this.scale);
+        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.mainContainer.angle = this.angle;
+        const arrPosGuns3 = [
+          {x:-16*this.scale,y:0,angle:0},
+          {x:23*this.scale, y:0, angle: 180},
+        ];
+        for (let i = 0; i < arrPosGuns3.length; i++) {
+          const gunPos = arrPosGuns3[i];
           const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 2, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
         break;
-    
+      case 1:
+
+        this.bodySprite = this.scene.add.sprite('ship-body-type-1', 0,0, (step*1)*this.scale, (step-16)*this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0,0, (step*1)*this.scale, (step-16)*this.scale);
+        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.mainContainer.angle = this.angle;
+        let arrPosGuns4 = [
+          {x:-6*this.scale, y:0, angle: 0},
+        ];
+        for (let i = 0; i < arrPosGuns4.length; i++) {
+          const gunPos = arrPosGuns4[i];
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 1, gunPos.angle, this.scale);
+          this.mainContainer.add(gunTower.mainContainer);
+          this.gunTowers.push(gunTower);
+        }
+        break;
+      
       default:
         break;
     }
