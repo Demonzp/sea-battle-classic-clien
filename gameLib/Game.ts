@@ -1,5 +1,6 @@
 import InputEvent from './InputEvent';
 import Loader from './Loader';
+import GameMath from './Math';
 import Scene from './Scene';
 import ScenesManager, { ISceneManager } from './ScenesManager';
 
@@ -30,6 +31,7 @@ export default class Game{
   currentDelta = 60;
   timerFrames = 0;
   prevTime = 0;
+  Math = new GameMath(this);
 
   constructor({canvas, width = 300, height = 200, scenes}:TGameInit){
     this.canvas = canvas;

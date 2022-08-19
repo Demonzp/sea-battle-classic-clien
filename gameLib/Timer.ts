@@ -35,6 +35,7 @@ export default class Timer{
       //console.log(timer.time,'||', timer.timer);
       if(timer.time>=timer.timer){
         timer.callback();
+        timer.time = 0;
         if(!timer.repeat){
           this.timers.splice(i,1);
           i--;

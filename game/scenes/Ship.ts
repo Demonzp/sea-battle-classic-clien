@@ -1,4 +1,5 @@
 import Container from '../../gameLib/Container';
+import { TPoint } from '../../gameLib/Game';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
 import GunTower from './GunTower';
@@ -16,6 +17,12 @@ export default class Ship{
   bodySprite: Sprite|null = null;
   detaliSprite: Sprite|null = null;
   gunTowers: GunTower[] = [];
+  isOnDot = false;
+  isRot = false;
+  toDot: TPoint = {x:0,y:0};
+  speed = 4;
+  sx = 0;
+  sy = 0;
 
   constructor(scene: Scene, x: number, y: number, type:TShips, angle=0, scale=1){
     this.scene = scene;
@@ -110,7 +117,43 @@ export default class Ship{
     }
   }
 
+  setDot(dot: TPoint){
+    this.toDot = dot;
+    const dX = dot.x - this.x;
+    const dY = dot.y - this.y;
+    const angle = Math.atan2(dY, dX);
+    const grad = angle/Math.PI*180;
+    if(this.isRot){
+      this.angle = grad+180;
+    }
+    this.sx = this.speed*Math.cos(angle);
+    this.sy = this.speed*Math.sin(angle);
+    setTimeout(()=>this.isOnDot = false);
+    console.log(this.sx, '||', this.sy);
+  }
+
+  goToDot(){
+    if(this.isOnDot){
+      return;
+    }
+    const speed = Math.abs(this.speed);
+
+    if((this.x>=this.toDot.x-speed&&this.x<=this.toDot.x+speed)&&(this.y>=this.toDot.y-speed&&this.y<=this.toDot.y+speed)){
+      this.isOnDot = true;
+      this.x = this.toDot.x;
+      this.y = this.toDot.y;
+      return;
+    }
+
+    this.x+=this.sx;
+    this.y+=this.sy;
+  }
+
   update(){
+    this.goToDot();
+    this.mainContainer.x = this.x;
+    this.mainContainer.y = this.y;
+    this.mainContainer.angle = this.angle;
     this.gunTowers.forEach((tower)=>tower.update());
   }
 }
