@@ -100,10 +100,12 @@ export default class Game{
 
   render(time: number){
     const delta = Math.floor(time-this.prevTime); 
+    const calc = (1/this.numFrames)*(delta-this.currentDelta);
     if(delta>=this.currentDelta){
-      //console.log('requestAnimationFrame = ', delta, '||', this.currentDelta);
+      //console.log('calc = ', calc);
+      //console.log('requestAnimationFrame = ', this.currentDelta, ' || ', delta);
       this.ctx!.clearRect(0, 0, this.width, this.height);
-      this._scenes.update();
+      this._scenes.update(calc);
       this.prevTime = time;
     }
     requestAnimationFrame(this.render.bind(this));

@@ -61,6 +61,6 @@ export default class GunTower{
   }
 
   update(){
-    this.mainContainer.angle+=1;
+    //this.mainContainer.angle+=1;
   }
 }

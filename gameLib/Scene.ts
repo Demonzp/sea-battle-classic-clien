@@ -3,6 +3,7 @@ import InputEvent from './InputEvent';
 import LoaderManagerScene from './LoaderManagerScene';
 import Manager from './Manager';
 import { ISceneManager } from './ScenesManager';
+import Timer from './Timer';
 
 export default class Scene{
   private _game: Game|null = null;
@@ -11,6 +12,7 @@ export default class Scene{
   ctx: CanvasRenderingContext2D|null = null;
   load = new LoaderManagerScene(this);
   add: Manager = new Manager(this);
+  timer = new Timer(this);
   isActive: boolean = false;
 
   constructor(key?: string){
@@ -56,9 +58,10 @@ export default class Scene{
 
   create(){}
 
-  update(){}
+  update(delta: number){}
 
-  render(){
+  render(delat: number){
+    this.timer.update(delat);
     //console.log('rizuu scenu = ', this.key);
     this.add.gameObjects.forEach(obj=>obj.render());
   }

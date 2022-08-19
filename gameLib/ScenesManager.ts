@@ -51,11 +51,11 @@ export default class ScenesManager{
     }
   }
 
-  update():void{
+  update(delta: number):void{
     this.scenes.forEach(scene=>{
       if(scene.isActive){
-        scene.update();
-        scene.render();
+        scene.update(delta);
+        scene.render(delta);
       }
     });
   }

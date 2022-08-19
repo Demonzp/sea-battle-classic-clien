@@ -17,6 +17,12 @@ export default class Shipyard extends Scene{
     this.ship2 = new Ship(this, 330, 144, 3, -18, 1.3);
     this.ship3 = new Ship(this, 380, 210, 2, -18, 1.3);
     this.ship4 = new Ship(this, 380, 260, 1, -18, 1.3);
+
+    this.timer.on(this.timerCallback, 30, this);
+  }
+
+  timerCallback(){
+    console.log('ottical');
   }
 
   update(): void {
