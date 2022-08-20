@@ -37,7 +37,7 @@ export default class ScenesManager{
   }
 
   setStopAllScenes(){
-    this.scenes.forEach(scene=>scene.isActive=false);
+    this.scenes.forEach(scene=>scene.offScene());
   }
 
   start(key: string):void{

@@ -50,6 +50,11 @@ export default class Scene{
     this.ctx = ctx;
   }
 
+  offScene(){
+    this.timer.delAll();
+    this.isActive = false;
+  }
+
   init(){
     this.isActive = true;
   }

@@ -1,11 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+export type TGameScenes = 'shipyard'|'fleatShema';
+
 export interface IGame{
-  isInitClienGame: boolean
+  isInitClienGame: boolean;
+  gameScene: TGameScenes;
 }
 
 const initialState: IGame = {
-  isInitClienGame: false
+  isInitClienGame: false,
+  gameScene: 'shipyard'
 };
 
 const sliceGame = createSlice({
@@ -14,6 +18,10 @@ const sliceGame = createSlice({
   reducers:{
     createGame(state){
       state.isInitClienGame = true;
+    },
+
+    setScene(state, action: PayloadAction<TGameScenes>){
+      state.gameScene = action.payload;
     }
   },
   extraReducers:(builder)=>{
@@ -21,6 +29,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame } = sliceGame.actions;
+export const { createGame, setScene } = sliceGame.actions;
 
 export default sliceGame;

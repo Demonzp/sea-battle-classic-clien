@@ -28,6 +28,10 @@ export default class Timer{
     return timer.id;
   }
 
+  delAll(){
+    this.timers = [];
+  }
+
   update(delta: number){
     for (let i = 0; i < this.timers.length; i++) {
       const timer = this.timers[i];

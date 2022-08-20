@@ -1,6 +1,6 @@
 import { TPoint } from '../../gameLib/Game';
 import Scene from '../../gameLib/Scene';
-import Ship from './Ship';
+import Ship from '../objects/Ship';
 
 export default class Shipyard extends Scene{
   ship1: Ship|null = null;
@@ -23,9 +23,27 @@ export default class Shipyard extends Scene{
     //this.ship3 = new Ship(this, 380, 210, 2, -18, 1.3);
     this.ship3 = new Ship(this, this.dotFirstShip3.x, this.dotFirstShip3.y, 2, -18, 1.3);
     this.ship4 = new Ship(this, this.dotFirstShip4.x, this.dotFirstShip4.y, 1, 70, 1.3);
+    this.ship4.isRot = true;
     const time = this.game.Math.between(10, 20);
-    console.log('time = ', time);
+    const time2 = this.game.Math.between(20, 30);
+    //console.log('time = ', time);
     this.timer.on(this.timerCallback, time, this);
+    this.timer.on(this.timerCallback2, time2, this);
+  }
+
+  timerCallback2(){
+    if(!this.ship4){
+      return;
+    }
+    if(this.ship4.x===this.dotFirstShip4.x){
+      //console.log('setDot');
+      this.ship4.setDot(this.dotSecondShip4);
+      this.timer.on(this.timerCallback2, this.game.Math.between(40, 60), this);
+    }else{
+      //console.log('setDot');
+      this.ship4.setDot(this.dotFirstShip4);
+      this.timer.on(this.timerCallback2, this.game.Math.between(40, 60), this);
+    }
   }
 
   timerCallback(){
@@ -33,11 +51,11 @@ export default class Shipyard extends Scene{
       return;
     }
     if(this.ship3.x===this.dotFirstShip3.x){
-      console.log('setDot');
+      //console.log('setDot');
       this.ship3.setDot(this.dotSecondSpip3);
       this.timer.on(this.timerCallback, this.game.Math.between(20, 40), this);
     }else{
-      console.log('setDot');
+      //console.log('setDot');
       this.ship3.setDot(this.dotFirstShip3);
       this.timer.on(this.timerCallback, this.game.Math.between(20, 40), this);
     }
