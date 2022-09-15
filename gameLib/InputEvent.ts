@@ -21,10 +21,14 @@ export default class InputEvent{
 
   constructor(game: Game){
     this.game = game;
-    this.game.canvas!.addEventListener('pointerdown', this.pointerDown.bind(this));
+    //this.game.canvas!.addEventListener('pointerdown', this.pointerDown.bind(this));
+    
+    this.game.canvas!.addEventListener('click', ()=>console.log('click on canvas'));
+    console.log('addEventListener');
   }
 
   destroy(){
+    console.log('removeEventListener');
     this.game.canvas!.removeEventListener('pointerdown', this.pointerDown.bind(this));
   }
 
@@ -50,7 +54,7 @@ export default class InputEvent{
   }
 
   private pointerDown(event: PointerEvent){
-    //console.log('pointerDown = ', event.target);
+    console.log('pointerDown = ', event.currentTarget);
     const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
     //console.log('data = ', data);
     const canvasY = data.top + window.pageYOffset;

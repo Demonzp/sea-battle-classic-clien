@@ -47,7 +47,7 @@ export default class Loader{
 
   getImage(key: string):HTMLImageElement|undefined{
     const image = this.loadedImages.find(el=>el.key===key);
-    console.log('image = ', key);
+    //console.log('image = ', key);
     return image?.file;
   }
 

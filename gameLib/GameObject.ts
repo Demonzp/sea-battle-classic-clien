@@ -122,6 +122,7 @@ export default class GameObject{
     if(x&&!y){
       y0 = x0;
     }
+    console.log('setInteractiveRect');
     this._interactiveBodyRect = {
       width,
       height,
@@ -136,6 +137,7 @@ export default class GameObject{
     switch (event) {
       case 'pointerdown':
         const id = this.scene.input.on(event, this.onPointerdown, this);
+        console.log('register pointerdown');
         this.pointerDownCallbacks.push({
           id,
           handler: handler.bind(context)
@@ -168,6 +170,7 @@ export default class GameObject{
   }
 
   isOnPointerDown(pointer: TPointer): GameObject|undefined{
+    console.log('isOnPointerDown');
     if(this.pointerDownCallbacks.length<=0){
       return;
     }
@@ -183,6 +186,7 @@ export default class GameObject{
         return this;
       }
     }else{
+      
       if((pointer.x>=this.x-this._interactiveBodyRect.halfWidth&&pointer.x<=this.x+this._interactiveBodyRect.halfWidth)&&(pointer.y>=this.y-this._interactiveBodyRect.halfHeight&&pointer.y<=this.y+this._interactiveBodyRect.halfHeight)){
         return this;
       }
@@ -212,7 +216,7 @@ export default class GameObject{
     //     });
     //   }
     // }
-
+    console.log('onPointerdown onPointerdown');
     this.pointerDownCallbacks.forEach(callData=>{
       callData.handler(pointer);
     });

@@ -32,6 +32,9 @@ export default class Ship{
     this.scale = scale
     this.type = type;
     this.mainContainer = scene.add.container(x, y);
+    this.mainContainer.on('pointerdown', ()=>{
+      console.log('pointerdown!!!!');
+    });
 
     this.create();
   }
@@ -44,6 +47,7 @@ export default class Ship{
       case 4:
 
         this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0,0, (step*4)*this.scale, (step-2)*this.scale);
+        //this.mainContainer.setInteractiveRect((step*4)*this.scale, (step-2)*this.scale);
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0,0, (step*4)*this.scale, (step-2)*this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
@@ -129,7 +133,7 @@ export default class Ship{
     this.sx = this.speed*Math.cos(angle);
     this.sy = this.speed*Math.sin(angle);
     setTimeout(()=>this.isOnDot = false);
-    console.log(this.sx, '||', this.sy);
+    //console.log(this.sx, '||', this.sy);
   }
 
   goToDot(){

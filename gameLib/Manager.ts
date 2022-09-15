@@ -13,7 +13,7 @@ export default class Manager{
   }
   
   graphics(): Graphics{
-    console.log('register graphics');
+    //console.log('register graphics');
     return new Graphics(this.scene);
   }
 

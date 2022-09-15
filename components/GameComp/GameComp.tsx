@@ -18,6 +18,7 @@ const GameComp = ()=>{
 //750
   useEffect(()=>{
     if(!game){
+      //document.addEventListener('pointerdown', ()=>console.log('click on document'))
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360*2+30,
@@ -47,6 +48,7 @@ const GameComp = ()=>{
   };
 
   return(
+    //<canvas ref={refCanvas}/>
     <div style={{position: 'relative'}}>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
