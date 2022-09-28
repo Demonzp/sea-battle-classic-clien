@@ -122,7 +122,7 @@ export default class GameObject{
     if(x&&!y){
       y0 = x0;
     }
-    console.log('setInteractiveRect');
+    //console.log('setInteractiveRect');
     this._interactiveBodyRect = {
       width,
       height,
@@ -137,7 +137,7 @@ export default class GameObject{
     switch (event) {
       case 'pointerdown':
         const id = this.scene.input.on(event, this.onPointerdown, this);
-        console.log('register pointerdown');
+        //console.log('register pointerdown');
         this.pointerDownCallbacks.push({
           id,
           handler: handler.bind(context)
@@ -170,11 +170,11 @@ export default class GameObject{
   }
 
   isOnPointerDown(pointer: TPointer): GameObject|undefined{
-    console.log('isOnPointerDown');
+    
     if(this.pointerDownCallbacks.length<=0){
       return;
     }
-
+    
     if(this._parent instanceof Container){
       const globalPos = this.getGlobalPos();
       const x0 = globalPos.x - this._interactiveBodyRect.halfWidth;
@@ -183,13 +183,57 @@ export default class GameObject{
       const y1 = globalPos.y + this._interactiveBodyRect.halfHeight;
 
       if((pointer.x>=x0&&pointer.x<=x1)&&(pointer.y>=y0&&pointer.y<=y1)){
+        console.log('isOnPointerDown');
         return this;
       }
     }else{
-      
-      if((pointer.x>=this.x-this._interactiveBodyRect.halfWidth&&pointer.x<=this.x+this._interactiveBodyRect.halfWidth)&&(pointer.y>=this.y-this._interactiveBodyRect.halfHeight&&pointer.y<=this.y+this._interactiveBodyRect.halfHeight)){
+      const rad = this.angle * Math.PI/180;
+      const kX = Math.cos(rad);
+      const kY = Math.sin(rad);
+      const x1 = this.x - this._interactiveBodyRect.halfWidth*kX+this._interactiveBodyRect.halfHeight*kY;
+      const x2 = this.x - this._interactiveBodyRect.halfWidth*kX-this._interactiveBodyRect.halfHeight*kY;
+      const x3 = this.x + this._interactiveBodyRect.halfWidth*kX-this._interactiveBodyRect.halfHeight*kY;
+      const x4 = this.x + this._interactiveBodyRect.halfWidth*kX+this._interactiveBodyRect.halfHeight*kY;
+      const y1 = this.y - this._interactiveBodyRect.halfWidth*kY-this._interactiveBodyRect.halfHeight*kX;
+      const y2 = this.y - this._interactiveBodyRect.halfWidth*kY+this._interactiveBodyRect.halfHeight*kX;
+      const y3 = this.y + this._interactiveBodyRect.halfWidth*kY+this._interactiveBodyRect.halfHeight*kX;
+      const y4 = this.y + this._interactiveBodyRect.halfWidth*kY-this._interactiveBodyRect.halfHeight*kX;
+      const graphics = this.scene.add.graphics();
+      graphics.fillStyle('#ff0004');
+      graphics.fillRect(x1, y1, 5,5);
+      graphics.fillRect(x2, y2, 5,5);
+      graphics.fillRect(x3, y3, 5,5);
+      graphics.fillRect(x4, y4, 5,5);
+      //console.log(x1,'||', y1);
+      let dx = x2 - x1;
+      let dy = y2 - y1;
+      const d1 = (x2-x1)*(pointer.y-y1)-(y2-y1)*(pointer.x-x1);
+      //const d1 = ((y1-pointer.y)*dx+(pointer.x-x1)*dx)/(dy*dy+dx*dx);
+
+      dx = x3 - x2;
+      dy = y3 - y2;
+      const d2 = dx*(pointer.y-y2)-dy*(pointer.x-x2);
+      //const d2 = ((y2-pointer.y)*dx+(pointer.x-x2)*dx)/(dy*dy+dx*dx);
+
+      dx = x4 - x3;
+      dy = y4 - y3;
+      const d3 = dx*(pointer.y-y3)-dy*(pointer.x-x3);
+      //const d3 = ((y3-pointer.y)*dx+(pointer.x-x3)*dx)/(dy*dy+dx*dx);
+
+      dx = x1 - x4;
+      dy = y1 - y4;
+      const d4 = dx*(pointer.y-y4)-dy*(pointer.x-x4);
+      //const d4 = ((y4-pointer.y)*dx+(pointer.x-x4)*dx)/(dy*dy+dx*dx);
+      console.log('calculate');
+      if(d1<0&&d2<0&&d3<0&&d4<0){
+        console.log('isOnPointerDown');
         return this;
       }
+
+      // if((pointer.x>=this.x-this._interactiveBodyRect.halfWidth&&pointer.x<=this.x+this._interactiveBodyRect.halfWidth)&&(pointer.y>=this.y-this._interactiveBodyRect.halfHeight&&pointer.y<=this.y+this._interactiveBodyRect.halfHeight)){
+      //   console.log('isOnPointerDown');
+      //   return this;
+      // }
     }
   }
 
@@ -216,7 +260,7 @@ export default class GameObject{
     //     });
     //   }
     // }
-    console.log('onPointerdown onPointerdown');
+    //console.log('onPointerdown onPointerdown');
     this.pointerDownCallbacks.forEach(callData=>{
       callData.handler(pointer);
     });

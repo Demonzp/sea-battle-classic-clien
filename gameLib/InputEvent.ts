@@ -21,10 +21,10 @@ export default class InputEvent{
 
   constructor(game: Game){
     this.game = game;
-    //this.game.canvas!.addEventListener('pointerdown', this.pointerDown.bind(this));
+    this.game.canvas!.addEventListener('pointerdown', this.pointerDown.bind(this));
     
-    this.game.canvas!.addEventListener('click', ()=>console.log('click on canvas'));
-    console.log('addEventListener');
+    // this.game.canvas!.addEventListener('click', ()=>console.log('click on canvas'));
+    // console.log('addEventListener');
   }
 
   destroy(){
@@ -54,7 +54,7 @@ export default class InputEvent{
   }
 
   private pointerDown(event: PointerEvent){
-    console.log('pointerDown = ', event.currentTarget);
+    //console.log('pointerDown = ', event.currentTarget);
     const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
     //console.log('data = ', data);
     const canvasY = data.top + window.pageYOffset;
@@ -72,11 +72,15 @@ export default class InputEvent{
           const colligionObj = object.isOnPointerDown(pointer);
           if(colligionObj){
             colligionObj.onPointerdown(pointer); 
-            break; 
+            return; 
           }
           console.log('go next');
           if(object instanceof Container){
             const colligionObj = object.isOnPointerDown(pointer);
+            if(colligionObj){
+              colligionObj.onPointerdown(pointer); 
+              return; 
+            }
           }
           
         }
