@@ -3,7 +3,7 @@ import { TPoint } from './Game';
 import { TCallbackData, TPointer } from './InputEvent';
 import Scene from './Scene';
 
-export type TGameObjectEvents = 'pointerdown';
+export type TGameObjectEvents = 'pointerdown'|'pointerup'|'pointermove';
 
 export type TBodyRect = {
   width: number,
@@ -33,6 +33,8 @@ export default class GameObject{
   angle: number;
   private _parent: TParetGameObject;
   pointerDownCallbacks: TCallbackData[] = [];
+  pointerUpCallbacks: TCallbackData[] = [];
+  pointerMoveCallbacks: TCallbackData[] = [];
 
 
   constructor(scene: Scene, key: string, name: TGameObjectNames, x=0, y=0, width=0, height=0, angle=0){
@@ -134,16 +136,33 @@ export default class GameObject{
   }
 
   on(event: TGameObjectEvents, handler: (pointer: TPointer)=>void, context?:any){
+    const id = this.scene.game.createId();
     switch (event) {
       case 'pointerdown':
-        const id = this.scene.input.on(event, this.onPointerdown, this);
+        //id = this.scene.input.on(event, this.onPointerDown, this);
         //console.log('register pointerdown');
         this.pointerDownCallbacks.push({
           id,
           handler: handler.bind(context)
         });
         break;
-    
+      case 'pointerup':
+        //id = this.scene.input.on(event, this.onPointerUp, this);
+        //console.log('register pointerdown');
+        this.pointerUpCallbacks.push({
+          id,
+          handler: handler.bind(context)
+        });
+        break;
+      case 'pointermove':
+          //id = this.scene.input.on(event, this.onPointerUp, this);
+          //console.log('register pointerdown');
+          this.pointerMoveCallbacks.push({
+            id,
+            handler: handler.bind(context)
+          });
+          break;
+        
       default:
         break;
     }
@@ -165,13 +184,15 @@ export default class GameObject{
   } 
 
   off(id: string){
-    this.scene.input.off(id);
+    //this.scene.input.off(id);
     this.pointerDownCallbacks = this.pointerDownCallbacks.filter(callData=>callData.id!==id);
+    this.pointerUpCallbacks = this.pointerUpCallbacks.filter(callData=>callData.id!==id);
+    this.pointerMoveCallbacks = this.pointerMoveCallbacks.filter(callData=>callData.id!==id);
   }
 
-  isOnPointerDown(pointer: TPointer): GameObject|undefined{
+  isOnPointer(pointer: TPointer): GameObject|undefined{
     
-    if(this.pointerDownCallbacks.length<=0){
+    if(this.pointerDownCallbacks.length<=0 && this.pointerUpCallbacks.length<=0){
       return;
     }
     
@@ -183,7 +204,7 @@ export default class GameObject{
       const y1 = globalPos.y + this._interactiveBodyRect.halfHeight;
 
       if((pointer.x>=x0&&pointer.x<=x1)&&(pointer.y>=y0&&pointer.y<=y1)){
-        console.log('isOnPointerDown');
+        //console.log('isOnPointerDown');
         return this;
       }
     }else{
@@ -198,12 +219,12 @@ export default class GameObject{
       const y2 = this.y - this._interactiveBodyRect.halfWidth*kY+this._interactiveBodyRect.halfHeight*kX;
       const y3 = this.y + this._interactiveBodyRect.halfWidth*kY+this._interactiveBodyRect.halfHeight*kX;
       const y4 = this.y + this._interactiveBodyRect.halfWidth*kY-this._interactiveBodyRect.halfHeight*kX;
-      const graphics = this.scene.add.graphics();
-      graphics.fillStyle('#ff0004');
-      graphics.fillRect(x1, y1, 5,5);
-      graphics.fillRect(x2, y2, 5,5);
-      graphics.fillRect(x3, y3, 5,5);
-      graphics.fillRect(x4, y4, 5,5);
+      // const graphics = this.scene.add.graphics();
+      // graphics.fillStyle('#ff0004');
+      // graphics.fillRect(x1, y1, 5,5);
+      // graphics.fillRect(x2, y2, 5,5);
+      // graphics.fillRect(x3, y3, 5,5);
+      // graphics.fillRect(x4, y4, 5,5);
       //console.log(x1,'||', y1);
       let dx = x2 - x1;
       let dy = y2 - y1;
@@ -224,9 +245,9 @@ export default class GameObject{
       dy = y1 - y4;
       const d4 = dx*(pointer.y-y4)-dy*(pointer.x-x4);
       //const d4 = ((y4-pointer.y)*dx+(pointer.x-x4)*dx)/(dy*dy+dx*dx);
-      console.log('calculate');
+      //console.log('calculate');
       if(d1<0&&d2<0&&d3<0&&d4<0){
-        console.log('isOnPointerDown');
+        //console.log('isOnPointerDown');
         return this;
       }
 
@@ -237,7 +258,19 @@ export default class GameObject{
     }
   }
 
-  onPointerdown(pointer: TPointer){
+  onPointerUp(pointer: TPointer){
+    this.pointerUpCallbacks.forEach(callData=>{
+      callData.handler(pointer);
+    });
+  }
+
+  onPointerMove(pointer: TPointer){
+    this.pointerMoveCallbacks.forEach(callData=>{
+      callData.handler(pointer);
+    });
+  }
+
+  onPointerDown(pointer: TPointer){
     // if(this.pointerDownCallbacks.length<=0){
     //   return;
     // }

@@ -18,6 +18,7 @@ export default class Ship{
   detaliSprite: Sprite|null = null;
   gunTowers: GunTower[] = [];
   isOnDot = false;
+  isPointerDown = false;
   isRot = false;
   toDot: TPoint = {x:0,y:0};
   speed = 4;
@@ -31,9 +32,24 @@ export default class Ship{
     this.angle = angle;
     this.scale = scale
     this.type = type;
+    
     this.mainContainer = scene.add.container(x, y);
+    this.mainContainer.on('pointerup', ()=>{
+      this.isPointerDown = false;
+      console.log('pointerup!!!!');
+    });
+
     this.mainContainer.on('pointerdown', ()=>{
       console.log('pointerdown!!!!');
+      this.isPointerDown = true;
+    });
+
+    this.mainContainer.on('pointermove', ()=>{
+      if(this.isPointerDown){
+        console.log('pointermove!!!!');
+      }
+      
+      //this.isPointerDown = true;
     });
 
     this.create();

@@ -29,8 +29,8 @@ export default class Container extends GameObject{
     super.setInteractiveRect(width, height, x, y);
   }
 
-  isOnPointerDown(pointer: TPointer): GameObject|undefined{
-    let colligionObj = super.isOnPointerDown(pointer);
+  isOnPointer(pointer: TPointer): GameObject|undefined{
+    let colligionObj = super.isOnPointer(pointer);
     if(colligionObj){
       return this;
     }
@@ -38,7 +38,7 @@ export default class Container extends GameObject{
     for (let i = this.children.length-1; i >= 0; i--) {
       const obj = this.children[i];
       if(obj instanceof GameObject){
-        colligionObj = obj.isOnPointerDown(pointer);
+        colligionObj = obj.isOnPointer(pointer);
         if(colligionObj){
           return colligionObj;
         }
