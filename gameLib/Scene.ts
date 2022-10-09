@@ -1,13 +1,34 @@
 import Game from './Game';
-import InputEvent from './InputEvent';
+import InputEvent, { TInputEvents, TPointer } from './InputEvent';
 import LoaderManagerScene from './LoaderManagerScene';
 import Manager from './Manager';
 import { ISceneManager } from './ScenesManager';
 import Timer from './Timer';
 
+class Input{
+  private game: Game;
+  private scene: Scene;
+  
+  constructor(game:Game, scene:Scene){
+    this.game = game;
+    this.scene = scene;
+  }
+
+  on(event: TInputEvents, handler: (pointer:TPointer)=>void, context?:any): string{
+    const id = this.game.input.on(event, this.scene.id, handler, context);
+    return id;
+  }
+
+  off(id: string){
+    this.game.input.off(id);
+  }
+}
+
 export default class Scene{
   private _game: Game|null = null;
+  private _input: Input|null = null;
   key: string;
+  id: string = '';
   canvas: HTMLCanvasElement|null = null;
   ctx: CanvasRenderingContext2D|null = null;
   load = new LoaderManagerScene(this);
@@ -28,8 +49,8 @@ export default class Scene{
     return this._game!;
   }
 
-  get input():InputEvent{
-    return this._game!.input;
+  get input():Input{
+    return this._input!;
   }
 
   get width():number{
@@ -46,8 +67,10 @@ export default class Scene{
 
   baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     this._game = game;
+    this.id = this._game!.createId();
     this.canvas = canvas;
     this.ctx = ctx;
+    this._input = new Input(game, this);
   }
 
   offScene(){

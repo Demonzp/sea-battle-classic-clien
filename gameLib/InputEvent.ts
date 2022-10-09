@@ -10,14 +10,20 @@ export type TPointer = {
   y:number
 };
 
-export type TCallbackData = {
-  id: string,
-  handler: (pointer:TPointer)=>void
+export interface ICallbackData {
+  id: string;
+  handler: (pointer:TPointer)=>void;
 }
+
+interface ICallbackDataScene extends ICallbackData{
+  sceneId: string;
+} 
 
 export default class InputEvent{
   private game: Game;
-  pointerDownCallbacks: TCallbackData[] = [];
+  pointerDownCallbacks: ICallbackDataScene[] = [];
+  pointerUpCallbacks: ICallbackDataScene[] = [];
+  pointerMoveCallbacks: ICallbackDataScene[] = [];
 
   constructor(game: Game){
     this.game = game;
@@ -32,139 +38,144 @@ export default class InputEvent{
   destroy(){
     //console.log('removeEventListener');
     this.game.canvas!.removeEventListener('pointerdown', this.pointerDown.bind(this));
+    this.game.canvas!.removeEventListener('pointerup', this.pointerUp.bind(this));
+    this.game.canvas!.removeEventListener('pointermove', this.pointerMove.bind(this));
   }
 
-  // on(event: TInputEvents, handler: (pointer:TPointer)=>void, context?:any): string{
-  //   const id = this.game.createId();
-  //   switch (event) {
-  //     case 'pointerdown':
-  //       this.pointerDownCallbacks.push({
-  //         id,
-  //         handler: handler.bind(context)
-  //       });
-  //       break;
-  //     case 'pointerdown':
-  //       this.pointerDownCallbacks.push({
-  //         id,
-  //         handler: handler.bind(context)
-  //       });
-  //       break;
-      
-  //     default:
-  //       break;
-  //   }
+  on(event: TInputEvents, sceneId: string, handler: (pointer:TPointer)=>void, context?:any): string{
+    const id = this.game.createId();
+    switch (event) {
+      case 'pointerdown':
+        this.pointerDownCallbacks.push({
+          id,
+          sceneId,
+          handler: handler.bind(context)
+        });
+        break;
+      case 'pointerup':
+        this.pointerUpCallbacks.push({
+          id,
+          sceneId,
+          handler: handler.bind(context)
+        });
+        break;
+      case 'pointermove':
+        this.pointerMoveCallbacks.push({
+          id,
+          sceneId,
+          handler: handler.bind(context)
+        });
+        break;
+      default:
+        break;
+    }
 
-  //   return id;
-  // }
+    return id;
+  }
 
-  // off(id:string){
-  //   this.pointerDownCallbacks = this.pointerDownCallbacks.filter(callFn=>callFn.id!==id);
-  // }
+  off(id:string){
+    this.pointerDownCallbacks = this.pointerDownCallbacks.filter(callFn=>callFn.id!==id);
+    this.pointerUpCallbacks = this.pointerUpCallbacks.filter(callFn=>callFn.id!==id);
+    this.pointerMoveCallbacks = this.pointerMoveCallbacks.filter(callFn=>callFn.id!==id);
+  }
 
   private pointerMove(event: PointerEvent){
-    const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
-    const canvasY = data.top + window.pageYOffset;
-    const canvasX = data.left + window.pageXOffset;
-    const pointer:TPointer = {
-      x: event.pageX - canvasX,
-      y: event.pageY - canvasY
-    };
-    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+    const pointer = this.getPointer(event);
 
-    for (let i = activeScenes.length-1; i >= 0; i--) {
-      const scene = activeScenes[i];
-      for (let j = 0; j < scene.add.gameObjects.length; j++) {
-        const object = scene.add.gameObjects[j];
-        if(object instanceof GameObject){
-          const colligionObj = object.isOnPointer(pointer);
-          if(colligionObj){
-            colligionObj.onPointerMove(pointer); 
-            return; 
-          }
-          //console.log('go next');
-          if(object instanceof Container){
-            const colligionObj = object.isOnPointer(pointer);
-            if(colligionObj){
-              colligionObj.onPointerMove(pointer); 
-              return; 
-            }
-          }
-          
-        }
-      }
+    const obj = this.getObjFromScene(pointer);
+    if(obj){
+      obj.onPointerUp(pointer);
     }
-    console.log('pointer = ', pointer);
+
+    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+    const sceneId = activeScenes[activeScenes.length-1].id;
+
+    this.pointerMoveCallbacks.forEach(objCallback=>{
+      if(objCallback.sceneId===sceneId){
+        objCallback.handler(pointer);
+      }
+    });
+
   }
 
   private pointerUp(event: PointerEvent){
-    const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
-    const canvasY = data.top + window.pageYOffset;
-    const canvasX = data.left + window.pageXOffset;
-    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
-    const pointer:TPointer = {
-      x: event.pageX - canvasX,
-      y: event.pageY - canvasY
-    };
-    for (let i = activeScenes.length-1; i >= 0; i--) {
-      const scene = activeScenes[i];
-      for (let j = 0; j < scene.add.gameObjects.length; j++) {
-        const object = scene.add.gameObjects[j];
-        if(object instanceof GameObject){
-          const colligionObj = object.isOnPointer(pointer);
-          if(colligionObj){
-            colligionObj.onPointerUp(pointer); 
-            return; 
-          }
-          //console.log('go next');
-          if(object instanceof Container){
-            const colligionObj = object.isOnPointer(pointer);
-            if(colligionObj){
-              colligionObj.onPointerUp(pointer); 
-              return; 
-            }
-          }
-          
-        }
-      }
+    const pointer = this.getPointer(event);
+
+    const obj = this.getObjFromScene(pointer);
+    if(obj){
+      obj.onPointerUp(pointer);
     }
+
+    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+    const sceneId = activeScenes[activeScenes.length-1].id;
+
+    this.pointerUpCallbacks.forEach(objCallback=>{
+      if(objCallback.sceneId===sceneId){
+        objCallback.handler(pointer);
+      }
+    });
+
+    // const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
+    // const canvasY = data.top + window.pageYOffset;
+    // const canvasX = data.left + window.pageXOffset;
+    // const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+    // const pointer:TPointer = {
+    //   x: event.pageX - canvasX,
+    //   y: event.pageY - canvasY
+    // };
+    // for (let i = activeScenes.length-1; i >= 0; i--) {
+    //   const scene = activeScenes[i];
+    //   for (let j = 0; j < scene.add.gameObjects.length; j++) {
+    //     const object = scene.add.gameObjects[j];
+    //     if(object instanceof GameObject){
+    //       const colligionObj = object.isOnPointer(pointer);
+    //       if(colligionObj){
+    //         colligionObj.onPointerUp(pointer); 
+    //         return; 
+    //       }
+    //       //console.log('go next');
+    //       if(object instanceof Container){
+    //         const colligionObj = object.isOnPointer(pointer);
+    //         if(colligionObj){
+    //           colligionObj.onPointerUp(pointer); 
+    //           return; 
+    //         }
+    //       }
+          
+    //     }
+    //   }
+    // }
   }
 
   private pointerDown(event: PointerEvent){
-    //console.log('pointerDown = ', event.currentTarget);
+    const pointer = this.getPointer(event);
+
+    const obj = this.getObjFromScene(pointer);
+    if(obj){
+      return obj.onPointerDown(pointer);
+    }
+  }
+
+  private getPointer(event: PointerEvent ){
     const data = (event.currentTarget as HTMLCanvasElement).getBoundingClientRect();
     //console.log('data = ', data);
     const canvasY = data.top + window.pageYOffset;
     const canvasX = data.left + window.pageXOffset;
-    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
-    const pointer:TPointer = {
+
+    return {
       x: event.pageX - canvasX,
       y: event.pageY - canvasY
-    };
+    }
+  }
+
+  private getObjFromScene(point: TPointer){
+
+    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+
     for (let i = activeScenes.length-1; i >= 0; i--) {
       const scene = activeScenes[i];
-      for (let j = 0; j < scene.add.gameObjects.length; j++) {
-        const object = scene.add.gameObjects[j];
-        if(object instanceof GameObject){
-          const colligionObj = object.isOnPointer(pointer);
-          if(colligionObj){
-            colligionObj.onPointerDown(pointer); 
-            return; 
-          }
-          //console.log('go next');
-          if(object instanceof Container){
-            const colligionObj = object.isOnPointer(pointer);
-            if(colligionObj){
-              colligionObj.onPointerDown(pointer); 
-              return; 
-            }
-          }
-          
-        }
-      }
+      return scene.add.findOnPointerObject(point);
     }
-    //console.log('x = ', x, ' || ', y);
-    // this.pointerDownCallbacks.forEach(callFn=>{
-    //   callFn.handler(pointer);
-    // });
   }
+
 }

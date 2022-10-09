@@ -1,6 +1,6 @@
 import Container from './Container';
 import { TPoint } from './Game';
-import { TCallbackData, TPointer } from './InputEvent';
+import { ICallbackData, TPointer } from './InputEvent';
 import Scene from './Scene';
 
 export type TGameObjectEvents = 'pointerdown'|'pointerup'|'pointermove';
@@ -32,9 +32,9 @@ export default class GameObject{
   private _interactiveBodyRect: TBodyRect;
   angle: number;
   private _parent: TParetGameObject;
-  pointerDownCallbacks: TCallbackData[] = [];
-  pointerUpCallbacks: TCallbackData[] = [];
-  pointerMoveCallbacks: TCallbackData[] = [];
+  pointerDownCallbacks: ICallbackData[] = [];
+  pointerUpCallbacks: ICallbackData[] = [];
+  pointerMoveCallbacks: ICallbackData[] = [];
 
 
   constructor(scene: Scene, key: string, name: TGameObjectNames, x=0, y=0, width=0, height=0, angle=0){
@@ -135,7 +135,7 @@ export default class GameObject{
     };
   }
 
-  on(event: TGameObjectEvents, handler: (pointer: TPointer)=>void, context?:any){
+  on(event: TGameObjectEvents, handler: (pointer: TPointer)=>void, context?:any):string{
     const id = this.scene.game.createId();
     switch (event) {
       case 'pointerdown':
@@ -166,6 +166,7 @@ export default class GameObject{
       default:
         break;
     }
+    return id;
   }
 
   getGlobalPos():TPoint{

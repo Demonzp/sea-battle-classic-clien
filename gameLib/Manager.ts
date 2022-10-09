@@ -1,4 +1,5 @@
 import Container from './Container';
+import { TPoint } from './Game';
 import GameObject from './GameObject';
 import Graphics from './Graphics';
 import Scene from './Scene';
@@ -34,6 +35,27 @@ export default class Manager{
       }
     }else{
       this.gameObjects = this.gameObjects.filter(obj=>obj.id!==data.id);
+    }
+  }
+
+  findOnPointerObject(point:TPoint){
+    for (let j = 0; j < this.gameObjects.length; j++) {
+      const object = this.gameObjects[j];
+        if(object instanceof GameObject){
+          const colligionObj = object.isOnPointer(point);
+          if(colligionObj){
+            //colligionObj.onPointerDown(point); 
+            return colligionObj; 
+          }
+          //console.log('go next');
+          if(object instanceof Container){
+            const colligionObj = object.isOnPointer(point);
+            if(colligionObj){
+              //colligionObj.onPointerDown(point); 
+              return colligionObj; 
+            }
+          }
+        }
     }
   }
 

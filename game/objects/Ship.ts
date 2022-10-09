@@ -24,6 +24,8 @@ export default class Ship{
   speed = 4;
   sx = 0;
   sy = 0;
+  dx = 0;
+  dy = 0;
 
   constructor(scene: Scene, x: number, y: number, type:TShips, angle=0, scale=1){
     this.scene = scene;
@@ -34,22 +36,12 @@ export default class Ship{
     this.type = type;
     
     this.mainContainer = scene.add.container(x, y);
-    this.mainContainer.on('pointerup', ()=>{
-      this.isPointerDown = false;
-      console.log('pointerup!!!!');
-    });
 
-    this.mainContainer.on('pointerdown', ()=>{
+    this.mainContainer.on('pointerdown', (point)=>{
       console.log('pointerdown!!!!');
       this.isPointerDown = true;
-    });
-
-    this.mainContainer.on('pointermove', ()=>{
-      if(this.isPointerDown){
-        console.log('pointermove!!!!');
-      }
-      
-      //this.isPointerDown = true;
+      this.dx = this.x-point.x;
+      this.dy = this.y-point.y;
     });
 
     this.create();
@@ -134,6 +126,18 @@ export default class Ship{
       
       default:
         break;
+    }
+  }
+
+  pointerUp(){
+    this.isPointerDown = false;
+  }
+
+  pointerMove(point: TPoint){
+    //console.log('this.isPointerDown = ', this.isPointerDown);
+    if(this.isPointerDown){
+      this.x=point.x+this.dx;
+      this.y=point.y+this.dy;
     }
   }
 

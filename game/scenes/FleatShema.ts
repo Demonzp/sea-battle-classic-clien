@@ -11,6 +11,15 @@ export default class FleatShema extends Scene{
   }
 
   create(): void {
+    this.input.on('pointerup', ()=>{
+      //console.log('pointerup');
+      this.ships.forEach(ship=>ship.pointerUp());
+    });
+    this.input.on('pointermove', (point)=>{
+
+      this.ships.forEach(ship=>ship.pointerMove(point));
+      //console.log('pointermove');
+    });
     this.plField = new PlayerField(this);
     // const graphics = this.add.graphics();
     // graphics.fillStyle('#ff0004');
@@ -21,6 +30,6 @@ export default class FleatShema extends Scene{
   }
 
   update(delta: number): void {
-    //this.ships.forEach(()=>this.ships.x-0.)
+    this.ships.forEach(ship=>ship.update());
   }
 }
