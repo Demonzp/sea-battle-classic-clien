@@ -5,7 +5,7 @@ import Scene from './Scene';
 
 export default class Container extends GameObject{
 
-  children: (GameObject|Graphics)[] = [];
+  children: GameObject[] = [];
   pi = Math.PI/180;
   constructor(scene: Scene, x=0, y=0, width?:number, height?:number){
     super(scene, 'container', 'Container', x, y, width, height);
@@ -22,6 +22,7 @@ export default class Container extends GameObject{
       data.parent = this;
       this.children.push(data);
     }
+
     this.render();
   }
 

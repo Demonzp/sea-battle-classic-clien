@@ -65,6 +65,10 @@ export default class Scene{
     return this._game!.scene;
   }
 
+  createId(){
+    return this.game.createId();
+  }
+
   baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     this._game = game;
     this.id = this._game!.createId();

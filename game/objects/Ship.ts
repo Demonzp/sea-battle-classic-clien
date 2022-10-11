@@ -2,6 +2,7 @@ import Container from '../../gameLib/Container';
 import { TPoint } from '../../gameLib/Game';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
+import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
 
 export type TShips = 4|3|2|1;
@@ -21,6 +22,7 @@ export default class Ship{
   isPointerDown = false;
   isRot = false;
   toDot: TPoint = {x:0,y:0};
+  posOnField:TPoint = {x:0,y:0};
   speed = 4;
   sx = 0;
   sy = 0;
@@ -54,9 +56,9 @@ export default class Ship{
     switch (this.type) {
       case 4:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0,0, (step*4)*this.scale, (step-2)*this.scale);
-        this.mainContainer.setInteractiveRect((step*4)*this.scale, (step-2)*this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0,0, (step*4)*this.scale, (step-2)*this.scale);
+        this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0,0, (step*4)*this.scale, (step-4)*this.scale);
+        this.mainContainer.setInteractiveRect((step*4)*this.scale, (step-3)*this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0,0, (step*4)*this.scale, (step-4)*this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
@@ -71,6 +73,7 @@ export default class Ship{
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
+        console.log(this.mainContainer.interactiveRect);
         break;
       case 3:
 
@@ -138,6 +141,7 @@ export default class Ship{
     if(this.isPointerDown){
       this.x=point.x+this.dx;
       this.y=point.y+this.dy;
+      (this.scene as FleatShema).plField?.colligionShip(this);
     }
   }
 

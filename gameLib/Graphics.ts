@@ -5,6 +5,8 @@ export type TComands = {
   val: any;
 }
 
+type TKeys = 'fillStyle'|'strokeStyle'|'lineStyle';
+
 export default class Graphics{
   scene: Scene;
   id: string;
@@ -20,11 +22,47 @@ export default class Graphics{
     this.arr = [];
   }
 
-  fillStyle(color: string, alpha?: number){
-    this.arr.push({
-      key: 'fillStyle',
-      val: {color, alpha}
+  addCommand(key: TKeys, val:any){
+    let find = false;
+    this.arr = this.arr.map(obj=>{
+      if(obj.key===key){
+        find = true;
+        return{
+          ...obj,
+          val
+        }
+      }
+      return obj;
     });
+
+    if(!find){
+      this.arr.push({
+        key: key,
+        val
+      });
+    }
+  }
+
+  fillStyle(color: string, alpha?: number){
+    this.addCommand('fillStyle', {color, alpha});
+    // let find = false;
+    // this.arr = this.arr.map(obj=>{
+    //   if(obj.key==='fillStyle'){
+    //     find = true;
+    //     return{
+    //       ...obj,
+    //       val: {color, alpha}
+    //     }
+    //   }
+    //   return obj;
+    // });
+
+    // if(!find){
+    //   this.arr.push({
+    //     key: 'fillStyle',
+    //     val: {color, alpha}
+    //   });
+    // }
   }
 
   fillRect(x:number,y:number,width:number,height:number){
@@ -35,10 +73,11 @@ export default class Graphics{
   }
 
   strokeStyle(color: string, alpha?: number){
-    this.arr.push({
-      key: 'strokeStyle',
-      val: {color, alpha}
-    });
+    this.addCommand('strokeStyle', {color, alpha});
+    // this.arr.push({
+    //   key: 'strokeStyle',
+    //   val: {color, alpha}
+    // });
   }
 
   strokeRect(x:number,y:number,width:number,height:number){

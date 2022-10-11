@@ -40,7 +40,7 @@ export default class GameObject{
   constructor(scene: Scene, key: string, name: TGameObjectNames, x=0, y=0, width=0, height=0, angle=0){
     this.scene = scene;
     this._parent = scene;
-    this.id = scene.game.createId();
+    this.id = scene.createId();
     this.key = key;
     this.name = name;
     this._x = x;
@@ -116,6 +116,14 @@ export default class GameObject{
 
   set parent(parent: Scene|Container){
     this._parent = parent;
+  }
+
+  get interactiveRect(){
+    return {
+      ...this._interactiveBodyRect,
+      x: this.x+this._interactiveBodyRect.x,
+      y: this.y+this._interactiveBodyRect.y
+    };
   }
 
   setInteractiveRect(width: number, height: number, x?:number, y?: number){
