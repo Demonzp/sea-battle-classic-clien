@@ -79,6 +79,7 @@ export default class Scene{
 
   offScene(){
     this.timer.delAll();
+    this.add.removeAll();
     this.isActive = false;
   }
 

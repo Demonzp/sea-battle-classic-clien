@@ -7,7 +7,6 @@ export default class FleatShema extends Scene{
   ships: Ship[] = [];
   constructor(){
     super('FleatShema');
-    
   }
 
   create(): void {
@@ -20,7 +19,7 @@ export default class FleatShema extends Scene{
       this.ships.forEach(ship=>ship.pointerMove(point));
       //console.log('pointermove');
     });
-    this.plField = new PlayerField(this);
+    this.plField = new PlayerField(this, 0,0);
     // const graphics = this.add.graphics();
     // graphics.fillStyle('#ff0004');
     // graphics.fillRect(300, 400, 5,5);

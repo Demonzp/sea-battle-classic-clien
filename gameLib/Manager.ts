@@ -38,6 +38,10 @@ export default class Manager{
     }
   }
 
+  removeAll(){
+    this.gameObjects = [];
+  }
+
   findOnPointerObject(point:TPoint){
     for (let j = 0; j < this.gameObjects.length; j++) {
       const object = this.gameObjects[j];

@@ -33,6 +33,11 @@ export default class Sprite extends GameObject{
     //console.log(key, ' = ', this.image);
   }
 
+  setDisplaySize(width: number, height: number){
+    this.width = width;
+    this.height = height;
+  }
+
   render(){
     
     if(this.image){

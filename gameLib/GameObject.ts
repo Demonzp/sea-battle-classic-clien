@@ -91,10 +91,10 @@ export default class GameObject{
   set width(val: number){
     this._width = val;
     this._halfWidth = val/2;
-    if(this.name==='Sprite'){
+    //if(this.name==='Sprite'){
       this.setInteractiveRect(this._width, this._height, this._interactiveBodyRect.x, this._interactiveBodyRect.y);
       this.changeCenter();
-    }
+    //}
   }
 
   get height(): number{
@@ -104,10 +104,10 @@ export default class GameObject{
   set height(val: number){
     this._height = val;
     this._halfHeight = val/2;
-    if(this.name==='Sprite'){
+    //if(this.name==='Sprite'){
       this.setInteractiveRect(this._width, this._height, this._interactiveBodyRect.x, this._interactiveBodyRect.y);
       this.changeCenter();
-    }
+    //}
   }
 
   get parent(): TParetGameObject{
