@@ -1,5 +1,5 @@
 import Game from './Game';
-import InputEvent, { TInputEvents, TPointer } from './InputEvent';
+import { TInputEvents, TPointer } from './InputEvent';
 import LoaderManagerScene from './LoaderManagerScene';
 import Manager from './Manager';
 import { ISceneManager } from './ScenesManager';

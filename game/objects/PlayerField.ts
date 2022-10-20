@@ -142,6 +142,42 @@ export default class PlayerField {
     }
   }
 
+  renderMatrix(){
+    this.fieldMatrix.forEach(rows=>{
+      rows.forEach(cell=>{
+        if(!cell.isFree){
+          if(cell.ship?.isMain){
+            cell.graphics.fillStyle('green');
+          }else{
+            cell.graphics.fillStyle('#ffa7a8');
+          }
+        }
+      });
+    })
+  }
+
+  renderShip(){
+    this.renderMatrix();
+
+    this.shipCells.forEach(cell => {
+      if (this.isGreen) {
+        cell.graphics.fillStyle('green');
+      } else {
+        cell.graphics.fillStyle('red');
+      }
+    });
+
+    this.supCells.forEach(cell => {
+      if (this.isGreen) {
+        cell.graphics.fillStyle('#a7ffb5');
+        //cell.graphics.fillStyle('green');
+      } else {
+        cell.graphics.fillStyle('#ffa7a8');
+      }
+    });
+
+  }
+
   calcFromStartCell(startCell: TStartCell, ship: Ship) {
 
     let x = startCell.j;
@@ -240,22 +276,22 @@ export default class PlayerField {
       }
     }
 
-    this.shipCells.forEach(cell => {
-      if (this.isGreen) {
-        cell.graphics.fillStyle('green');
-      } else {
-        cell.graphics.fillStyle('red');
-      }
-    });
+    // this.shipCells.forEach(cell => {
+    //   if (this.isGreen) {
+    //     cell.graphics.fillStyle('green');
+    //   } else {
+    //     cell.graphics.fillStyle('red');
+    //   }
+    // });
 
-    this.supCells.forEach(cell => {
-      if (this.isGreen) {
-        cell.graphics.fillStyle('#a7ffb5');
-        //cell.graphics.fillStyle('green');
-      } else {
-        cell.graphics.fillStyle('#ffa7a8');
-      }
-    });
+    // this.supCells.forEach(cell => {
+    //   if (this.isGreen) {
+    //     cell.graphics.fillStyle('#a7ffb5');
+    //     //cell.graphics.fillStyle('green');
+    //   } else {
+    //     cell.graphics.fillStyle('#ffa7a8');
+    //   }
+    // });
 
     if (startCell.i === -1) {
       this.isGreen = false;
@@ -330,12 +366,31 @@ export default class PlayerField {
         break;
       }
     }
-
+    //this.dropShip(ship);
     this.calcFromStartCell(startCell, ship);
+    this.renderShip();
+  }
 
+  rotateShip(ship: Ship){
+    let angle = 0;
+    if(ship.angle===0){
+      angle = 90
+    }
+    const isCanRotate = this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle}, ship);
+    if(isCanRotate){
+      ship.angle = angle;
+      this.renderShip();
+    }
+    this.dropShip(ship);
+    //this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle}, ship);
   }
 
   dropShip(ship: Ship) {
+    if(!this.isOnField(ship)){
+      ship.dropShip();
+      return;
+    }
+    this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle},ship);
     if (this.isGreen) {
       ship.setOnPlayerField(this.shipPos);
       const isShip = this.ships.find(s => s.id === ship.id);
@@ -358,7 +413,7 @@ export default class PlayerField {
           isMain: false
         }
       });
-      
+      this.renderMatrix();
     } else {
       ship.dropShip();
     }

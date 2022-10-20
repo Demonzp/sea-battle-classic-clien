@@ -160,13 +160,13 @@ export default class Ship{
       console.log('this.posOnField');
       this.x = this.posOnField.x;
       this.y = this.posOnField.y;
-      this.scene.plField?.renderShipCells(this);
+      //this.scene.plField?.renderShipCells(this);
     }else{
+      console.log('remove From Field!');
       this.x = this.startPos.x;
       this.y = this.startPos.y;
       this.posOnField = initPos;
       this.scene.plField?.removeShip(this);
-
     }
   }
 
@@ -188,29 +188,40 @@ export default class Ship{
             this.angle = 0;
             this.dropShip();
           }else{
-            this.angle = 0;
-            const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            if(!isCanRotate){
-              this.angle = 90;
-            }else{
-              this.scene.plField?.dropShip(this);
-            }
+            this.scene.plField?.rotateShip(this);
+            // this.angle = 0;
+            // const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            // if(!isCanRotate){
+            //   this.angle = 90;
+            //   this.scene.plField?.getShip(this);
+            //   this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            // }else{
+            //   //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            //   this.scene.plField?.dropShip(this);
+            // }
           }
         }else{
           if(!this.scene.plField?.isHasShip(this)){
             this.angle = 90;
             this.dropShip();
           }else{
-            this.angle = 90;
-            const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            if(!isCanRotate){
-              this.angle = 0;
-            }else{
-              this.scene.plField?.dropShip(this);
-            }
+            this.scene.plField?.rotateShip(this);
+            // this.angle = 90;
+            // const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            // if(!isCanRotate){
+            //   this.angle = 0;
+            //   this.scene.plField?.getShip(this);
+            //   this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            // }else{
+            //   //this.scene.plField?.getShip(this);
+            //   //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
+            //   this.scene.plField?.dropShip(this);
+            // }
           }
         }
       }else{
+        console.log('pointerUp dropShip');
+        //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
         this.scene.plField?.dropShip(this);
       }
     }
