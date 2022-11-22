@@ -169,8 +169,12 @@ export default class Ship2{
     if(this.isPointerDown){
       this.x=point.x+this.dx;
       this.y=point.y+this.dy;
-      //this.scene.plField?.colligionShip(this);
+      this.scene.plField?.colligionShip(this);
     }
+  }
+
+  setCellsOnField(cells:TCell[]){
+    this.cellsOnField = cells;
   }
 
   dropShip(){
