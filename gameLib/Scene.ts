@@ -1,4 +1,5 @@
 import Game from './Game';
+import GameObject from './GameObject';
 import { TInputEvents, TPointer } from './InputEvent';
 import LoaderManagerScene from './LoaderManagerScene';
 import Manager from './Manager';
@@ -63,6 +64,19 @@ export default class Scene{
 
   get scene(): ISceneManager{
     return this._game!.scene;
+  }
+
+  sortByZindex(){
+    this.add.gameObjects.sort((a,b)=>{
+      if((a as GameObject).zIndex>(b as GameObject).zIndex){
+        return 1;
+      }
+      if((a as GameObject).zIndex<(b as GameObject).zIndex){
+        return -1;
+      }
+      return 0;
+    });
+    //console.log('gameObjects = ', this.add.gameObjects);
   }
 
   createId(){

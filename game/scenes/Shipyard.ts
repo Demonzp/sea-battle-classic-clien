@@ -1,12 +1,12 @@
 import { TPoint } from '../../gameLib/Game';
 import Scene from '../../gameLib/Scene';
-import Ship from '../objects/Ship';
+import Ship2 from '../objects/Ship2';
 
 export default class Shipyard extends Scene{
-  ship1: Ship|null = null;
-  ship2: Ship|null = null;
-  ship3: Ship|null = null;
-  ship4: Ship|null = null;
+  ship1: Ship2|null = null;
+  ship2: Ship2|null = null;
+  ship3: Ship2|null = null;
+  ship4: Ship2|null = null;
   dotSecondSpip3: TPoint = {x: 380, y: 210};
   dotFirstShip3: TPoint = {x: 800, y: 100};
   dotFirstShip4: TPoint = {x: 450, y: -50};
@@ -18,11 +18,11 @@ export default class Shipyard extends Scene{
 
   create(): void {
     const fon = this.add.sprite('shipyard2', this.width/2, this.height/2);
-    this.ship1 = new Ship(this, 320, 105, 4, -16, 1.3);
-    this.ship2 = new Ship(this, 330, 144, 3, -18, 1.3);
+    this.ship1 = new Ship2(this, 320, 105, 4, -16, 1.3);
+    this.ship2 = new Ship2(this, 330, 144, 3, -18, 1.3);
     //this.ship3 = new Ship(this, 380, 210, 2, -18, 1.3);
-    this.ship3 = new Ship(this, this.dotFirstShip3.x, this.dotFirstShip3.y, 2, -18, 1.3);
-    this.ship4 = new Ship(this, this.dotFirstShip4.x, this.dotFirstShip4.y, 1, 70, 1.3);
+    this.ship3 = new Ship2(this, this.dotFirstShip3.x, this.dotFirstShip3.y, 2, -18, 1.3);
+    this.ship4 = new Ship2(this, this.dotFirstShip4.x, this.dotFirstShip4.y, 1, 70, 1.3);
     this.ship4.isRot = true;
     const time = this.game.Math.between(10, 20);
     const time2 = this.game.Math.between(20, 30);

@@ -11,6 +11,7 @@ export default class Graphics{
   scene: Scene;
   id: string;
   arr: TComands[] = [];
+  zIndex = 0;
 
   constructor(scene: Scene){
     this.scene = scene;

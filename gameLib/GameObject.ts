@@ -26,6 +26,7 @@ export default class GameObject{
   private _y: number;
   private _halfWidth: number;
   private _halfHeight: number;
+  zIndex: number = 0;
   center: TPoint;
   private _width: number;
   private _height: number;
@@ -124,6 +125,11 @@ export default class GameObject{
       x: this.x+this._interactiveBodyRect.x,
       y: this.y+this._interactiveBodyRect.y
     };
+  }
+
+  setZindex(val:number){
+    this.zIndex = val;
+    this.scene.sortByZindex();
   }
 
   setInteractiveRect(width: number, height: number, x?:number, y?: number){

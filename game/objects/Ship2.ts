@@ -15,7 +15,7 @@ const initPos = {
   y:0
 }
 
-export default class Ship{
+export default class Ship2{
   scene: FleatShema;
   id: string;
   x: number;
@@ -42,8 +42,8 @@ export default class Ship{
   timerClick = 0;
   readonly timeIsClick = 140;
 
-  constructor(scene: FleatShema, x: number, y: number, type:TShips, angle=0, scale=1){
-    this.scene = scene;
+  constructor(scene: Scene, x: number, y: number, type:TShips, angle=0, scale=1){
+    this.scene = scene as FleatShema;
     this.id = scene.createId();
     this.startPos = {
       x,
@@ -147,96 +147,37 @@ export default class Ship{
     }
   }
 
-  setOnPlayerField(pos:TPoint){
-    this.posOnField = pos;
-    this.x = pos.x;
-    this.y = pos.y;
-  }
-
-  setCellsOnField(cells:TCell[]){
-    this.cellsOnField = cells;
-  }
-
-  dropShip(){
-    if(this.scene.plField?.isOnField(this) && this.posOnField.x!==initPos.x){
-      console.log('this.posOnField');
-      this.x = this.posOnField.x;
-      this.y = this.posOnField.y;
-      //this.scene.plField?.renderShipCells(this);
-    }else{
-      console.log('remove From Field!');
-      this.x = this.startPos.x;
-      this.y = this.startPos.y;
-      this.posOnField = initPos;
-      this.scene.plField?.removeShip(this);
-    }
-  }
-
   pointerDown(point:TPointer){
     console.log('pointerdown!!!!');
     this.isPointerDown = true;
     this.dx = this.x-point.x;
     this.dy = this.y-point.y;
     this.timerClick = Date.now();
-    this.scene.plField?.getShip(this);
+    this.mainContainer.setZindex(1);
+    //this.scene.plField?.getShip(this);
   }
 
   pointerUp(){
     if(this.isPointerDown){
-      if(Date.now()-this.timerClick<=this.timeIsClick){
-        console.log('ROTATE!!!');
-        if(this.angle===90){
-          if(!this.scene.plField?.isHasShip(this)){
-            this.angle = 0;
-            this.dropShip();
-          }else{
-            this.scene.plField?.rotateShip(this);
-            // this.angle = 0;
-            // const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            // if(!isCanRotate){
-            //   this.angle = 90;
-            //   this.scene.plField?.getShip(this);
-            //   this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            // }else{
-            //   //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            //   this.scene.plField?.dropShip(this);
-            // }
-          }
-        }else{
-          if(!this.scene.plField?.isHasShip(this)){
-            this.angle = 90;
-            this.dropShip();
-          }else{
-            this.scene.plField?.rotateShip(this);
-            // this.angle = 90;
-            // const isCanRotate = this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            // if(!isCanRotate){
-            //   this.angle = 0;
-            //   this.scene.plField?.getShip(this);
-            //   this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            // }else{
-            //   //this.scene.plField?.getShip(this);
-            //   //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-            //   this.scene.plField?.dropShip(this);
-            // }
-          }
-        }
-      }else{
-        console.log('pointerUp dropShip');
-        //this.scene.plField?.calcFromStartCell({...this.cellOnField,typeShip:this.type,angle:this.angle}, this);
-        this.scene.plField?.dropShip(this);
-      }
+      this.dropShip();
+      this.isPointerDown = false;
+      this.mainContainer.setZindex(0);
     }
-    this.isPointerDown = false;
   }
 
   pointerMove(point: TPoint){
-    //console.log('this.isPointerDown = ', this.isPointerDown);
     if(this.isPointerDown){
       this.x=point.x+this.dx;
       this.y=point.y+this.dy;
-      this.scene.plField?.colligionShip(this);
+      //this.scene.plField?.colligionShip(this);
     }
+  }
+
+  dropShip(){
+    
+    this.x = this.startPos.x;
+    this.y = this.startPos.y;
+    this.posOnField = initPos;
   }
 
   setDot(dot: TPoint){

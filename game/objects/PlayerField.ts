@@ -25,8 +25,8 @@ type TCell = {
 }
 
 export type TStartCell = {
-  i: number;
-  j: number;
+  col: string;
+  row: number;
   typeShip: TShips;
   angle: number;
 }
@@ -124,22 +124,25 @@ export default class PlayerField {
   }
 
   clearFieldByShip(shipId:string){
-    for (let i = 0; i < this.fieldMatrix.length; i++) {
+    //this.ships
+    // for (let i = 0; i < this.fieldMatrix.length; i++) {
 
-      const rows = this.fieldMatrix[i];
-      for (let j = 0; j < rows.length; j++) {
-        const cell = rows[j];
-        if(cell.isFree){
-          cell.graphics.fillStyle('white');
-        }else{
-          if(cell.ship!.id===shipId){
-            cell.graphics.fillStyle('white');
-            cell.isFree = true;
-            cell.ship = null;
-          }
-        }
-      }
-    }
+    //   const rows = this.fieldMatrix[i];
+    //   for (let j = 0; j < rows.length; j++) {
+    //     const cell = rows[j];
+    //     if(cell.isFree){
+    //       cell.graphics.fillStyle('white');
+    //     }else{
+    //       if(cell.ship!.id===shipId){
+    //         cell.graphics.fillStyle('white');
+    //         cell.isFree = true;
+    //         cell.ship = null;
+    //       }
+    //     }
+    //   }
+    // }
+
+
   }
 
   renderMatrix(){
@@ -311,7 +314,13 @@ export default class PlayerField {
           y: cell.pos.y0 + ship.bodySprite!.width / 2,
         }
       }
-      ship.setCellOnField({i:startCell.i,j:startCell.j});
+      //ship.setCellOnField({i:startCell.i,j:startCell.j});
+      ship.setCellsOnField(this.shipCells.map(cell=>{
+        return{
+          col: cell.id.split('-')[0],
+          row: Number(cell.id.split('-')[1])
+        }
+      }));
     }
     return this.isGreen;
   }
@@ -376,7 +385,7 @@ export default class PlayerField {
     if(ship.angle===0){
       angle = 90
     }
-    const isCanRotate = this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle}, ship);
+    const isCanRotate = this.calcFromStartCell({...ship.cellsOnField[0],typeShip:ship.type,angle}, ship);
     if(isCanRotate){
       ship.angle = angle;
       this.renderShip();
@@ -390,7 +399,7 @@ export default class PlayerField {
       ship.dropShip();
       return;
     }
-    this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle},ship);
+    this.calcFromStartCell({...ship.cellsOnField[0],typeShip:ship.type,angle:ship.angle},ship);
     if (this.isGreen) {
       ship.setOnPlayerField(this.shipPos);
       const isShip = this.ships.find(s => s.id === ship.id);
