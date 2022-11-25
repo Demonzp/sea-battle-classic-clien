@@ -8,7 +8,8 @@ import GunTower from './GunTower';
 
 export type TShips = 4|3|2|1;
 
-type TCell = {col:string,row:number};
+type TCellObjId = {col:string,row:number};
+type TCells = {main:TCellObjId[],sup:TCellObjId[]};
 
 const initPos = {
   x:0,
@@ -30,9 +31,9 @@ export default class Ship2{
   isOnDot = false;
   isPointerDown = false;
   isRot = false;
-  toDot: TPoint = initPos;
-  posOnField:TPoint = initPos;
-  cellsOnField: TCell[]= [];
+  toDot: TPoint = {...initPos};
+  posOnField:TPoint = {...initPos};
+  cellsOnField: TCells|null = null;
   startPos:TPoint;
   speed = 4;
   sx = 0;
@@ -154,14 +155,15 @@ export default class Ship2{
     this.dy = this.y-point.y;
     this.timerClick = Date.now();
     this.mainContainer.setZindex(1);
-    //this.scene.plField?.getShip(this);
+    this.scene.plField?.upShip(this);
   }
 
   pointerUp(){
     if(this.isPointerDown){
-      this.dropShip();
+      //this.dropShip();
       this.isPointerDown = false;
       this.mainContainer.setZindex(0);
+      this.scene.plField?.dropShip(this);
     }
   }
 
@@ -173,15 +175,30 @@ export default class Ship2{
     }
   }
 
-  setCellsOnField(cells:TCell[]){
+  setOnField(){
+    console.log('posOnField = ', this.posOnField,'||', initPos);
+    if(this.posOnField.x!==initPos.x){
+      this.x = this.posOnField.x;
+      this.y = this.posOnField.y;
+    }else{
+      this.setOnStart();
+    }
+
+  }
+
+  setOnStart(){
+    this.x = this.startPos.x;
+    this.y = this.startPos.y;
+    this.posOnField = {...initPos};
+  }
+
+  setCellsOnField(cells:TCells){
     this.cellsOnField = cells;
   }
 
-  dropShip(){
-    
-    this.x = this.startPos.x;
-    this.y = this.startPos.y;
-    this.posOnField = initPos;
+  setPosOnField(pos:TPoint){
+    this.posOnField.x = pos.x;
+    this.posOnField.y = pos.y;
   }
 
   setDot(dot: TPoint){
