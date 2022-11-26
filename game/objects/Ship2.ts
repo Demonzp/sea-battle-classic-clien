@@ -6,17 +6,17 @@ import Sprite from '../../gameLib/Sprite';
 import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
 
-export type TShips = 4|3|2|1;
+export type TShips = 4 | 3 | 2 | 1;
 
-type TCellObjId = {col:string,row:number};
-type TCells = {main:TCellObjId[],sup:TCellObjId[]};
+type TCellObjId = { col: string, row: number };
+type TCells = { main: TCellObjId[], sup: TCellObjId[] };
 
 const initPos = {
-  x:0,
-  y:0
+  x: 0,
+  y: 0
 }
 
-export default class Ship2{
+export default class Ship2 {
   scene: FleatShema;
   id: string;
   x: number;
@@ -25,16 +25,16 @@ export default class Ship2{
   type: TShips;
   scale: number;
   mainContainer: Container;
-  bodySprite: Sprite|null = null;
-  detaliSprite: Sprite|null = null;
+  bodySprite: Sprite | null = null;
+  detaliSprite: Sprite | null = null;
   gunTowers: GunTower[] = [];
   isOnDot = false;
   isPointerDown = false;
   isRot = false;
-  toDot: TPoint = {...initPos};
-  posOnField:TPoint = {...initPos};
-  cellsOnField: TCells|null = null;
-  startPos:TPoint;
+  toDot: TPoint = { ...initPos };
+  posOnField: TPoint = { ...initPos };
+  cellsOnField: TCells | null = null;
+  startPos: TPoint;
   speed = 4;
   sx = 0;
   sy = 0;
@@ -43,7 +43,7 @@ export default class Ship2{
   timerClick = 0;
   readonly timeIsClick = 140;
 
-  constructor(scene: Scene, x: number, y: number, type:TShips, angle=0, scale=1){
+  constructor(scene: Scene, x: number, y: number, type: TShips, angle = 0, scale = 1) {
     this.scene = scene as FleatShema;
     this.id = scene.createId();
     this.startPos = {
@@ -62,23 +62,23 @@ export default class Ship2{
     this.create();
   }
 
-  create(){
+  create() {
     const lineWidth = 2;
     const min = Math.min(this.scene.width, this.scene.height);
-    const step = (min-lineWidth)/11;
+    const step = (min - lineWidth) / 11;
     switch (this.type) {
       case 4:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0,0, (step*4)*this.scale, (step-4)*this.scale);
-        this.mainContainer.setInteractiveRect((step*4)*this.scale, (step-3)*this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0,0, (step*4)*this.scale, (step-4)*this.scale);
+        this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
+        this.mainContainer.setInteractiveRect((step * 4) * this.scale, (step - 3) * this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
-          {x:-42*this.scale,y:0,angle:0},
-          {x:-25*this.scale, y:0, angle: 0},
-          {x:52*this.scale, y:0, angle:180},
-          {x:38*this.scale, y:0, angle:180},
+          { x: -42 * this.scale, y: 0, angle: 0 },
+          { x: -25 * this.scale, y: 0, angle: 0 },
+          { x: 52 * this.scale, y: 0, angle: 180 },
+          { x: 38 * this.scale, y: 0, angle: 180 },
         ];
         for (let i = 0; i < arrPosGuns.length; i++) {
           const gunPos = arrPosGuns[i];
@@ -90,15 +90,15 @@ export default class Ship2{
         break;
       case 3:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-3', 0,0, (step*3)*this.scale, (step-5)*this.scale);
-        this.mainContainer.setInteractiveRect((step*3)*this.scale, (step-4)*this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-3', 0,0, (step*3)*this.scale, (step-5)*this.scale);
+        this.bodySprite = this.scene.add.sprite('ship-body-type-3', 0, 0, (step * 3) * this.scale, (step - 5) * this.scale);
+        this.mainContainer.setInteractiveRect((step * 3) * this.scale, (step - 4) * this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-3', 0, 0, (step * 3) * this.scale, (step - 5) * this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns2 = [
-          {x:-24*this.scale,y:0,angle:0},
-          {x:-12*this.scale, y:0, angle: 0},
-          {x:38*this.scale, y:0, angle:180},
+          { x: -24 * this.scale, y: 0, angle: 0 },
+          { x: -12 * this.scale, y: 0, angle: 0 },
+          { x: 38 * this.scale, y: 0, angle: 180 },
         ];
         for (let i = 0; i < arrPosGuns2.length; i++) {
           const gunPos = arrPosGuns2[i];
@@ -109,14 +109,14 @@ export default class Ship2{
         break;
       case 2:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-2', 0,0, (step*2)*this.scale, (step-8)*this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0,0, (step*2)*this.scale, (step-8)*this.scale);
-        this.mainContainer.setInteractiveRect((step*2)*this.scale, (step-6)*this.scale);
+        this.bodySprite = this.scene.add.sprite('ship-body-type-2', 0, 0, (step * 2) * this.scale, (step - 8) * this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0, 0, (step * 2) * this.scale, (step - 8) * this.scale);
+        this.mainContainer.setInteractiveRect((step * 2) * this.scale, (step - 6) * this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns3 = [
-          {x:-16*this.scale,y:0,angle:0},
-          {x:23*this.scale, y:0, angle: 180},
+          { x: -16 * this.scale, y: 0, angle: 0 },
+          { x: 23 * this.scale, y: 0, angle: 180 },
         ];
         for (let i = 0; i < arrPosGuns3.length; i++) {
           const gunPos = arrPosGuns3[i];
@@ -127,13 +127,13 @@ export default class Ship2{
         break;
       case 1:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-1', 0,0, (step*1)*this.scale, (step-16)*this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0,0, (step*1)*this.scale, (step-16)*this.scale);
-        this.mainContainer.setInteractiveRect((step*1)*this.scale, (step-14)*this.scale);
+        this.bodySprite = this.scene.add.sprite('ship-body-type-1', 0, 0, (step * 1) * this.scale, (step - 16) * this.scale);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0, 0, (step * 1) * this.scale, (step - 16) * this.scale);
+        this.mainContainer.setInteractiveRect((step * 1) * this.scale, (step - 14) * this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         let arrPosGuns4 = [
-          {x:-6*this.scale, y:0, angle: 0},
+          { x: -6 * this.scale, y: 0, angle: 0 },
         ];
         for (let i = 0; i < arrPosGuns4.length; i++) {
           const gunPos = arrPosGuns4[i];
@@ -142,102 +142,125 @@ export default class Ship2{
           this.gunTowers.push(gunTower);
         }
         break;
-      
+
       default:
         break;
     }
   }
 
-  pointerDown(point:TPointer){
+  isHasPrevPosField() {
+    if (this.posOnField.x !== initPos.x) {
+      return true;
+    }
+
+    return false;
+  }
+
+  pointerDown(point: TPointer) {
     console.log('pointerdown!!!!');
     this.isPointerDown = true;
-    this.dx = this.x-point.x;
-    this.dy = this.y-point.y;
+    this.dx = this.x - point.x;
+    this.dy = this.y - point.y;
     this.timerClick = Date.now();
     this.mainContainer.setZindex(1);
     this.scene.plField?.upShip(this);
   }
 
-  pointerUp(){
-    if(this.isPointerDown){
+  pointerUp() {
+    if (this.isPointerDown) {
+      if (Date.now() - this.timerClick <= this.timeIsClick) {
+        if (this.angle === 90) {
+          if (this.x===this.startPos.x&&this.y===this.startPos.y) {
+            this.angle = 0;
+            this.setOnStart();
+          }
+        }else{
+          if (this.x===this.startPos.x&&this.y===this.startPos.y) {
+            this.angle = 90;
+            this.setOnStart();
+          }
+        }
+      } else {
+        this.mainContainer.setZindex(0);
+        this.scene.plField?.dropShip(this);
+      }
       //this.dropShip();
       this.isPointerDown = false;
-      this.mainContainer.setZindex(0);
-      this.scene.plField?.dropShip(this);
     }
   }
 
-  pointerMove(point: TPoint){
-    if(this.isPointerDown){
-      this.x=point.x+this.dx;
-      this.y=point.y+this.dy;
+  pointerMove(point: TPoint) {
+    if (this.isPointerDown) {
+      this.x = point.x + this.dx;
+      this.y = point.y + this.dy;
       this.scene.plField?.colligionShip(this);
     }
   }
 
-  setOnField(){
-    console.log('posOnField = ', this.posOnField,'||', initPos);
-    if(this.posOnField.x!==initPos.x){
+  setOnField() {
+    console.log('posOnField = ', this.posOnField, '||', initPos);
+    if (this.posOnField.x !== initPos.x) {
       this.x = this.posOnField.x;
       this.y = this.posOnField.y;
-    }else{
+    } else {
       this.setOnStart();
     }
 
   }
 
-  setOnStart(){
+  setOnStart() {
     this.x = this.startPos.x;
     this.y = this.startPos.y;
-    this.posOnField = {...initPos};
+    this.cellsOnField = null;
+    this.posOnField = { ...initPos };
   }
 
-  setCellsOnField(cells:TCells){
+  setCellsOnField(cells: TCells) {
     this.cellsOnField = cells;
   }
 
-  setPosOnField(pos:TPoint){
+  setPosOnField(pos: TPoint) {
     this.posOnField.x = pos.x;
     this.posOnField.y = pos.y;
   }
 
-  setDot(dot: TPoint){
+  setDot(dot: TPoint) {
     this.toDot = dot;
     const dX = dot.x - this.x;
     const dY = dot.y - this.y;
     const angle = Math.atan2(dY, dX);
-    const grad = angle/Math.PI*180;
-    if(this.isRot){
-      this.angle = grad+180;
+    const grad = angle / Math.PI * 180;
+    if (this.isRot) {
+      this.angle = grad + 180;
     }
-    this.sx = this.speed*Math.cos(angle);
-    this.sy = this.speed*Math.sin(angle);
-    setTimeout(()=>this.isOnDot = false);
+    this.sx = this.speed * Math.cos(angle);
+    this.sy = this.speed * Math.sin(angle);
+    setTimeout(() => this.isOnDot = false);
     //console.log(this.sx, '||', this.sy);
   }
 
-  goToDot(){
-    if(this.isOnDot){
+  goToDot() {
+    if (this.isOnDot) {
       return;
     }
     const speed = Math.abs(this.speed);
 
-    if((this.x>=this.toDot.x-speed&&this.x<=this.toDot.x+speed)&&(this.y>=this.toDot.y-speed&&this.y<=this.toDot.y+speed)){
+    if ((this.x >= this.toDot.x - speed && this.x <= this.toDot.x + speed) && (this.y >= this.toDot.y - speed && this.y <= this.toDot.y + speed)) {
       this.isOnDot = true;
       this.x = this.toDot.x;
       this.y = this.toDot.y;
       return;
     }
 
-    this.x+=this.sx;
-    this.y+=this.sy;
+    this.x += this.sx;
+    this.y += this.sy;
   }
 
-  update(){
+  update() {
     this.goToDot();
     this.mainContainer.x = this.x;
     this.mainContainer.y = this.y;
     this.mainContainer.angle = this.angle;
-    this.gunTowers.forEach((tower)=>tower.update());
+    this.gunTowers.forEach((tower) => tower.update());
   }
 }

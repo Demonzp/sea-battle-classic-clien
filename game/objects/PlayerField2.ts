@@ -100,11 +100,11 @@ export default class PlayerField2 {
                 posX += this.step;
 
             }
-            
+
             posX = startX;
             posY += this.step;
         }
-        this.width = Math.max.apply(null, [...this.cells.map(cell=>cell.pos.x1)]);
+        this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
     }
 
@@ -118,15 +118,15 @@ export default class PlayerField2 {
             const cell = this.findCellById(cellId.col + '-' + cellId.row);
             if (cell.isFree) {
                 cell.graphics.fillStyle('white');
-            }else{
-                if(cell.ship!.id===ship.id){
+            } else {
+                if (cell.ship!.id === ship.id) {
                     cell.graphics.fillStyle('white');
                     cell.isFree = true;
                     cell.ship = null;
-                }else{
-                    if(cell.ship?.isMain){
+                } else {
+                    if (cell.ship?.isMain) {
                         cell.graphics.fillStyle('green');
-                    }else{
+                    } else {
                         cell.graphics.fillStyle('#a7ffb5');
                     }
                 }
@@ -137,15 +137,15 @@ export default class PlayerField2 {
             const cell = this.findCellById(cellId.col + '-' + cellId.row);
             if (cell.isFree) {
                 cell.graphics.fillStyle('white');
-            }else{
-                if(cell.ship!.id===ship.id){
+            } else {
+                if (cell.ship!.id === ship.id) {
                     cell.graphics.fillStyle('white');
                     cell.isFree = true;
                     cell.ship = null;
-                }else{
-                    if(cell.ship?.isMain){
+                } else {
+                    if (cell.ship?.isMain) {
                         cell.graphics.fillStyle('green');
-                    }else{
+                    } else {
                         cell.graphics.fillStyle('#a7ffb5');
                     }
                 }
@@ -153,54 +153,107 @@ export default class PlayerField2 {
         });
     }
 
-    addShip(ship:Ship2){
-        ship.setPosOnField(this.shipPos);
-        this.ships.push(ship);
-        ship.cellsOnField?.main.forEach(cellId=>{
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
-            cell.graphics.fillStyle('green');
-            cell.isFree = false;
-            cell.ship = {
-                id: ship.id,
-                isMain: true
+    clearAfterMove() {
+        this.shipCells.forEach(cell => {
+            if (cell.isFree) {
+                cell.graphics.fillStyle('white');
+            } else {
+                if (cell.ship?.isMain) {
+                    cell.graphics.fillStyle('green');
+                } else {
+                    cell.graphics.fillStyle('#a7ffb5');
+                }
             }
         });
-        ship.cellsOnField?.sup.forEach(cellId=>{
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
-            cell.graphics.fillStyle('#a7ffb5');
-            cell.isFree = false;
-            cell.ship = {
-                id: ship.id,
-                isMain: false
+
+        this.supCells.forEach(cell => {
+            if (cell.isFree) {
+                cell.graphics.fillStyle('white');
+            } else {
+                if (cell.ship?.isMain) {
+                    cell.graphics.fillStyle('green');
+                } else {
+                    cell.graphics.fillStyle('#a7ffb5');
+                }
             }
         });
     }
 
-    upShip(ship:Ship2){
-        this.ships = this.ships.filter(s=>s.id!==ship.id);
+    addShip(ship: Ship2) {
+        if (this.isGreen) {
+            ship.setPosOnField(this.shipPos);
+            ship.setCellsOnField({
+                main: this.shipCells.map(cell => {
+                    return {
+                        col: cell.id.split('-')[0],
+                        row: Number(cell.id.split('-')[1])
+                    }
+                }),
+                sup: this.supCells.map(cell => {
+                    return {
+                        col: cell.id.split('-')[0],
+                        row: Number(cell.id.split('-')[1])
+                    }
+                })
+            });
+        }
+        this.ships.push(ship);
+        ship.cellsOnField?.main.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+
+            if (cell.isFree) {
+                cell.graphics.fillStyle('green');
+                cell.isFree = false;
+                cell.ship = {
+                    id: ship.id,
+                    isMain: true
+                }
+            }
+
+        });
+        ship.cellsOnField?.sup.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            if (cell.isFree) {
+                cell.graphics.fillStyle('#a7ffb5');
+                cell.isFree = false;
+                cell.ship = {
+                    id: ship.id,
+                    isMain: false
+                }
+            }
+        });
+    }
+
+    upShip(ship: Ship2) {
+        this.ships = this.ships.filter(s => s.id !== ship.id);
         this.clearByShip(ship);
     }
 
-    dropShip(ship:Ship2){
-        if(this.isOnField(ship)){
+    dropShip(ship: Ship2) {
+        //this.clearByShip(ship);
+        this.clearAfterMove();
+        if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
             console.log('this.isGreen = ', this.isGreen);
-            if(this.isGreen){
-                //this.ships.push(ship);
-                //console.log('this.shipPos = ', this.shipPos);
-                //ship.setPosOnField(this.shipPos);
-                //this.renderShips();
-                this.addShip(ship);
-            }
+            //if(this.isGreen){
+            //this.ships.push(ship);
+            //console.log('this.shipPos = ', this.shipPos);
+            //ship.setPosOnField(this.shipPos);
+            //this.renderShips();
+            this.addShip(ship);
+            //}
             ship.setOnField();
-        }else{
+        } else {
             console.log('out of field!!');
+            //this.clearByShip(ship);
             ship.setOnStart();
         }
+        this.renderShips();
         //this.clearByShip(ship);
     }
 
     calcFromStartCell(startCell: string, ship: Ship2) {
-        this.clearByShip(ship);
+        //this.clearByShip(ship);
+        this.clearAfterMove();
         const startCellColIdx = this.arrCols.findIndex(el => el === startCell.split('-')[0]);
         const startCellRowIdx = this.arrRows.findIndex(el => el === Number(startCell.split('-')[1]));
         let colIdx = startCellColIdx;
@@ -295,37 +348,37 @@ export default class PlayerField2 {
             }
         }
 
-        if (cell) {
-            const firsCell =  this.shipCells[0];
-            if (ship.angle === 0) {
-                this.shipPos = {
-                    x: firsCell.pos.x0 + ship.bodySprite!.width / 2,
-                    y: firsCell.pos.y0 + this.step / 2
-                }
-            } else {
-                this.shipPos = {
-                    x: firsCell.pos.x0 + this.step / 2,
-                    y: firsCell.pos.y0 + ship.bodySprite!.width / 2,
-                }
+        //if (cell) {
+        const firsCell = this.shipCells[0];
+        if (ship.angle === 0) {
+            this.shipPos = {
+                x: firsCell.pos.x0 + ship.bodySprite!.width / 2,
+                y: firsCell.pos.y0 + this.step / 2
             }
-            //ship.setCellOnField({i:startCell.i,j:startCell.j});
-            ship.setCellsOnField({
-                main: this.shipCells.map(cell => {
-                    return {
-                        col: cell.id.split('-')[0],
-                        row: Number(cell.id.split('-')[1])
-                    }
-                }),
-                sup: this.supCells.map(cell => {
-                    return {
-                        col: cell.id.split('-')[0],
-                        row: Number(cell.id.split('-')[1])
-                    }
-                })
-            });
+        } else {
+            this.shipPos = {
+                x: firsCell.pos.x0 + this.step / 2,
+                y: firsCell.pos.y0 + ship.bodySprite!.width / 2,
+            }
         }
+        //ship.setCellOnField({i:startCell.i,j:startCell.j});
+        // ship.setCellsOnField({
+        //     main: this.shipCells.map(cell => {
+        //         return {
+        //             col: cell.id.split('-')[0],
+        //             row: Number(cell.id.split('-')[1])
+        //         }
+        //     }),
+        //     sup: this.supCells.map(cell => {
+        //         return {
+        //             col: cell.id.split('-')[0],
+        //             row: Number(cell.id.split('-')[1])
+        //         }
+        //     })
+        // });
+        //}
 
-        this.renderUpShip(ship);
+        this.renderUpShip();
     }
 
     colligionShip(ship: Ship2) {
@@ -356,43 +409,59 @@ export default class PlayerField2 {
         }
     }
 
+    rotateShip(ship: Ship2) {
+        let angle = 0;
+        if (ship.angle === 0) {
+            angle = 90
+        }
+        // const isCanRotate = this.calcFromStartCell({ ...ship.cellsOnField?.main[0], typeShip: ship.type, angle }, ship);
+        // if (isCanRotate) {
+        //     ship.angle = angle;
+        //     this.renderShip();
+        // }
+        // this.dropShip(ship);
+        //this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle}, ship);
+    }
+
     renderShip(ship: Ship2) {
         ship.cellsOnField?.main.forEach(cellObjId => {
             const cellId = cellObjId.col + '-' + cellObjId.row;
             const cell = this.findCellById(cellId);
-            if (cell.isFree) {
-                cell.graphics.fillStyle('green');
-            }else{
-                cell.graphics.fillStyle('red');
-            }
+            //if (cell.isFree) {
+            cell.graphics.fillStyle('green');
+            //}
+            // else{
+            //     cell.graphics.fillStyle('red');
+            // }
         });
         ship.cellsOnField?.sup.forEach(cellObjId => {
             const cellId = cellObjId.col + '-' + cellObjId.row;
             const cell = this.findCellById(cellId);
-            if (cell.isFree) {
-                cell.graphics.fillStyle('#a7ffb5');
-            }else{
-                cell.graphics.fillStyle('#ffa7a8');
-            }
+            //if (cell.isFree) {
+            cell.graphics.fillStyle('#a7ffb5');
+            //}
+            // else{
+            //     cell.graphics.fillStyle('#ffa7a8');
+            // }
         });
     }
 
-    renderUpShip(ship: Ship2) {
-        ship.cellsOnField?.main.forEach(cellObjId => {
-            const cellId = cellObjId.col + '-' + cellObjId.row;
-            const cell = this.findCellById(cellId);
+    renderUpShip() {
+        this.shipCells.forEach(cell => {
+            //const cellId = cellObjId.col + '-' + cellObjId.row;
+            //const cell = this.findCellById(cellId);
             if (this.isGreen) {
                 cell.graphics.fillStyle('green');
-            }else{
+            } else {
                 cell.graphics.fillStyle('red');
             }
         });
-        ship.cellsOnField?.sup.forEach(cellObjId => {
-            const cellId = cellObjId.col + '-' + cellObjId.row;
-            const cell = this.findCellById(cellId);
+        this.supCells.forEach(cell => {
+            // const cellId = cellObjId.col + '-' + cellObjId.row;
+            // const cell = this.findCellById(cellId);
             if (this.isGreen) {
                 cell.graphics.fillStyle('#a7ffb5');
-            }else{
+            } else {
                 cell.graphics.fillStyle('#ffa7a8');
             }
         });
@@ -402,6 +471,14 @@ export default class PlayerField2 {
         this.ships.forEach((ship) => {
             this.renderShip(ship);
         });
+    }
+
+    isHasShip(ship: Ship2) {
+        if (this.ships.find(s => s.id === ship.id)) {
+            return true;
+        }
+        console.log('нету коробля на поле!!!!!!!!');
+        return false;
     }
 
     isOnField(ship: Ship2) {
