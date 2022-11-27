@@ -170,14 +170,18 @@ export default class Ship2 {
     if (this.isPointerDown) {
       if (Date.now() - this.timerClick <= this.timeIsClick) {
         if (this.angle === 90) {
-          if (this.x===this.startPos.x&&this.y===this.startPos.y) {
+          if (!this.scene.plField?.isOnField(this)) {
             this.angle = 0;
             this.setOnStart();
+          }else{
+            this.scene.plField?.rotateShip(this);
           }
         }else{
-          if (this.x===this.startPos.x&&this.y===this.startPos.y) {
+          if (!this.scene.plField?.isOnField(this)) {
             this.angle = 90;
             this.setOnStart();
+          }else{
+            this.scene.plField?.rotateShip(this);
           }
         }
       } else {

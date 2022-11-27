@@ -35,7 +35,7 @@ export default class PlayerField2 {
     scene: Scene;
     //fieldMatrix: TCell[][] = [];
     cells: TCell[] = [];
-    readonly arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+    readonly arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     readonly arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     readonly lineWidth = 2;
     step: number;
@@ -70,7 +70,7 @@ export default class PlayerField2 {
         const startY = this.y + this.lineWidth / 2;
         let posX = startX;
         let posY = startY;
-        //const arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
+        //const arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
         //const arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
         for (let i = 0; i < 11; i++) {
@@ -106,6 +106,7 @@ export default class PlayerField2 {
         }
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
+        console.log('cells = ', this.cells);
     }
 
     findCellById(id: string) {
@@ -251,7 +252,7 @@ export default class PlayerField2 {
         //this.clearByShip(ship);
     }
 
-    calcFromStartCell(startCell: string, ship: Ship2) {
+    calcFromStartCell(startCell: string, ship: Ship2, angle: number) {
         //this.clearByShip(ship);
         this.clearAfterMove();
         const startCellColIdx = this.arrCols.findIndex(el => el === startCell.split('-')[0]);
@@ -265,14 +266,15 @@ export default class PlayerField2 {
         for (let i = 0; i < ship.type; i++) {
             if ((colIdx >= 0 && colIdx < this.arrCols.length) && (rowIdx >= 0 && rowIdx < this.arrRows.length)) {
                 cell = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx]);
-                //console.log('cell = ', this.arrCols[colIdx], '||',this.arrRows[rowIdx]);
+                console.log('cell = ', this.arrCols[colIdx], '||',this.arrRows[rowIdx]);
+                console.log(cell);
                 //return;
-                if (ship.angle === 90) {
+                if (angle === 90) {
                     if (rowIdx - 1 >= 0) {
                         const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx - 1]);
                         this.supCells.push(cell2);
                     }
-                    if (rowIdx + 1 < this.arrRows.length - 1) {
+                    if (rowIdx + 1 < this.arrRows.length) {
                         const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx + 1]);
                         this.supCells.push(cell2);
                     }
@@ -286,7 +288,7 @@ export default class PlayerField2 {
                         const cell2 = this.findCellById(this.arrCols[colIdx - 1] + '-' + this.arrRows[rowIdx]);
                         this.supCells.push(cell2);
                     }
-                    if (colIdx + 1 < this.arrCols.length - 1) {
+                    if (colIdx + 1 < this.arrCols.length) {
                         const cell2 = this.findCellById(this.arrCols[colIdx + 1] + '-' + this.arrRows[rowIdx]);
                         this.supCells.push(cell2);
                     }
@@ -303,14 +305,14 @@ export default class PlayerField2 {
         }
 
         if (startCellColIdx >= 0) {
-            if (ship.angle === 90) {
+            if (angle === 90) {
                 const x1 = startCellColIdx - 1;
                 if (x1 >= 0) {
                     this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx]));
                     if (startCellRowIdx - 1 >= 0) {
                         this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx - 1]));
                     }
-                    if (startCellRowIdx + 1 < this.arrRows.length - 1) {
+                    if (startCellRowIdx + 1 < this.arrRows.length) {
                         this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx + 1]));
                     }
                 }
@@ -320,7 +322,7 @@ export default class PlayerField2 {
                     if (startCellRowIdx - 1 >= 0) {
                         this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx - 1]));
                     }
-                    if (startCellRowIdx + 1 < this.arrRows.length - 1) {
+                    if (startCellRowIdx + 1 < this.arrRows.length) {
                         this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx + 1]));
                     }
                 }
@@ -331,17 +333,17 @@ export default class PlayerField2 {
                     if (startCellColIdx - 1 >= 0) {
                         this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y1]));
                     }
-                    if (startCellColIdx + 1 < this.arrCols.length - 1) {
+                    if (startCellColIdx + 1 < this.arrCols.length) {
                         this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y1]));
                     }
                 }
                 const y2 = startCellRowIdx + ship.type;
-                if (y2 < this.arrCols.length - 1) {
+                if (y2 < this.arrCols.length) {
                     this.supCells.push(this.findCellById(this.arrCols[startCellColIdx] + '-' + this.arrRows[y2]));
                     if (startCellColIdx - 1 >= 0) {
                         this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y2]));
                     }
-                    if (startCellColIdx + 1 < this.arrCols.length - 1) {
+                    if (startCellColIdx + 1 < this.arrCols.length) {
                         this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y2]));
                     }
                 }
@@ -350,7 +352,7 @@ export default class PlayerField2 {
 
         //if (cell) {
         const firsCell = this.shipCells[0];
-        if (ship.angle === 0) {
+        if (angle === 0) {
             this.shipPos = {
                 x: firsCell.pos.x0 + ship.bodySprite!.width / 2,
                 y: firsCell.pos.y0 + this.step / 2
@@ -400,7 +402,7 @@ export default class PlayerField2 {
             if ((shipPosStart.x >= cell.pos.x0 && shipPosStart.x <= cell.pos.x1)
                 && (shipPosStart.y >= cell.pos.y0 && shipPosStart.y <= cell.pos.y1)) {
                 //console.log('colligion!!!!!!!!!!!!!!!!!');
-                this.calcFromStartCell(cell.id, ship);
+                this.calcFromStartCell(cell.id, ship, ship.angle);
 
                 //cell.graphics.fillStyle('green');
                 //return;
@@ -413,6 +415,14 @@ export default class PlayerField2 {
         let angle = 0;
         if (ship.angle === 0) {
             angle = 90
+        }
+
+        const startCell = ship.cellsOnField?.main[0].col + '-' + ship.cellsOnField?.main[0].row;
+        this.calcFromStartCell(startCell, ship, angle);
+        if(this.isGreen){
+            console.log('Может повернуть = ',angle);
+        }else{
+            console.log('Не может повернуть = ',angle);
         }
         // const isCanRotate = this.calcFromStartCell({ ...ship.cellsOnField?.main[0], typeShip: ship.type, angle }, ship);
         // if (isCanRotate) {
