@@ -230,6 +230,7 @@ export default class Ship {
   setOnField() {
     console.log('posOnField = ', this.posOnField, '||', initPos);
     if (this.posOnField.x !== initPos.x) {
+      console.log('setOnField');
       this.x = this.posOnField.x;
       this.y = this.posOnField.y;
     } else {
@@ -239,6 +240,7 @@ export default class Ship {
   }
 
   setOnStart() {
+    console.log('setOnStart');
     this.x = this.startPos.x;
     this.y = this.startPos.y;
     this.cellsOnField = null;

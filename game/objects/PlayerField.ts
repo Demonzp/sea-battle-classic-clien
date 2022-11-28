@@ -1,6 +1,8 @@
 import { TPoint } from '../../gameLib/Game';
 import Graphics from '../../gameLib/Graphics';
 import Scene from '../../gameLib/Scene';
+import { setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
+import store from '../../store/store';
 import Ship, { TShips } from './Ship';
 
 type TCellBody = {
@@ -107,6 +109,12 @@ export default class PlayerField2 {
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
         console.log('cells = ', this.cells);
+    }
+
+    parceStore(fleatShema: TShipOnFleatShema[]){
+        fleatShema.forEach(shipShema => {
+            
+        });
     }
 
     findCellById(id: string) {
@@ -227,6 +235,13 @@ export default class PlayerField2 {
             console.log('addShip');
         }
         this.ships.push(ship);
+        store.dispatch(setFleatShema(this.ships.map((ship)=>{
+            return {
+                type: ship.type,
+                angle: ship.angle,
+                startPos: ship.cellsOnField?.main[0].col+'-'+ship.cellsOnField?.main[0].row
+            }
+        })));
         ship.cellsOnField?.main.forEach(cellId => {
             const cell = this.findCellById(cellId.col + '-' + cellId.row);
 
@@ -263,7 +278,7 @@ export default class PlayerField2 {
         //this.clearByShip(ship);
         this.clearAfterMove();
         if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
-            //console.log('this.isGreen = ', this.isGreen);
+            console.log('this.isGreen = ', this.isGreen);
             //if(this.isGreen){
             //this.ships.push(ship);
             //console.log('this.shipPos = ', this.shipPos);

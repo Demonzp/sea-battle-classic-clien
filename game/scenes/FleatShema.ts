@@ -1,4 +1,6 @@
 import Scene from '../../gameLib/Scene';
+import { TShipOnFleatShema } from '../../store/slices/game';
+import store from '../../store/store';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
 
@@ -29,9 +31,46 @@ export default class FleatShema extends Scene{
     const shipTwoOne = new Ship(this, 400, 180, 2);
     const shipTwoTwo = new Ship(this, 500, 220, 2);
     const shipTwoTree = new Ship(this, 400, 240, 2);
+    const shipOneOne = new Ship(this, 390, 290, 1);
+    const shipOneTwo = new Ship(this, 430, 290, 1);
+    const shipOneTree = new Ship(this, 480, 290, 1);
+    const shipOneFour = new Ship(this, 520, 290, 1);
     //shipFour.angle = 40;
-    this.ships.push(shipFour, shipTreeOne, shipTreeTwo, shipTwoOne, shipTwoTwo, shipTwoTree);
+    this.ships.push(
+      shipFour, 
+      shipTreeOne, 
+      shipTreeTwo, 
+      shipTwoOne, 
+      shipTwoTwo, 
+      shipTwoTree,
+      shipOneOne,
+      shipOneTwo,
+      shipOneTree,
+      shipOneFour,
+    );
+    const fleatShema = store.getState().game.fleatShema;
+    this.parserFleatShema(fleatShema);
     //this.ships.push(shipTreeOne);
+  }
+
+  parserFleatShema(fleatShema:TShipOnFleatShema[]){
+    const arrShipId:string[] = [];
+    fleatShema.forEach(shipShema=>{
+      const ship = this.ships.find(s=>{
+        if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
+          return true;
+        }
+
+        return false;
+      });
+
+      if(ship){
+        arrShipId.push(ship.id);
+        ship.angle = shipShema.angle;
+        this.plField?.calcFromStartCell(shipShema.startPos, ship, ship.angle);
+        this.plField?.dropShip(ship);
+      }
+    });
   }
 
   update(delta: number): void {
