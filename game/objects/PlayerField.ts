@@ -1,473 +1,549 @@
-// import { TPoint } from '../../gameLib/Game';
-// import Graphics from '../../gameLib/Graphics';
-// import Scene from '../../gameLib/Scene';
-// import Ship, { TShips } from './Ship';
+import { TPoint } from '../../gameLib/Game';
+import Graphics from '../../gameLib/Graphics';
+import Scene from '../../gameLib/Scene';
+import Ship, { TShips } from './Ship';
 
-// type TCellBody = {
-//   x0: number;
-//   y0: number;
-//   x1: number;
-//   y1: number;
-// }
-
-// type TCellShip = {
-//   id: string;
-//   isMain: boolean;
-// }
-
-// type TCell = {
-//   id: string;
-//   isFree: boolean;
-//   isLive: boolean;
-//   ship: TCellShip|null;
-//   graphics: Graphics;
-//   pos: TCellBody;
-// }
-
-// export type TStartCell = {
-//   col: string;
-//   row: number;
-//   typeShip: TShips;
-//   angle: number;
-// }
-
-export default class PlayerField{
-  
+type TCellBody = {
+    x0: number;
+    y0: number;
+    x1: number;
+    y1: number;
 }
 
-// export default class PlayerField {
-//   scene: Scene;
-//   fieldMatrix: TCell[][] = [];
-//   readonly lineWidth = 2;
-//   step: number;
-//   shipPos: TPoint = { x: 0, y: 0 };
-//   isGreen = false;
-//   x: number;
-//   y: number;
-//   width = 0;
-//   height = 0;
-//   ships: Ship[] = [];
-//   shipCells: TCell[] = [];
-//   supCells: TCell[] = [];
-  
+type TCellShip = {
+    id: string;
+    isMain: boolean;
+}
 
-//   constructor(scene: Scene, x: number, y: number) {
-//     this.scene = scene;
-//     this.x = x;
-//     this.y = y;
-//     const min = Math.min(this.scene.width, this.scene.height);
-//     this.step = (min - this.lineWidth) / 11;
+type TCell = {
+    id: string;
+    isFree: boolean;
+    isLive: boolean;
+    ship: TCellShip | null;
+    graphics: Graphics;
+    pos: TCellBody;
+}
 
-//     this.create();
-//   }
+export type TStartCell = {
+    col: string;
+    row: number;
+    typeShip: TShips;
+    angle: number;
+}
 
-//   create() {
-//     const graphics = this.scene.add.graphics();
-//     //const lineWidth = 2;
-//     graphics.lineWidth(this.lineWidth);
-//     graphics.strokeStyle('#3bb4ff');
-//     //graphics.fillStyle('white');
-//     const startX = this.x + this.lineWidth / 2;
-//     const startY = this.y + this.lineWidth / 2;
-//     let posX = startX;
-//     let posY = startY;
-//     const arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K'];
-//     const arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+export default class PlayerField2 {
+    scene: Scene;
+    //fieldMatrix: TCell[][] = [];
+    cells: TCell[] = [];
+    readonly arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    readonly arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    readonly lineWidth = 2;
+    step: number;
+    shipPos: TPoint = { x: 0, y: 0 };
+    isGreen = false;
+    x: number;
+    y: number;
+    width = 0;
+    height = 0;
+    ships: Ship[] = [];
+    shipCells: TCell[] = [];
+    supCells: TCell[] = [];
 
-//     for (let i = 0; i < 11; i++) {
-//       let rows: TCell[] = [];
-//       for (let j = 0; j < 11; j++) {
-//         if (j > 0 && i > 0) {
-//           const cellGraph = this.scene.add.graphics();
-//           cellGraph.fillStyle('white');
-//           const cell: TCell = {
-//             id: arrCols[i - 1] + '-' + arrRows[j - 1],
-//             isFree: true,
-//             isLive: true,
-//             ship:null,
-//             graphics: cellGraph,
-//             pos: {
-//               x0: posX,
-//               y0: posY,
-//               x1: posX + this.step,
-//               y1: posY + this.step,
-//             }
-//           }
-//           rows.push(cell);
-//           cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
-//         }
-//         graphics.strokeRect(posX, posY, this.step, this.step);
-//         posX += this.step;
 
-//       }
-//       if (i > 0) {
-//         this.fieldMatrix.push(rows);
-//       }
-//       posX = startX;
-//       posY += this.step;
-//     }
-//     // const dot = this.scene.add.graphics();
-//     // dot.fillStyle('black');
-//     // dot.fillRect(this.fieldMatrix[0][0].pos.x0-6/2,this.fieldMatrix[0][0].pos.y0-6/2, 6, 6);
-//     this.width = this.fieldMatrix[0][this.fieldMatrix[0].length - 1].pos.x1;
-//     this.height = this.fieldMatrix[this.fieldMatrix.length - 1][0].pos.y1;
-//     console.log('fieldMatrix = ', this.fieldMatrix);
-//   }
+    constructor(scene: Scene, x: number, y: number) {
+        this.scene = scene;
+        this.x = x;
+        this.y = y;
+        const min = Math.min(this.scene.width, this.scene.height);
+        this.step = (min - this.lineWidth) / 11;
 
-//   clearField(){
-//     for (let i = 0; i < this.fieldMatrix.length; i++) {
+        this.create();
+    }
 
-//       const rows = this.fieldMatrix[i];
-//       for (let j = 0; j < rows.length; j++) {
-//         const cell = rows[j];
-//         if(cell.isFree){
-//           cell.graphics.fillStyle('white');
-//         }
-//       }
-//     }
-//   }
+    create() {
+        const graphics = this.scene.add.graphics();
+        //const lineWidth = 2;
+        graphics.lineWidth(this.lineWidth);
+        graphics.strokeStyle('#3bb4ff');
+        //graphics.fillStyle('white');
+        const startX = this.x + this.lineWidth / 2;
+        const startY = this.y + this.lineWidth / 2;
+        let posX = startX;
+        let posY = startY;
+        //const arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+        //const arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-//   clearFieldByShip(shipId:string){
-//     //this.ships
-//     // for (let i = 0; i < this.fieldMatrix.length; i++) {
+        for (let i = 0; i < 11; i++) {
+            //let rows: TCell[] = [];
+            for (let j = 0; j < 11; j++) {
+                if (j > 0 && i > 0) {
+                    const cellGraph = this.scene.add.graphics();
+                    cellGraph.fillStyle('white');
+                    const cell: TCell = {
+                        id: this.arrCols[i - 1] + '-' + this.arrRows[j - 1],
+                        isFree: true,
+                        isLive: true,
+                        ship: null,
+                        graphics: cellGraph,
+                        pos: {
+                            x0: posX,
+                            y0: posY,
+                            x1: posX + this.step,
+                            y1: posY + this.step,
+                        }
+                    }
+                    this.cells.push(cell);
+                    //rows.push(cell);
+                    cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
+                }
+                graphics.strokeRect(posX, posY, this.step, this.step);
+                posX += this.step;
 
-//     //   const rows = this.fieldMatrix[i];
-//     //   for (let j = 0; j < rows.length; j++) {
-//     //     const cell = rows[j];
-//     //     if(cell.isFree){
-//     //       cell.graphics.fillStyle('white');
-//     //     }else{
-//     //       if(cell.ship!.id===shipId){
-//     //         cell.graphics.fillStyle('white');
-//     //         cell.isFree = true;
-//     //         cell.ship = null;
-//     //       }
-//     //     }
-//     //   }
-//     // }
-//   }
+            }
 
-//   renderMatrix(){
-//     this.fieldMatrix.forEach(rows=>{
-//       rows.forEach(cell=>{
-//         if(!cell.isFree){
-//           if(cell.ship?.isMain){
-//             cell.graphics.fillStyle('green');
-//           }else{
-//             cell.graphics.fillStyle('#ffa7a8');
-//           }
-//         }
-//       });
-//     })
-//   }
+            posX = startX;
+            posY += this.step;
+        }
+        this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
+        this.height = this.cells[this.cells.length - 1].pos.y1;
+        console.log('cells = ', this.cells);
+    }
 
-//   renderShip(){
-//     this.renderMatrix();
+    findCellById(id: string) {
+        //console.log('id = ', id);
+        return this.cells.find(cell => cell.id === id)!;
+    }
 
-//     this.shipCells.forEach(cell => {
-//       if (this.isGreen) {
-//         cell.graphics.fillStyle('green');
-//       } else {
-//         cell.graphics.fillStyle('red');
-//       }
-//     });
+    clearByShip(ship: Ship) {
+        ship.cellsOnField?.main.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            let findedCell = undefined;
+            for (let i = 0; i < this.ships.length; i++) {
+                const s = this.ships[i];
+                findedCell = s.findCell(cellId);
+                if (s.findCell(cellId)) {
+                    break;
+                }
+            }
+            if (!findedCell) {
+                cell.graphics.fillStyle('white');
+                cell.isFree = true;
+                cell.ship = null;
+            }
 
-//     this.supCells.forEach(cell => {
-//       if (this.isGreen) {
-//         cell.graphics.fillStyle('#a7ffb5');
-//         //cell.graphics.fillStyle('green');
-//       } else {
-//         cell.graphics.fillStyle('#ffa7a8');
-//       }
-//     });
+            // if (cell.isFree) {
+            //     cell.graphics.fillStyle('white');
+            // } else {
+            //     if (cell.ship!.id === ship.id) {
+            //         cell.graphics.fillStyle('white');
+            //         cell.isFree = true;
+            //         cell.ship = null;
+            //     } else {
+            //         if (cell.ship?.isMain) {
+            //             cell.graphics.fillStyle('green');
+            //         } else {
+            //             cell.graphics.fillStyle('#a7ffb5');
+            //         }
+            //     }
+            // }
+        });
 
-//   }
+        ship.cellsOnField?.sup.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            let findedCell = undefined;
+            for (let i = 0; i < this.ships.length; i++) {
+                const s = this.ships[i];
+                findedCell = s.findCell(cellId);
+                if (s.findCell(cellId)) {
+                    break;
+                }
+            }
+            if (!findedCell) {
+                cell.graphics.fillStyle('white');
+                cell.isFree = true;
+                cell.ship = null;
+            }
+            // if (cell.isFree) {
+            //     cell.graphics.fillStyle('white');
+            // } else {
+            //     if (cell.ship!.id === ship.id) {
+            //         cell.graphics.fillStyle('white');
+            //         cell.isFree = true;
+            //         cell.ship = null;
+            //     } else {
+            //         if (cell.ship?.isMain) {
+            //             cell.graphics.fillStyle('green');
+            //         } else {
+            //             cell.graphics.fillStyle('#a7ffb5');
+            //         }
+            //     }
+            // }
+        });
+    }
 
-//   calcFromStartCell(startCell: TStartCell, ship: Ship) {
+    clearAfterMove() {
+        this.shipCells.forEach(cell => {
+            if (cell.isFree) {
+                cell.graphics.fillStyle('white');
+            } else {
+                if (cell.ship?.isMain) {
+                    cell.graphics.fillStyle('green');
+                } else {
+                    cell.graphics.fillStyle('#a7ffb5');
+                }
+            }
+        });
 
-//     let x = startCell.j;
-//     let y = startCell.i;
-//     this.isGreen = true;
-//     this.shipCells = [];
-//     this.supCells = [];
-//     //const shipCells = [];
-//     //const supCells = [];
+        this.supCells.forEach(cell => {
+            if (cell.isFree) {
+                cell.graphics.fillStyle('white');
+            } else {
+                if (cell.ship?.isMain) {
+                    cell.graphics.fillStyle('green');
+                } else {
+                    cell.graphics.fillStyle('#a7ffb5');
+                }
+            }
+        });
+    }
 
-//     for (let i = 0; i < startCell.typeShip; i++) {
-//       if ((x >= 0 && x <= 9) && (y >= 0 && y <= 9)) {
-//         if (startCell.angle === 0) {
-//           const cell = this.fieldMatrix[y][x];
-//           if (y - 1 >= 0) {
-//             const cell2 = this.fieldMatrix[y - 1][x];
-//             this.supCells.push(cell2);
-//           }
-//           if (y + 1 <= 9) {
-//             const cell2 = this.fieldMatrix[y + 1][x];
-//             this.supCells.push(cell2);
-//             //supCells.push(this.fieldMatrix[y+1][x]);
-//           }
-//           if (!cell.isFree) {
-//             this.isGreen = false;
-//           }
-//           this.shipCells.push(cell);
-//           x++;
-//         } else {
-//           const cell = this.fieldMatrix[y][x];
-//           if (x - 1 >= 0) {
-//             const cell2 = this.fieldMatrix[y][x - 1];
-//             this.supCells.push(cell2);
-//           }
-//           if (x + 1 <= 9) {
-//             const cell2 = this.fieldMatrix[y][x + 1];
-//             this.supCells.push(cell2);
-//             //supCells.push(this.fieldMatrix[y+1][x]);
-//           }
-//           if (!cell.isFree) {
-//             this.isGreen = false;
-//           }
-//           this.shipCells.push(cell);
-//           y++;
-//         }
-//       } else {
-//         this.isGreen = false;
-//         break;
-//       }
+    addShip(ship: Ship) {
+        if (this.isGreen) {
+            ship.setPosOnField(this.shipPos);
+            ship.setCellsOnField({
+                main: this.shipCells.map(cell => {
+                    return {
+                        col: cell.id.split('-')[0],
+                        row: Number(cell.id.split('-')[1])
+                    }
+                }),
+                sup: this.supCells.map(cell => {
+                    return {
+                        col: cell.id.split('-')[0],
+                        row: Number(cell.id.split('-')[1])
+                    }
+                })
+            });
+            console.log('addShip');
+        }
+        this.ships.push(ship);
+        ship.cellsOnField?.main.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
 
-//     }
+            if (cell.isFree) {
+                cell.graphics.fillStyle('green');
+                cell.isFree = false;
+                cell.ship = {
+                    id: ship.id,
+                    isMain: true
+                }
+            }
 
-//     if (startCell.j >= 0) {
-//       if (startCell.angle === 0) {
-//         const x1 = startCell.j - 1;
-//         if (x1 >= 0) {
-//           this.supCells.push(this.fieldMatrix[y][x1]);
-//           if (y - 1 >= 0) {
-//             this.supCells.push(this.fieldMatrix[y - 1][x1]);
-//           }
-//           if (y + 1 <= 9) {
-//             this.supCells.push(this.fieldMatrix[y + 1][x1]);
-//           }
-//         }
-//         const x2 = startCell.j + ship.type;
-//         if (x2 <= 9) {
-//           this.supCells.push(this.fieldMatrix[y][x2]);
-//           if (y - 1 >= 0) {
-//             this.supCells.push(this.fieldMatrix[y - 1][x2]);
-//           }
-//           if (y + 1 <= 9) {
-//             this.supCells.push(this.fieldMatrix[y + 1][x2]);
-//           }
-//         }
-//       } else {
-//         const y1 = startCell.i - 1;
-//         if (y1 >= 0) {
-//           this.supCells.push(this.fieldMatrix[y1][x]);
-//           if (x - 1 >= 0) {
-//             this.supCells.push(this.fieldMatrix[y1][x - 1]);
-//           }
-//           if (x + 1 <= 9) {
-//             this.supCells.push(this.fieldMatrix[y1][x + 1]);
-//           }
-//         }
-//         const y2 = startCell.i + ship.type;
-//         if (y2 <= 9) {
-//           this.supCells.push(this.fieldMatrix[y2][x]);
-//           if (x - 1 >= 0) {
-//             this.supCells.push(this.fieldMatrix[y2][x - 1]);
-//           }
-//           if (x + 1 <= 9) {
-//             this.supCells.push(this.fieldMatrix[y2][x + 1]);
-//           }
-//         }
-//       }
-//     }
+        });
+        ship.cellsOnField?.sup.forEach(cellId => {
+            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            if (cell.isFree) {
+                cell.graphics.fillStyle('#a7ffb5');
+                cell.isFree = false;
+                cell.ship = {
+                    id: ship.id,
+                    isMain: false
+                }
+            }
+        });
+    }
 
-//     // this.shipCells.forEach(cell => {
-//     //   if (this.isGreen) {
-//     //     cell.graphics.fillStyle('green');
-//     //   } else {
-//     //     cell.graphics.fillStyle('red');
-//     //   }
-//     // });
+    upShip(ship: Ship) {
+        console.log('upShip');
+        this.ships = this.ships.filter(s => s.id !== ship.id);
+        this.clearByShip(ship);
+    }
 
-//     // this.supCells.forEach(cell => {
-//     //   if (this.isGreen) {
-//     //     cell.graphics.fillStyle('#a7ffb5');
-//     //     //cell.graphics.fillStyle('green');
-//     //   } else {
-//     //     cell.graphics.fillStyle('#ffa7a8');
-//     //   }
-//     // });
+    dropShip(ship: Ship) {
+        //this.clearByShip(ship);
+        this.clearAfterMove();
+        if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
+            //console.log('this.isGreen = ', this.isGreen);
+            //if(this.isGreen){
+            //this.ships.push(ship);
+            //console.log('this.shipPos = ', this.shipPos);
+            //ship.setPosOnField(this.shipPos);
+            //this.renderShips();
+            this.addShip(ship);
 
-//     if (startCell.i === -1) {
-//       this.isGreen = false;
-//     }
+            //}
+            ship.setOnField();
+        } else {
+            //console.log('out of field!!');
+            //this.clearByShip(ship);
+            ship.setOnStart();
+        }
+        this.renderShips();
+        //this.clearByShip(ship);
+    }
 
-//     if (this.isGreen) {
-//       console.log('isGreen!!!!');
-//       const cell = this.fieldMatrix[startCell.i][startCell.j];
-//       if (ship.angle === 0) {
-//         this.shipPos = {
-//           x: cell.pos.x0 + ship.bodySprite!.width / 2,
-//           y: cell.pos.y0 + this.step / 2
-//         }
-//       } else {
-//         this.shipPos = {
-//           x: cell.pos.x0 + this.step / 2,
-//           y: cell.pos.y0 + ship.bodySprite!.width / 2,
-//         }
-//       }
-//       //ship.setCellOnField({i:startCell.i,j:startCell.j});
-//       ship.setCellsOnField(this.shipCells.map(cell=>{
-//         return{
-//           col: cell.id.split('-')[0],
-//           row: Number(cell.id.split('-')[1])
-//         }
-//       }));
-//     }
-//     return this.isGreen;
-//   }
+    calcFromStartCell(startCell: string, ship: Ship, angle: number) {
+        //this.clearByShip(ship);
+        this.clearAfterMove();
+        const startCellColIdx = this.arrCols.findIndex(el => el === startCell.split('-')[0]);
+        const startCellRowIdx = this.arrRows.findIndex(el => el === Number(startCell.split('-')[1]));
+        let colIdx = startCellColIdx;
+        let rowIdx = startCellRowIdx;
+        let cell: TCell | null = null;
+        this.isGreen = true;
+        this.shipCells = [];
+        this.supCells = [];
+        for (let i = 0; i < ship.type; i++) {
+            if ((colIdx >= 0 && colIdx < this.arrCols.length) && (rowIdx >= 0 && rowIdx < this.arrRows.length)) {
+                cell = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx]);
+                //console.log('cell = ', this.arrCols[colIdx], '||',this.arrRows[rowIdx]);
+                //console.log(cell);
+                //return;
+                if (angle === 90) {
+                    if (rowIdx - 1 >= 0) {
+                        const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx - 1]);
+                        this.supCells.push(cell2);
+                    }
+                    if (rowIdx + 1 < this.arrRows.length) {
+                        const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx + 1]);
+                        this.supCells.push(cell2);
+                    }
+                    if (!cell.isFree) {
+                        this.isGreen = false;
+                    }
+                    this.shipCells.push(cell);
+                    colIdx++;
+                } else {
+                    if (colIdx - 1 >= 0) {
+                        const cell2 = this.findCellById(this.arrCols[colIdx - 1] + '-' + this.arrRows[rowIdx]);
+                        this.supCells.push(cell2);
+                    }
+                    if (colIdx + 1 < this.arrCols.length) {
+                        const cell2 = this.findCellById(this.arrCols[colIdx + 1] + '-' + this.arrRows[rowIdx]);
+                        this.supCells.push(cell2);
+                    }
+                    if (!cell.isFree) {
+                        this.isGreen = false;
+                    }
+                    this.shipCells.push(cell);
+                    rowIdx++;
+                }
+            } else {
+                this.isGreen = false;
+                break;
+            }
+        }
 
-//   getShip(ship:Ship){
-//     this.clearFieldByShip(ship.id);
-//   }
+        if (startCellColIdx >= 0) {
+            if (angle === 90) {
+                const x1 = startCellColIdx - 1;
+                if (x1 >= 0) {
+                    this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx]));
+                    if (startCellRowIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx - 1]));
+                    }
+                    if (startCellRowIdx + 1 < this.arrRows.length) {
+                        this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx + 1]));
+                    }
+                }
+                const x2 = startCellColIdx + ship.type;
+                if (x2 < this.arrCols.length) {
+                    this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx]));
+                    if (startCellRowIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx - 1]));
+                    }
+                    if (startCellRowIdx + 1 < this.arrRows.length) {
+                        this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx + 1]));
+                    }
+                }
+            } else {
+                const y1 = startCellRowIdx - 1;
+                if (y1 >= 0) {
+                    this.supCells.push(this.findCellById(this.arrCols[startCellColIdx] + '-' + this.arrRows[y1]));
+                    if (startCellColIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y1]));
+                    }
+                    if (startCellColIdx + 1 < this.arrCols.length) {
+                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y1]));
+                    }
+                }
+                const y2 = startCellRowIdx + ship.type;
+                if (y2 < this.arrCols.length) {
+                    this.supCells.push(this.findCellById(this.arrCols[startCellColIdx] + '-' + this.arrRows[y2]));
+                    if (startCellColIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y2]));
+                    }
+                    if (startCellColIdx + 1 < this.arrCols.length) {
+                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y2]));
+                    }
+                }
+            }
+        }
 
-//   colligionShip(ship: Ship) {
-//     //console.log(ship.mainContainer.interactiveRect);
-//     const shipBody = {
-//       x: ship.x,
-//       y: ship.y
-//     };
+        //if (cell) {
+        const firsCell = this.shipCells[0];
+        if (angle === 0) {
+            this.shipPos = {
+                x: firsCell.pos.x0 + ship.bodySprite!.width / 2,
+                y: firsCell.pos.y0 + this.step / 2
+            }
+        } else {
+            this.shipPos = {
+                x: firsCell.pos.x0 + this.step / 2,
+                y: firsCell.pos.y0 + ship.bodySprite!.width / 2,
+            }
+        }
+        //ship.setCellOnField({i:startCell.i,j:startCell.j});
+        // ship.setCellsOnField({
+        //     main: this.shipCells.map(cell => {
+        //         return {
+        //             col: cell.id.split('-')[0],
+        //             row: Number(cell.id.split('-')[1])
+        //         }
+        //     }),
+        //     sup: this.supCells.map(cell => {
+        //         return {
+        //             col: cell.id.split('-')[0],
+        //             row: Number(cell.id.split('-')[1])
+        //         }
+        //     })
+        // });
+        //}
 
-//     let startCell = {
-//       i: -1,
-//       j: -1,
-//       typeShip: ship.type,
-//       angle: ship.angle
-//     };
+        this.renderUpShip();
+    }
 
-//     this.clearField();
+    colligionShip(ship: Ship) {
+        const shipBody = {
+            x: ship.x,
+            y: ship.y
+        };
 
-//     for (let i = 0; i < this.fieldMatrix.length; i++) {
+        for (let i = 0; i < this.cells.length; i++) {
+            const cell = this.cells[i];
+            const shipPosStart = {
+                ...shipBody,
+                x: shipBody.x - this.step / 2 * (ship.type - 1)
+            }
+            if (ship.angle === 90) {
+                shipPosStart.x = shipBody.x;
+                shipPosStart.y = shipBody.y - this.step / 2 * (ship.type - 1)
+            }
+            if ((shipPosStart.x >= cell.pos.x0 && shipPosStart.x <= cell.pos.x1)
+                && (shipPosStart.y >= cell.pos.y0 && shipPosStart.y <= cell.pos.y1)) {
+                //console.log('colligion!!!!!!!!!!!!!!!!!');
+                this.calcFromStartCell(cell.id, ship, ship.angle);
 
-//       const rows = this.fieldMatrix[i];
-//       for (let j = 0; j < rows.length; j++) {
-//         const cell = rows[j];
-//         const shipPosStart = {
-//           ...shipBody,
-//           x: shipBody.x - this.step / 2 * (ship.type - 1)
-//         }
-//         if (startCell.angle === 90) {
-//           shipPosStart.x = shipBody.x;
-//           shipPosStart.y = shipBody.y - this.step / 2 * (ship.type - 1)
-//         }
-//         if ((shipPosStart.x >= cell.pos.x0 && shipPosStart.x <= cell.pos.x1)
-//           && (shipPosStart.y >= cell.pos.y0 && shipPosStart.y <= cell.pos.y1)) {
-//           //console.log('colligion!!!!!!!!!!!!!!!!!');
-//           startCell = {
-//             ...startCell,
-//             i,
-//             j
-//           }
-//           //cell.graphics.fillStyle('green');
-//           //return;
-//           break;
-//         }
-//       }
-//       if (startCell.i >= 0) {
-//         break;
-//       }
-//     }
-//     //this.dropShip(ship);
-//     this.calcFromStartCell(startCell, ship);
-//     this.renderShip();
-//   }
+                //cell.graphics.fillStyle('green');
+                //return;
+                break;
+            }
+        }
+    }
 
-//   rotateShip(ship: Ship){
-//     let angle = 0;
-//     if(ship.angle===0){
-//       angle = 90
-//     }
-//     const isCanRotate = this.calcFromStartCell({...ship.cellsOnField[0],typeShip:ship.type,angle}, ship);
-//     if(isCanRotate){
-//       ship.angle = angle;
-//       this.renderShip();
-//     }
-//     this.dropShip(ship);
-//     //this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle}, ship);
-//   }
+    rotateShip(ship: Ship) {
+        let angle = 0;
+        if (ship.angle === 0) {
+            angle = 90
+        }
 
-//   dropShip(ship: Ship) {
-//     if(!this.isOnField(ship)){
-//       ship.dropShip();
-//       return;
-//     }
-//     this.calcFromStartCell({...ship.cellsOnField[0],typeShip:ship.type,angle:ship.angle},ship);
-//     if (this.isGreen) {
-//       ship.setOnPlayerField(this.shipPos);
-//       const isShip = this.ships.find(s => s.id === ship.id);
-//       if (!isShip) {
-//         this.ships.push(ship);
-//       }
+        const startCell = ship.cellsOnField?.main[0].col + '-' + ship.cellsOnField?.main[0].row;
+        this.calcFromStartCell(startCell, ship, angle);
 
-//       this.shipCells.forEach(cell=>{
-//         cell.isFree = false;
-//         cell.ship = {
-//           id: ship.id,
-//           isMain: true
-//         }
-//       });
+        if (this.isGreen) {
+            ship.angle = angle;
+            this.dropShip(ship);
+            //this.addShip(ship);
+            //ship.setOnField();
+            console.log('Может повернуть = ', angle);
+        } else {
+            console.log('Не может повернуть = ', angle);
+            setTimeout(() => {
+                this.addShip(ship);
+                this.dropShip(ship);
+                //ship.setOnField();
 
-//       this.supCells.forEach(cell=>{
-//         cell.isFree = false;
-//         cell.ship = {
-//           id: ship.id,
-//           isMain: false
-//         }
-//       });
-//       this.renderMatrix();
-//     } else {
-//       ship.dropShip();
-//     }
-//   }
+            }, 100);
+        }
 
-//   isHasShip(ship: Ship) {
-//     if (this.ships.find(s => s.id === ship.id)) {
-//       return true;
-//     }
-//     return false;
-//   }
 
-//   removeShip(ship: Ship) {
-//     this.ships = this.ships.filter(s => s.id !== ship.id);
-//     this.fieldMatrix.forEach(rows=>{
-//       rows.forEach(cell=>{
-//         if(!cell.isFree){
-//           if(cell.ship?.id===ship.id){
-//             cell.isFree = true;
-//             cell.ship = null;
-//             cell.graphics.fillStyle('white');
-//           }
-//         }
-//       });
-//     });
-//     this.clearField();
-//   }
+        // const isCanRotate = this.calcFromStartCell({ ...ship.cellsOnField?.main[0], typeShip: ship.type, angle }, ship);
+        // if (isCanRotate) {
+        //     ship.angle = angle;
+        //     this.renderShip();
+        // }
+        // this.dropShip(ship);
+        //this.calcFromStartCell({...ship.cellOnField,typeShip:ship.type,angle:ship.angle}, ship);
+    }
 
-//   renderShipCells(ship: Ship) {
-//     this.ships.forEach(ship => this.colligionShip(ship));
-//     //this.colligionShip(ship);
-//   }
+    renderShip(ship: Ship) {
+        ship.cellsOnField?.main.forEach(cellObjId => {
+            const cellId = cellObjId.col + '-' + cellObjId.row;
+            const cell = this.findCellById(cellId);
+            //if (cell.isFree) {
+            cell.graphics.fillStyle('green');
+            //}
+            // else{
+            //     cell.graphics.fillStyle('red');
+            // }
+        });
+        ship.cellsOnField?.sup.forEach(cellObjId => {
+            const cellId = cellObjId.col + '-' + cellObjId.row;
+            const cell = this.findCellById(cellId);
+            //if (cell.isFree) {
+            cell.graphics.fillStyle('#a7ffb5');
+            //}
+            // else{
+            //     cell.graphics.fillStyle('#ffa7a8');
+            // }
+        });
+    }
 
-//   isOnField(ship: Ship) {
-//     let shipPosStart = {
-//       y: ship.y,
-//       x: ship.x - this.step / 2 * (ship.type - 1)
-//     }
-//     if ((shipPosStart.x >= this.x && shipPosStart.x <= this.width) && (shipPosStart.y >= this.y && shipPosStart.y <= this.height)) {
-//       return true;
-//     } else {
-//       return false;
-//     }
+    renderUpShip() {
+        this.shipCells.forEach(cell => {
+            //const cellId = cellObjId.col + '-' + cellObjId.row;
+            //const cell = this.findCellById(cellId);
+            if (this.isGreen) {
+                cell.graphics.fillStyle('green');
+            } else {
+                cell.graphics.fillStyle('red');
+            }
+        });
+        this.supCells.forEach(cell => {
+            // const cellId = cellObjId.col + '-' + cellObjId.row;
+            // const cell = this.findCellById(cellId);
+            if (this.isGreen) {
+                cell.graphics.fillStyle('#a7ffb5');
+            } else {
+                cell.graphics.fillStyle('#ffa7a8');
+            }
+        });
+    }
 
-//   }
-// }
+    renderShips() {
+        this.ships.forEach((ship) => {
+            this.renderShip(ship);
+        });
+    }
+
+    isHasShip(ship: Ship) {
+        if (this.ships.find(s => s.id === ship.id)) {
+            return true;
+        }
+        console.log('нету коробля на поле!!!!!!!!');
+        return false;
+    }
+
+    isOnField(ship: Ship) {
+        let shipPosStart = {
+            y: ship.y,
+            x: ship.x - this.step / 2 * (ship.type - 1)
+        }
+        if ((shipPosStart.x >= this.x && shipPosStart.x <= this.width) && (shipPosStart.y >= this.y && shipPosStart.y <= this.height)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+}

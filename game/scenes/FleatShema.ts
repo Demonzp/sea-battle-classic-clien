@@ -1,10 +1,10 @@
 import Scene from '../../gameLib/Scene';
-import PlayerField2 from '../objects/PlayerField2';
-import Ship2 from '../objects/Ship2';
+import PlayerField from '../objects/PlayerField';
+import Ship from '../objects/Ship';
 
 export default class FleatShema extends Scene{
-  plField: PlayerField2|null = null;
-  ships: Ship2[] = [];
+  plField: PlayerField|null = null;
+  ships: Ship[] = [];
   constructor(){
     super('FleatShema');
   }
@@ -19,16 +19,16 @@ export default class FleatShema extends Scene{
       this.ships.forEach(ship=>ship.pointerMove(point));
       //console.log('pointermove');
     });
-    this.plField = new PlayerField2(this, 0,0);
+    this.plField = new PlayerField(this, 0,0);
     // const graphics = this.add.graphics();
     // graphics.fillStyle('#ff0004');
     // graphics.fillRect(300, 400, 5,5);
-    const shipFour = new Ship2(this, 490, 70, 4);
-    const shipTreeOne = new Ship2(this, 430, 120, 3);
-    const shipTreeTwo = new Ship2(this, 520, 160, 3);
-    const shipTwoOne = new Ship2(this, 400, 180, 2);
-    const shipTwoTwo = new Ship2(this, 500, 220, 2);
-    const shipTwoTree = new Ship2(this, 400, 240, 2);
+    const shipFour = new Ship(this, 490, 70, 4);
+    const shipTreeOne = new Ship(this, 430, 120, 3);
+    const shipTreeTwo = new Ship(this, 520, 160, 3);
+    const shipTwoOne = new Ship(this, 400, 180, 2);
+    const shipTwoTwo = new Ship(this, 500, 220, 2);
+    const shipTwoTree = new Ship(this, 400, 240, 2);
     //shipFour.angle = 40;
     this.ships.push(shipFour, shipTreeOne, shipTreeTwo, shipTwoOne, shipTwoTwo, shipTwoTree);
     //this.ships.push(shipTreeOne);

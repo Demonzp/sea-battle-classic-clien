@@ -49,7 +49,7 @@ const GameComp = ()=>{
 
   return(
     //<canvas ref={refCanvas}/>
-    <div style={{position: 'relative'}}>
+    <div className={styles.mainCont}>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
           {

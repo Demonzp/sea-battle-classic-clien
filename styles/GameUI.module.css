@@ -6,6 +6,12 @@
   pointer-events: none;
 }
 
+.mainCont{
+  position: relative;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .contBtns{
   position: absolute;
   pointer-events: auto;
