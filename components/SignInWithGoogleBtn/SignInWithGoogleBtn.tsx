@@ -92,7 +92,7 @@ const SignInWithGoogleBtn: React.FC<Props> = ({onSuccess, isForceShow})=>{
 
     google.accounts.id.initialize({
       client_id: id,
-      auto_select: true,
+      auto_select: false,
       callback: googleCallback,
       cancel_on_tap_outside: false
     });

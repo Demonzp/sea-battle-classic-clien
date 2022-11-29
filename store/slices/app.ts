@@ -1,12 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-const user: TUser = {
-    id: '1',
-    name: 'Petya',
-    firstName: 'Petya',
-    secondName: 'Drisch',
-    email: 'test@gma.com'
-};
+// const user: TUser = {
+//     id: '1',
+//     name: 'Petya',
+//     firstName: 'Petya',
+//     secondName: 'Drisch',
+//     email: 'test@gma.com'
+// };
 
 export type TUser = {
     name: string,
@@ -21,7 +21,7 @@ export interface IApp{
 }
 
 const initialState: IApp = {
-    user
+    user: null
 };
 
 const sliceApp = createSlice({

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
 import useSWR from 'swr';
 import FleatShema from '../../game/scenes/FleatShema';
@@ -10,12 +11,29 @@ import { createGame, setScene } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 
+const fetchGet = async (src: string)=>{
+  try {
+    const res = await axios.get(src);
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
 const GameComp = ()=>{
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game|null>(null);
-  const {gameScene} = useAppSelector(state=>state.game);
+  const {gameScene, fleatShema} = useAppSelector(state=>state.game);
   const dispatch = useAppDispatch();
-//750
+  const {data} = useSWR('http://localhost:4000/', fetchGet);
+
+  useEffect(()=>{
+    if(data){
+      console.log('data2 = ', data);
+    }
+    
+  }, [data]);
+
   useEffect(()=>{
     if(!game){
       //document.addEventListener('pointerdown', ()=>console.log('click on document'))
@@ -60,7 +78,11 @@ const GameComp = ()=>{
             gameScene==='fleatShema'&&
             <button style={{height: 40}} onClick={toShipyard}>Shipyard</button>
           }
-          <button style={{height: 40}}>to battle!</button>
+          {
+            fleatShema.length>=10&&
+            <button style={{height: 40}}>to battle!</button>
+          }
+          
         </div>
       </div>
       <canvas ref={refCanvas}/>
