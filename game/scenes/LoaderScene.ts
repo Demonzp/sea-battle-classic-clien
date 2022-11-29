@@ -139,7 +139,7 @@ export default class LoaderScene extends Scene{
   }
 
   create(){
-    //console.log('render scene!!');
+    console.log('render scene!!');
     //this.add.sprite('second');
     //this.add.sprite('first', 10,0, 40);
     this.scene.start('Shipyard');

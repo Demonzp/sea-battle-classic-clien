@@ -28,7 +28,7 @@ export default class Ship {
   bodySprite: Sprite | null = null;
   detaliSprite: Sprite | null = null;
   gunTowers: GunTower[] = [];
-  isOnDot = false;
+  isOnDot = true;
   isPointerDown = false;
   isRot = false;
   toDot: TPoint = { ...initPos };
@@ -63,6 +63,7 @@ export default class Ship {
   }
 
   create() {
+    console.log('Ship create');
     const lineWidth = 2;
     const min = Math.min(this.scene.width, this.scene.height);
     const step = (min - lineWidth) / 11;
@@ -233,10 +234,10 @@ export default class Ship {
       console.log('setOnField');
       this.x = this.posOnField.x;
       this.y = this.posOnField.y;
+      //console.log(this.mainContainer.x,'||',this.mainContainer.y);
     } else {
       this.setOnStart();
     }
-
   }
 
   setOnStart() {
@@ -275,6 +276,7 @@ export default class Ship {
     if (this.isOnDot) {
       return;
     }
+    //console.log('goToDot!!!');
     const speed = Math.abs(this.speed);
 
     if ((this.x >= this.toDot.x - speed && this.x <= this.toDot.x + speed) && (this.y >= this.toDot.y - speed && this.y <= this.toDot.y + speed)) {
@@ -289,6 +291,8 @@ export default class Ship {
   }
 
   update() {
+    //console.log('id = ', this.id);
+    //console.log(this.angle);
     this.goToDot();
     this.mainContainer.x = this.x;
     this.mainContainer.y = this.y;

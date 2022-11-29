@@ -88,7 +88,7 @@ export default class InputEvent{
     }
 
     const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
-    const sceneId = activeScenes[activeScenes.length-1].id;
+    const sceneId = activeScenes[activeScenes.length-1].key;
 
     this.pointerMoveCallbacks.forEach(objCallback=>{
       if(objCallback.sceneId===sceneId){
@@ -107,7 +107,7 @@ export default class InputEvent{
     }
 
     const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
-    const sceneId = activeScenes[activeScenes.length-1].id;
+    const sceneId = activeScenes[activeScenes.length-1].key;
 
     this.pointerUpCallbacks.forEach(objCallback=>{
       if(objCallback.sceneId===sceneId){

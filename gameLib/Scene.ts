@@ -16,7 +16,7 @@ class Input{
   }
 
   on(event: TInputEvents, handler: (pointer:TPointer)=>void, context?:any): string{
-    const id = this.game.input.on(event, this.scene.id, handler, context);
+    const id = this.game.input.on(event, this.scene.key, handler, context);
     return id;
   }
 
@@ -28,8 +28,8 @@ class Input{
 export default class Scene{
   private _game: Game|null = null;
   private _input: Input|null = null;
-  key: string;
-  id: string = '';
+  key: string = '';
+  //id: string = '';
   canvas: HTMLCanvasElement|null = null;
   ctx: CanvasRenderingContext2D|null = null;
   load = new LoaderManagerScene(this);
@@ -40,8 +40,6 @@ export default class Scene{
   constructor(key?: string){
     if(key){
       this.key = key;
-    }else{
-      this.key = 'Scene';
     }
     
   }
@@ -83,9 +81,12 @@ export default class Scene{
     return this.game.createId();
   }
 
-  baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
+  _baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     this._game = game;
-    this.id = this._game!.createId();
+    if(this.key.length<=0){
+      this.key = this._game!.createId();
+    }
+    
     this.canvas = canvas;
     this.ctx = ctx;
     this._input = new Input(game, this);

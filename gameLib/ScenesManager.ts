@@ -5,9 +5,15 @@ export interface ISceneManager{
   start: (key: string)=>void;
 }
 
+type TSceneInstans = {
+  key: string,
+  sceneInst: typeof Scene
+}
+
 export default class ScenesManager{
   game: Game;
   scenes: Scene[] = [];
+  _registeredScenes: TSceneInstans[] = [];
 
   constructor(game: Game){
     this.game  = game;
@@ -16,7 +22,11 @@ export default class ScenesManager{
   init(scenes:typeof Scene[]):void{
     scenes.forEach((ItemScene)=>{
       const newScene = new ItemScene();
-      newScene.baseInit(this.game, this.game.canvas!, this.game.ctx!);
+      newScene._baseInit(this.game, this.game.canvas!, this.game.ctx!);
+      this._registeredScenes.push({
+        key: newScene.key,
+        sceneInst: ItemScene
+      });
       this.scenes.push(newScene);
     });
     this.scenes[0].init();
@@ -44,8 +54,20 @@ export default class ScenesManager{
     const scene = this.getScene(key);
     if(scene){
       this.setStopAllScenes();
-      scene.create();
-      scene.init();
+      this.scenes = this.scenes.filter(s=>s.key!==key);
+      for (let i = 0; i < this._registeredScenes.length; i++) {
+        if(this._registeredScenes[i].key===key){
+          const ItemScene = this._registeredScenes[i].sceneInst;
+          const newScene = new ItemScene();
+          newScene._baseInit(this.game, this.game.canvas!, this.game.ctx!);
+          newScene.create();
+          newScene.init();
+          this.scenes.push(newScene);
+          break;
+        }
+      }
+      //scene.create();
+      //scene.init();
     }else{
       throw new Error(`Scene by key "${key}" not found!`);
     }

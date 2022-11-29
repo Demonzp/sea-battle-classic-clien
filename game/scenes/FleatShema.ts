@@ -12,6 +12,7 @@ export default class FleatShema extends Scene{
   }
 
   create(): void {
+    console.log('FleatShema create');
     this.input.on('pointerup', ()=>{
       //console.log('pointerup');
       this.ships.forEach(ship=>ship.pointerUp());
@@ -48,12 +49,14 @@ export default class FleatShema extends Scene{
       shipOneTree,
       shipOneFour,
     );
+    //console.log('gameObjects = ', this.add.gameObjects);
     const fleatShema = store.getState().game.fleatShema;
     this.parserFleatShema(fleatShema);
     //this.ships.push(shipTreeOne);
   }
 
   parserFleatShema(fleatShema:TShipOnFleatShema[]){
+    //console.log('fleatShema = ', fleatShema);
     const arrShipId:string[] = [];
     fleatShema.forEach(shipShema=>{
       const ship = this.ships.find(s=>{
@@ -65,9 +68,13 @@ export default class FleatShema extends Scene{
       });
 
       if(ship){
+        //console.log('ship = ', ship);
         arrShipId.push(ship.id);
         ship.angle = shipShema.angle;
         this.plField?.calcFromStartCell(shipShema.startPos, ship, ship.angle);
+        //console.log(this.plField?.isGreen);
+        ship.x = this.plField?.shipPos.x!;
+        ship.y = this.plField?.shipPos.y!;
         this.plField?.dropShip(ship);
       }
     });

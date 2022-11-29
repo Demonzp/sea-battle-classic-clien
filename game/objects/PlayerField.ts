@@ -276,6 +276,7 @@ export default class PlayerField2 {
 
     dropShip(ship: Ship) {
         //this.clearByShip(ship);
+        console.log('dropShip ', ship.isHasPrevPosField(), '||', this.isGreen, '||',(ship.isHasPrevPosField() || this.isGreen) );
         this.clearAfterMove();
         if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
             console.log('this.isGreen = ', this.isGreen);
