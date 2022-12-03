@@ -1,4 +1,6 @@
 import Scene from '../../gameLib/Scene';
+import { setLoadedGame } from '../../store/slices/game';
+import store from '../../store/store';
 
 export default class LoaderScene extends Scene{
   constructor(){
@@ -140,9 +142,10 @@ export default class LoaderScene extends Scene{
 
   create(){
     console.log('render scene!!');
+    store.dispatch(setLoadedGame());
     //this.add.sprite('second');
     //this.add.sprite('first', 10,0, 40);
-    this.scene.start('Shipyard');
+    //this.scene.start('Shipyard');
     //this.scene.start('MainScene');
   }
 }

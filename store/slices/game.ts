@@ -10,12 +10,14 @@ export type TShipOnFleatShema = {
 
 export interface IGame{
   isInitClienGame: boolean;
+  isLoadedGame: boolean;
   gameScene: TGameScenes;
   fleatShema: TShipOnFleatShema[];
 }
 
 const initialState: IGame = {
   isInitClienGame: false,
+  isLoadedGame: false,
   gameScene: 'shipyard',
   fleatShema: [],
 };
@@ -26,6 +28,10 @@ const sliceGame = createSlice({
   reducers:{
     createGame(state){
       state.isInitClienGame = true;
+    },
+
+    setLoadedGame(state){
+      state.isLoadedGame = true;
     },
 
     setScene(state, action: PayloadAction<TGameScenes>){
@@ -42,6 +48,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame } = sliceGame.actions;
 
 export default sliceGame;

@@ -20,23 +20,14 @@ const Home: NextPage = () => {
   const dispath = useAppDispatch();
 
   const onSignIn = (data: TGoogleAuthRes)=>{
-    const googleData = jwtDecode<TGoogleAuthData>(data.credential);
-
-    const tempUser: TUser = {} as TUser;
-    tempUser.name = googleData.name;
-    tempUser.firstName = googleData.given_name;
-    tempUser.secondName = googleData.family_name;
-    tempUser.email = googleData.email;
-    tempUser.id = googleData.sub;
-
-    dispath(setUser(tempUser));
+    dispath(setUser(data));
   };
 
 
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-        <SignInWithGoogleBtn onSuccess={onSignIn} isForceShow={isForceShow}/>
+        {/* <SignInWithGoogleBtn onSuccess={onSignIn} isForceShow={isForceShow}/> */}
         {
           user&&
           <GameComp />

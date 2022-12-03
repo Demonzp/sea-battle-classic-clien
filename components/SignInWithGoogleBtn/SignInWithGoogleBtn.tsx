@@ -75,7 +75,11 @@ type Props = {
 
 const SignInWithGoogleBtn: React.FC<Props> = ({onSuccess, isForceShow})=>{
   const googleButton = useRef<HTMLDivElement>(null);
-  const {data} = useSWR('https://accounts.google.com/gsi/client', loadingScript);
+  const {data} = useSWR('https://accounts.google.com/gsi/client', loadingScript,{
+    revalidateIfStale: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  });
 
   const [isShowGoogle, setIsShowGoogle] = useState(false);
   const [isLoaded, setLoaded] = useState(false);

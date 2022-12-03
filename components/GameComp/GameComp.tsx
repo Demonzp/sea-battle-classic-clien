@@ -1,38 +1,55 @@
-import axios from 'axios';
 import { useEffect, useRef, useState } from 'react';
-import useSWR from 'swr';
 import FleatShema from '../../game/scenes/FleatShema';
 import LoaderScene from '../../game/scenes/LoaderScene';
-import MainScene from '../../game/scenes/MainScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
+import { getUser } from '../../store/actions/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { createGame, setScene } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
-
-const fetchGet = async (src: string)=>{
-  try {
-    const res = await axios.get(src);
-    return res.data;
-  } catch (error) {
-    throw error;
-  }
-}
+import socketInst from '../../utils/socket';
 
 const GameComp = ()=>{
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game|null>(null);
-  const {gameScene, fleatShema} = useAppSelector(state=>state.game);
+  const {gameScene, fleatShema, isLoadedGame} = useAppSelector(state=>state.game);
+  const {initUser,user} = useAppSelector(state=>state.app);
   const dispatch = useAppDispatch();
-  const {data} = useSWR('http://localhost:4000/', fetchGet);
+  console.log('rerender GameComp');
+
+  // useEffect(()=>{
+  //   if(data){
+  //     console.log('data2 = ', data);
+  //   }
+    
+  // }, [data]);
 
   useEffect(()=>{
-    if(data){
-      console.log('data2 = ', data);
+    if(initUser){
+      socketInst.init({path:'/api/socket.io', token:user?.id});
+      socketInst.on('connect', ()=>{
+        toShipyard();
+      });
+      socketInst.on<{data:string}>('loged', (data)=>{
+        console.log('loged = ', data?.data);
+      });
+      socketInst.on('disconnect', (reason)=>{console.log('reason = ', reason)});
     }
-    
-  }, [data]);
+  }, [isLoadedGame]);
+
+  // useEffect(()=>{
+  //   if(initUser){
+  //     socketInst.init({path:'/api/socket.io', token:user?.id});
+  //     socketInst.on('connect', ()=>{console.log('socket connected!!!')});
+  //     socketInst.on('disconnect', (reason)=>{console.log('reason = ', reason)});
+  //   }
+  // }, [initUser]);
+
+  useEffect(()=>{
+    dispatch(getUser());
+    //axios.get('/api');
+  },[]);
 
   useEffect(()=>{
     if(!game){
@@ -65,6 +82,10 @@ const GameComp = ()=>{
     game?.scene.start('Shipyard');
   };
 
+  const toBattle = ()=>{
+    socketInst.emit('to-queue', fleatShema);
+  }
+
   return(
     //<canvas ref={refCanvas}/>
     <div className={styles.mainCont}>
@@ -80,7 +101,7 @@ const GameComp = ()=>{
           }
           {
             fleatShema.length>=10&&
-            <button style={{height: 40}}>to battle!</button>
+            <button style={{height: 40}} onClick={toBattle}>to battle!</button>
           }
           
         </div>
