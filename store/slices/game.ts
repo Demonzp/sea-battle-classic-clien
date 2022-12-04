@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
 
-export type TGameScenes = 'shipyard'|'fleatShema';
+export type TGameScenes = 'queue'|'loading'|'shipyard'|'fleatShema';
 export type TShipOnFleatShema = {
   type: TShips,
   angle: number,
@@ -18,7 +18,7 @@ export interface IGame{
 const initialState: IGame = {
   isInitClienGame: false,
   isLoadedGame: false,
-  gameScene: 'shipyard',
+  gameScene: 'loading',
   fleatShema: [],
 };
 
