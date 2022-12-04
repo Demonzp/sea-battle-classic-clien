@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import Battle from '../../game/scenes/BattleScene';
 import FleatShema from '../../game/scenes/FleatShema';
 import LoaderScene from '../../game/scenes/LoaderScene';
 import Loading from '../../game/scenes/LoadingScene';
@@ -7,7 +8,7 @@ import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { createGame, setScene } from '../../store/slices/game';
+import { IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -31,12 +32,11 @@ const GameComp = () => {
       socketInst.on<{ data: string }>('loged', (data) => {
         console.log('loged = ', data?.data);
       });
-      socketInst.on<{ queue: number }>('to-queue', (data) => {
+      socketInst.on<IQueue>('to-queue', (data) => {
         console.log('to-queue = ', data);
-        dispatch(setScene('queue'));
-        game?.scene.start('Queue');
+        dispatch(setToQueue(data!));
       });
-      socketInst.on<{ queue: number, time: number }>('update-queue', (data) => {
+      socketInst.on<IQueueUpdate>('update-queue', (data) => {
         console.log('update-queue = ', data);
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
@@ -48,6 +48,26 @@ const GameComp = () => {
       setIsShowMainButtons(false);
     } else {
       setIsShowMainButtons(true);
+    }
+
+    switch (gameScene) {
+      case 'fleatShema':
+        game?.scene.start('FleatShema');
+        break;
+      case 'loading':
+        game?.scene.start('Loading');
+        break;
+      case 'queue':
+        game?.scene.start('Queue');
+        break;
+      case 'shipyard':
+        game?.scene.start('Shipyard');
+        break;
+      case 'battle':
+        game?.scene.start('Battle');
+        break;
+      default:
+        break;
     }
   }, [gameScene]);
 
@@ -71,7 +91,7 @@ const GameComp = () => {
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,
         height: 360,
-        scenes: [LoaderScene, Shipyard, FleatShema, Queue, Loading],
+        scenes: [LoaderScene, Shipyard, FleatShema, Queue, Loading, Battle],
       }));
     }
   }, []);
@@ -87,17 +107,17 @@ const GameComp = () => {
 
   const toFleatShema = () => {
     dispatch(setScene('fleatShema'));
-    game?.scene.start('FleatShema');
+    //game?.scene.start('FleatShema');
   };
 
   const toShipyard = () => {
     dispatch(setScene('shipyard'));
-    game?.scene.start('Shipyard');
+    //game?.scene.start('Shipyard');
   };
 
   const toBattle = () => {
     socketInst.emit('to-queue', fleatShema);
-    game?.scene.start('Loading');
+    //game?.scene.start('Loading');
   }
 
   return (

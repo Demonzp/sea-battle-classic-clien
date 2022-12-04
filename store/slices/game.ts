@@ -1,53 +1,92 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
 
-export type TGameScenes = 'queue'|'loading'|'shipyard'|'fleatShema';
+
+export interface IQueueUpdate extends IQueue {
+  time: number;
+}
+
+export interface IQueue {
+  online: number;
+  queue: number;
+};
+
+export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle';
 export type TShipOnFleatShema = {
   type: TShips,
   angle: number,
   startPos: string
 };
 
-export interface IGame{
+export interface IGame {
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
   fleatShema: TShipOnFleatShema[];
+  queue: IQueueUpdate;
 }
 
 const initialState: IGame = {
   isInitClienGame: false,
   isLoadedGame: false,
   gameScene: 'loading',
-  fleatShema: [],
+  fleatShema: [
+    { type: 4, angle: 0, startPos: 'A-7' },
+    { type: 3, angle: 0, startPos: 'A-3' },
+    { type: 3, angle: 0, startPos: 'C-8' },
+    { type: 2, angle: 0, startPos: 'C-5' },
+    { type: 2, angle: 0, startPos: 'C-2' },
+    { type: 2, angle: 0, startPos: 'E-9' },
+    { type: 1, angle: 0, startPos: 'A-1' },
+    { type: 1, angle: 0, startPos: 'E-7' },
+    { type: 1, angle: 0, startPos: 'E-5' },
+    { type: 1, angle: 0, startPos: 'E-3' }
+  ],
+  queue: {
+    time: 0,
+    online: 0,
+    queue: 0
+  }
 };
 
 const sliceGame = createSlice({
   name: 'game',
   initialState,
-  reducers:{
-    createGame(state){
+  reducers: {
+    createGame(state) {
       state.isInitClienGame = true;
     },
 
-    setLoadedGame(state){
+    setLoadedGame(state) {
       state.isLoadedGame = true;
     },
 
-    setScene(state, action: PayloadAction<TGameScenes>){
+    setToQueue(state, action: PayloadAction<IQueue>) {
+      state.gameScene = 'queue';
+      state.queue = {
+        ...state.queue,
+        ...action.payload
+      }
+    },
+
+    updateQueue(state, action: PayloadAction<IQueueUpdate>) {
+      state.queue = action.payload;
+    },
+
+    setScene(state, action: PayloadAction<TGameScenes>) {
       state.gameScene = action.payload;
     },
 
-    setFleatShema(state, action:PayloadAction<TShipOnFleatShema[]>){
+    setFleatShema(state, action: PayloadAction<TShipOnFleatShema[]>) {
       console.log('FleatShema = ', action.payload);
       state.fleatShema = action.payload;
     },
   },
-  extraReducers:(builder)=>{
+  extraReducers: (builder) => {
 
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue } = sliceGame.actions;
 
 export default sliceGame;
