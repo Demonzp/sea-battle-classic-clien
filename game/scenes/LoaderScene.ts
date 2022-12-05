@@ -33,6 +33,7 @@ export default class LoaderScene extends Scene{
     
     this.load.image('shipyard', './assets/shipyard.png');
     this.load.image('shipyard2', './assets/shipyard2.png');
+    this.load.image('cursor-target', './assets/cursor-target.png');
     // this.load.image('second', './assets/fon2.png');
     // this.load.image('first', './assets/logo512.png');
     // this.load.image('second', './assets/fon2.png');

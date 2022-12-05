@@ -26,6 +26,7 @@ export default class GameObject{
   private _y: number;
   private _halfWidth: number;
   private _halfHeight: number;
+  private _alpha = 1;
   zIndex: number = 0;
   center: TPoint;
   private _width: number;
@@ -125,6 +126,18 @@ export default class GameObject{
       x: this.x+this._interactiveBodyRect.x,
       y: this.y+this._interactiveBodyRect.y
     };
+  }
+
+  get alpha(){
+    return this._alpha;
+  }
+
+  set alpha(value: number){
+    if(value>1){
+      this._alpha = 1;
+    }else{
+      this._alpha = Math.abs(value);
+    }
   }
 
   setZindex(val:number){

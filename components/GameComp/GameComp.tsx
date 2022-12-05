@@ -24,23 +24,29 @@ const GameComp = () => {
   console.log('rerender GameComp');
 
   useEffect(() => {
-    if (initUser) {
-      socketInst.init({ path: '/api/socket.io', token: user?.id });
-      socketInst.on('connect', () => {
-        toShipyard();
-      });
-      socketInst.on<{ data: string }>('loged', (data) => {
-        console.log('loged = ', data?.data);
-      });
-      socketInst.on<IQueue>('to-queue', (data) => {
-        console.log('to-queue = ', data);
-        dispatch(setToQueue(data!));
-      });
-      socketInst.on<IQueueUpdate>('update-queue', (data) => {
-        console.log('update-queue = ', data);
-      });
-      socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
+    // if (initUser) {
+    //   socketInst.init({ path: '/api/socket.io', token: user?.id });
+    //   socketInst.on('connect', () => {
+    //     toShipyard();
+    //   });
+    //   socketInst.on<{ data: string }>('loged', (data) => {
+    //     console.log('loged = ', data?.data);
+    //   });
+    //   socketInst.on<IQueue>('to-queue', (data) => {
+    //     console.log('to-queue = ', data);
+    //     dispatch(setToQueue(data!));
+    //   });
+    //   socketInst.on<IQueueUpdate>('update-queue', (data) => {
+    //     console.log('update-queue = ', data);
+    //   });
+    //   socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
+    // }
+    
+    if(isLoadedGame){
+      console.log('isLoadedGame');
+      dispatch(setScene('battle'));
     }
+    
   }, [isLoadedGame]);
 
   useEffect(() => {
@@ -64,6 +70,7 @@ const GameComp = () => {
         game?.scene.start('Shipyard');
         break;
       case 'battle':
+        console.log('scene.start(Battle)');
         game?.scene.start('Battle');
         break;
       default:
@@ -80,13 +87,12 @@ const GameComp = () => {
   // }, [initUser]);
 
   useEffect(() => {
-    dispatch(getUser());
+    //dispatch(getUser());
     //axios.get('/api');
   }, []);
 
   useEffect(() => {
     if (!game) {
-      //document.addEventListener('pointerdown', ()=>console.log('click on document'))
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,

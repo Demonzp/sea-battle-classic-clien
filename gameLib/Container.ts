@@ -53,6 +53,7 @@ export default class Container extends GameObject{
         const prevX = obj.x;
         const prevY = obj.y;
         const prevAngle = obj.angle;
+
         // obj.x = obj.x + this.x;
         // obj.y = obj.y + this.y;
         //const x = obj.x + this.x;
@@ -74,6 +75,7 @@ export default class Container extends GameObject{
         
         //console.log('obj befor = ', obj.x, ' || ', obj.y);
         obj.angle = prevAngle;
+        obj.alpha = obj.alpha*this.alpha;
       }
     });
   }

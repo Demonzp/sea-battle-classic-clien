@@ -47,6 +47,7 @@ export default class Sprite extends GameObject{
       this.scene.ctx?.translate(this.x, this.y);
       this.scene.ctx?.rotate(this.pi*this.angle);
       this.scene.ctx?.translate(-(this.x), -(this.y));
+      this.scene.ctx!.globalAlpha = this.alpha;
       this.scene.ctx?.drawImage(this.image, this.center.x, this.center.y, this.width, this.height);
       
       this.scene.ctx?.restore();

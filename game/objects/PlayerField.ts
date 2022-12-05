@@ -1,9 +1,13 @@
 import { TPoint } from '../../gameLib/Game';
 import Graphics from '../../gameLib/Graphics';
+import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
+import Sprite from '../../gameLib/Sprite';
 import { setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
 import store from '../../store/store';
 import Ship, { TShips } from './Ship';
+
+export type TType = 'player'|'enemy';
 
 type TCellBody = {
     x0: number;
@@ -33,10 +37,11 @@ export type TStartCell = {
     angle: number;
 }
 
-export default class PlayerField2 {
+export default class PlayerField {
     scene: Scene;
     //fieldMatrix: TCell[][] = [];
     cells: TCell[] = [];
+    cellsHead: TCell[] = [];
     readonly arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
     readonly arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     readonly lineWidth = 2;
@@ -50,6 +55,8 @@ export default class PlayerField2 {
     ships: Ship[] = [];
     shipCells: TCell[] = [];
     supCells: TCell[] = [];
+    type: TType = 'player';
+    cursor: Sprite;
 
 
     constructor(scene: Scene, x: number, y: number) {
@@ -58,6 +65,8 @@ export default class PlayerField2 {
         this.y = y;
         const min = Math.min(this.scene.width, this.scene.height);
         this.step = (min - this.lineWidth) / 11;
+        this.cursor = this.scene.add.sprite('cursor-target', 100,100,30,30);
+        this.cursor.alpha = 0;
 
         this.create();
     }
@@ -98,6 +107,7 @@ export default class PlayerField2 {
                     //rows.push(cell);
                     cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
                 }
+                
                 graphics.strokeRect(posX, posY, this.step, this.step);
                 posX += this.step;
 
@@ -109,6 +119,11 @@ export default class PlayerField2 {
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
         console.log('cells = ', this.cells);
+        this.cursor.setZindex(2);
+    }
+
+    setType(type: TType){
+        this.type = type;
     }
 
     parceStore(fleatShema: TShipOnFleatShema[]){
@@ -120,6 +135,17 @@ export default class PlayerField2 {
     findCellById(id: string) {
         //console.log('id = ', id);
         return this.cells.find(cell => cell.id === id)!;
+    }
+
+    pointerMove(pointer:TPointer){
+        if(this.type==='enemy'&&this.isPointOnFiled(pointer)){
+            this.cursor.alpha = 1;
+            this.cursor.x = pointer.x;
+            this.cursor.y = pointer.y;
+            console.log('pointer = ', pointer);
+        }else{
+            this.cursor.alpha = 0;
+        }
     }
 
     clearByShip(ship: Ship) {
@@ -550,16 +576,25 @@ export default class PlayerField2 {
         return false;
     }
 
+    isPointOnFiled(point:TPoint){
+        if ((point.x >= this.x && point.x <= this.width) && (point.y >= this.y && point.y <= this.height)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     isOnField(ship: Ship) {
         let shipPosStart = {
             y: ship.y,
             x: ship.x - this.step / 2 * (ship.type - 1)
         }
-        if ((shipPosStart.x >= this.x && shipPosStart.x <= this.width) && (shipPosStart.y >= this.y && shipPosStart.y <= this.height)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.isPointOnFiled(shipPosStart);
+        // if ((shipPosStart.x >= this.x && shipPosStart.x <= this.width) && (shipPosStart.y >= this.y && shipPosStart.y <= this.height)) {
+        //     return true;
+        // } else {
+        //     return false;
+        // }
     }
 
 }
