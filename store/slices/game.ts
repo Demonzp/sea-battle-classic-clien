@@ -24,6 +24,7 @@ export interface IGame {
   gameScene: TGameScenes;
   fleatShema: TShipOnFleatShema[];
   queue: IQueueUpdate;
+  cursor: 'none'|'auto'|'grab';
 }
 
 const initialState: IGame = {
@@ -31,17 +32,18 @@ const initialState: IGame = {
   isLoadedGame: false,
   gameScene: 'loading',
   fleatShema: [
-    { type: 4, angle: 0, startPos: 'A-7' },
-    { type: 3, angle: 0, startPos: 'A-3' },
-    { type: 3, angle: 0, startPos: 'C-8' },
-    { type: 2, angle: 0, startPos: 'C-5' },
-    { type: 2, angle: 0, startPos: 'C-2' },
-    { type: 2, angle: 0, startPos: 'E-9' },
-    { type: 1, angle: 0, startPos: 'A-1' },
-    { type: 1, angle: 0, startPos: 'E-7' },
-    { type: 1, angle: 0, startPos: 'E-5' },
-    { type: 1, angle: 0, startPos: 'E-3' }
+    // { type: 4, angle: 0, startPos: 'A-7' },
+    // { type: 3, angle: 0, startPos: 'A-3' },
+    // { type: 3, angle: 0, startPos: 'C-8' },
+    // { type: 2, angle: 0, startPos: 'C-5' },
+    // { type: 2, angle: 0, startPos: 'C-2' },
+    // { type: 2, angle: 0, startPos: 'E-9' },
+    // { type: 1, angle: 0, startPos: 'A-1' },
+    // { type: 1, angle: 0, startPos: 'E-7' },
+    // { type: 1, angle: 0, startPos: 'E-5' },
+    // { type: 1, angle: 0, startPos: 'E-3' }
   ],
+  cursor:'auto',
   queue: {
     time: 0,
     online: 0,
@@ -73,6 +75,10 @@ const sliceGame = createSlice({
       state.queue = action.payload;
     },
 
+    setCursor(state, action: PayloadAction<typeof initialState.cursor>){
+      state.cursor = action.payload;
+    },
+
     setScene(state, action: PayloadAction<TGameScenes>) {
       state.gameScene = action.payload;
     },
@@ -87,6 +93,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor } = sliceGame.actions;
 
 export default sliceGame;

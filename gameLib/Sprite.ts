@@ -3,7 +3,6 @@ import Scene from './Scene';
 
 export default class Sprite extends GameObject{
   image: HTMLImageElement|undefined;
-  pi = Math.PI/180;
   constructor(scene: Scene, key:string, x=0, y=0, width?:number, height?:number){
     super(scene, key, 'Sprite', x, y);
     this.image = scene.load.getImage(key);

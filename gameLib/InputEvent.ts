@@ -27,6 +27,8 @@ export default class InputEvent{
 
   constructor(game: Game){
     this.game = game;
+    //this.game.canvas!.addEventListener('touchstart', ()=>{console.log('touchstart')});
+    //this.game.canvas!.addEventListener('pointerdown', ()=>{console.log('touchstart')});
     this.game.canvas!.addEventListener('pointerdown', this.pointerDown.bind(this));
     this.game.canvas!.addEventListener('pointerup', this.pointerUp.bind(this));
     this.game.canvas!.addEventListener('pointermove', this.pointerMove.bind(this));
@@ -148,12 +150,23 @@ export default class InputEvent{
   }
 
   private pointerDown(event: PointerEvent){
+    //console.log('pointerDown');
     const pointer = this.getPointer(event);
 
     const obj = this.getObjFromScene(pointer);
     if(obj){
+      //console.log('pointerDown');
       return obj.onPointerDown(pointer);
     }
+
+    const activeScenes = (this.game.scene as ScenesManager).getActiveScenes();
+    const sceneId = activeScenes[activeScenes.length-1].key;
+
+    this.pointerDownCallbacks.forEach(objCallback=>{
+      if(objCallback.sceneId===sceneId){
+        objCallback.handler(pointer);
+      }
+    });
   }
 
   private getPointer(event: PointerEvent ){

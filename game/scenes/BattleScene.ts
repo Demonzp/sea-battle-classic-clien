@@ -14,7 +14,14 @@ export default class Battle extends Scene{
 
   create(): void {
     console.log('Battle create');
-    this.input.on('pointerup', ()=>{
+    this.input.on('pointerup', (point)=>{
+      //console.log('pointerup');
+      //this.ships.forEach(ship=>ship.pointerUp());
+    });
+
+    this.input.on('pointerdown', (point)=>{
+      //console.log('pointerdown');
+      this.plFieldEnemy?.pointerMove(point);
       //console.log('pointerup');
       //this.ships.forEach(ship=>ship.pointerUp());
     });
@@ -23,6 +30,7 @@ export default class Battle extends Scene{
     const stepX = Math.trunc(this.game.width-(this.plField.width*2));
     this.plFieldEnemy = new PlayerField(this, this.plField.width+stepX,0);
     this.plFieldEnemy.setType('enemy');
+
     this.input.on('pointermove', (point)=>{
       this.plFieldEnemy?.pointerMove(point);
       //this.ships.forEach(ship=>ship.pointerMove(point));

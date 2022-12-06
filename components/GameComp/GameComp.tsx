@@ -18,7 +18,7 @@ const GameComp = () => {
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
-  const { gameScene, fleatShema, isLoadedGame } = useAppSelector(state => state.game);
+  const { gameScene, fleatShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
   const { initUser, user } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   console.log('rerender GameComp');
@@ -128,7 +128,7 @@ const GameComp = () => {
 
   return (
     //<canvas ref={refCanvas}/>
-    <div className={styles.mainCont}>
+    <div className={styles.mainCont} style={{cursor}}>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
           {

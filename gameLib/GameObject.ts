@@ -14,7 +14,7 @@ export type TBodyRect = {
   y:number
 };
 
-export type TGameObjectNames = 'Sprite'|'Container';
+export type TGameObjectNames = 'Sprite'|'Container'|'Text';
 export type TParetGameObject = Scene | Container;
 
 export default class GameObject{
@@ -22,6 +22,7 @@ export default class GameObject{
   name: TGameObjectNames;
   key: string;
   id: string;
+  pi = Math.PI/180;
   private _x: number;
   private _y: number;
   private _halfWidth: number;

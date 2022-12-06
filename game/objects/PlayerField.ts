@@ -1,13 +1,14 @@
 import { TPoint } from '../../gameLib/Game';
 import Graphics from '../../gameLib/Graphics';
+import Text from '../../gameLib/Text';
 import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
-import { setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
+import { setCursor, setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
 import store from '../../store/store';
 import Ship, { TShips } from './Ship';
 
-export type TType = 'player'|'enemy';
+export type TType = 'player' | 'enemy';
 
 type TCellBody = {
     x0: number;
@@ -21,14 +22,30 @@ type TCellShip = {
     isMain: boolean;
 }
 
-type TCell = {
-    id: string;
+interface ICellHead extends ICellBase {
+    text: Text;
+}
+
+interface ICell extends ICellBase {
     isFree: boolean;
     isLive: boolean;
     ship: TCellShip | null;
+}
+
+interface ICellBase {
+    id: string;
     graphics: Graphics;
     pos: TCellBody;
 }
+
+// type TCell = {
+//     id: string;
+//     isFree: boolean;
+//     isLive: boolean;
+//     ship: TCellShip | null;
+//     graphics: Graphics;
+//     pos: TCellBody;
+// }
 
 export type TStartCell = {
     col: string;
@@ -40,10 +57,10 @@ export type TStartCell = {
 export default class PlayerField {
     scene: Scene;
     //fieldMatrix: TCell[][] = [];
-    cells: TCell[] = [];
-    cellsHead: TCell[] = [];
-    readonly arrCols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-    readonly arrRows = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+    cells: ICell[] = [];
+    cellsHead: ICellHead[] = [];
+    readonly arrRows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+    readonly arrCols = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
     readonly lineWidth = 2;
     step: number;
     shipPos: TPoint = { x: 0, y: 0 };
@@ -53,8 +70,8 @@ export default class PlayerField {
     width = 0;
     height = 0;
     ships: Ship[] = [];
-    shipCells: TCell[] = [];
-    supCells: TCell[] = [];
+    shipCells: ICell[] = [];
+    supCells: ICell[] = [];
     type: TType = 'player';
     cursor: Sprite;
 
@@ -65,13 +82,16 @@ export default class PlayerField {
         this.y = y;
         const min = Math.min(this.scene.width, this.scene.height);
         this.step = (min - this.lineWidth) / 11;
-        this.cursor = this.scene.add.sprite('cursor-target', 100,100,30,30);
+        this.cursor = this.scene.add.sprite('cursor-target', 100, 100, 30, 30);
         this.cursor.alpha = 0;
 
         this.create();
     }
 
     create() {
+        //const text = this.scene.add.text('A', 0, 50);
+        //text.fontSize = 30;
+        const fontSize = 26;
         const graphics = this.scene.add.graphics();
         //const lineWidth = 2;
         graphics.lineWidth(this.lineWidth);
@@ -87,11 +107,49 @@ export default class PlayerField {
         for (let i = 0; i < 11; i++) {
             //let rows: TCell[] = [];
             for (let j = 0; j < 11; j++) {
+                if (i > 0 && j === 0) {
+                    const cellGraph = this.scene.add.graphics();
+                    cellGraph.fillStyle('white');
+                    const text = this.scene.add.text(this.arrRows[i - 1], posX + 5, posY + fontSize / 1.1);
+                    text.fontSize = fontSize;
+                    const cell: ICellHead = {
+                        id: this.arrRows[i - 1],
+                        graphics: cellGraph,
+                        text,
+                        pos: {
+                            x0: posX,
+                            y0: posY,
+                            x1: posX + this.step,
+                            y1: posY + this.step,
+                        }
+                    }
+                    this.cellsHead.push(cell);
+                    cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
+                }
+                if (j > 0 && i === 0) {
+                    const cellGraph = this.scene.add.graphics();
+                    cellGraph.fillStyle('white');
+                    const text = this.scene.add.text(String(this.arrCols[j - 1]), posX + 2, posY + fontSize / 1.1);
+                    text.fontSize = fontSize;
+                    const cell: ICellHead = {
+                        id: String(this.arrCols[j - 1]),
+                        graphics: cellGraph,
+                        text,
+                        pos: {
+                            x0: posX,
+                            y0: posY,
+                            x1: posX + this.step,
+                            y1: posY + this.step,
+                        }
+                    }
+                    this.cellsHead.push(cell);
+                    cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
+                }
                 if (j > 0 && i > 0) {
                     const cellGraph = this.scene.add.graphics();
                     cellGraph.fillStyle('white');
-                    const cell: TCell = {
-                        id: this.arrCols[i - 1] + '-' + this.arrRows[j - 1],
+                    const cell: ICell = {
+                        id: this.arrRows[i - 1] + '-' + this.arrCols[j - 1],
                         isFree: true,
                         isLive: true,
                         ship: null,
@@ -107,7 +165,7 @@ export default class PlayerField {
                     //rows.push(cell);
                     cellGraph.fillRect(posX, posY, this.step - this.lineWidth, this.step - this.lineWidth);
                 }
-                
+
                 graphics.strokeRect(posX, posY, this.step, this.step);
                 posX += this.step;
 
@@ -122,13 +180,13 @@ export default class PlayerField {
         this.cursor.setZindex(2);
     }
 
-    setType(type: TType){
+    setType(type: TType) {
         this.type = type;
     }
 
-    parceStore(fleatShema: TShipOnFleatShema[]){
+    parceStore(fleatShema: TShipOnFleatShema[]) {
         fleatShema.forEach(shipShema => {
-            
+
         });
     }
 
@@ -137,20 +195,54 @@ export default class PlayerField {
         return this.cells.find(cell => cell.id === id)!;
     }
 
-    pointerMove(pointer:TPointer){
-        if(this.type==='enemy'&&this.isPointOnFiled(pointer)){
-            this.cursor.alpha = 1;
+    findCellHeadById(id: string) {
+        return this.cellsHead.find(cell => cell.id === id)!;
+    }
+
+    pointerMove(pointer: TPointer) {
+        if (this.type === 'enemy' && this.isPointOnFiled(pointer)) {
+
             this.cursor.x = pointer.x;
             this.cursor.y = pointer.y;
-            console.log('pointer = ', pointer);
-        }else{
-            this.cursor.alpha = 0;
+            if (store.getState().game.cursor !== 'none') {
+                store.dispatch(setCursor('none'));
+                this.cursor.alpha = 1;
+            }
+            this.cellsHead.forEach(cell=>{
+                cell.graphics.fillStyle('white');
+            });
+            this.cells.forEach(cell => {
+                if (
+                    (cell.pos.x0 < pointer.x && cell.pos.x1 > pointer.x) &&
+                    (cell.pos.y0 < pointer.y && cell.pos.y1 > pointer.y)
+                ) {
+                    const row = this.findCellHeadById(cell.id.split('-')[0]);
+                    const col = this.findCellHeadById(cell.id.split('-')[1]);
+                    if(cell.isFree&&cell.isLive){
+                        row.graphics.fillStyle('#a7ffb5');
+                        col.graphics.fillStyle('#a7ffb5');
+                    }else{
+                        row.graphics.fillStyle('red');
+                        col.graphics.fillStyle('red');
+                    }
+                }
+            });
+
+            //console.log('pointer = ', pointer);
+        } else {
+            if (store.getState().game.cursor === 'none') {
+                this.cellsHead.forEach(cell=>{
+                    cell.graphics.fillStyle('white');
+                });
+                store.dispatch(setCursor('auto'));
+                this.cursor.alpha = 0;
+            }
         }
     }
 
     clearByShip(ship: Ship) {
         ship.cellsOnField?.main.forEach(cellId => {
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            const cell = this.findCellById(cellId.row + '-' + cellId.col);
             let findedCell = undefined;
             for (let i = 0; i < this.ships.length; i++) {
                 const s = this.ships[i];
@@ -247,29 +339,29 @@ export default class PlayerField {
             ship.setCellsOnField({
                 main: this.shipCells.map(cell => {
                     return {
-                        col: cell.id.split('-')[0],
-                        row: Number(cell.id.split('-')[1])
+                        row: cell.id.split('-')[0],
+                        col: Number(cell.id.split('-')[1])
                     }
                 }),
                 sup: this.supCells.map(cell => {
                     return {
-                        col: cell.id.split('-')[0],
-                        row: Number(cell.id.split('-')[1])
+                        row: cell.id.split('-')[0],
+                        col: Number(cell.id.split('-')[1])
                     }
                 })
             });
             console.log('addShip');
         }
         this.ships.push(ship);
-        store.dispatch(setFleatShema(this.ships.map((ship)=>{
+        store.dispatch(setFleatShema(this.ships.map((ship) => {
             return {
                 type: ship.type,
                 angle: ship.angle,
-                startPos: ship.cellsOnField?.main[0].col+'-'+ship.cellsOnField?.main[0].row
+                startPos: ship.cellsOnField?.main[0].row + '-' + ship.cellsOnField?.main[0].col
             }
         })));
         ship.cellsOnField?.main.forEach(cellId => {
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            const cell = this.findCellById(cellId.row + '-' + cellId.col);
 
             if (cell.isFree) {
                 cell.graphics.fillStyle('green');
@@ -282,7 +374,7 @@ export default class PlayerField {
 
         });
         ship.cellsOnField?.sup.forEach(cellId => {
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
+            const cell = this.findCellById(cellId.row + '-' + cellId.col);
             if (cell.isFree) {
                 cell.graphics.fillStyle('#a7ffb5');
                 cell.isFree = false;
@@ -302,7 +394,7 @@ export default class PlayerField {
 
     dropShip(ship: Ship) {
         //this.clearByShip(ship);
-        console.log('dropShip ', ship.isHasPrevPosField(), '||', this.isGreen, '||',(ship.isHasPrevPosField() || this.isGreen) );
+        console.log('dropShip ', ship.isHasPrevPosField(), '||', this.isGreen, '||', (ship.isHasPrevPosField() || this.isGreen));
         this.clearAfterMove();
         if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
             console.log('this.isGreen = ', this.isGreen);
@@ -327,41 +419,27 @@ export default class PlayerField {
     calcFromStartCell(startCell: string, ship: Ship, angle: number) {
         //this.clearByShip(ship);
         this.clearAfterMove();
-        const startCellColIdx = this.arrCols.findIndex(el => el === startCell.split('-')[0]);
-        const startCellRowIdx = this.arrRows.findIndex(el => el === Number(startCell.split('-')[1]));
+        const startCellRowIdx = this.arrRows.findIndex(el => el === startCell.split('-')[0]);
+        const startCellColIdx = this.arrCols.findIndex(el => el === Number(startCell.split('-')[1]));
         let colIdx = startCellColIdx;
         let rowIdx = startCellRowIdx;
-        let cell: TCell | null = null;
+        let cell: ICell | null = null;
         this.isGreen = true;
         this.shipCells = [];
         this.supCells = [];
         for (let i = 0; i < ship.type; i++) {
             if ((colIdx >= 0 && colIdx < this.arrCols.length) && (rowIdx >= 0 && rowIdx < this.arrRows.length)) {
-                cell = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx]);
+                cell = this.findCellById(this.arrRows[rowIdx] + '-' + this.arrCols[colIdx]);
                 //console.log('cell = ', this.arrCols[colIdx], '||',this.arrRows[rowIdx]);
                 //console.log(cell);
                 //return;
                 if (angle === 90) {
-                    if (rowIdx - 1 >= 0) {
-                        const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx - 1]);
-                        this.supCells.push(cell2);
-                    }
-                    if (rowIdx + 1 < this.arrRows.length) {
-                        const cell2 = this.findCellById(this.arrCols[colIdx] + '-' + this.arrRows[rowIdx + 1]);
-                        this.supCells.push(cell2);
-                    }
-                    if (!cell.isFree) {
-                        this.isGreen = false;
-                    }
-                    this.shipCells.push(cell);
-                    colIdx++;
-                } else {
                     if (colIdx - 1 >= 0) {
-                        const cell2 = this.findCellById(this.arrCols[colIdx - 1] + '-' + this.arrRows[rowIdx]);
+                        const cell2 = this.findCellById(this.arrRows[rowIdx] + '-' + this.arrCols[colIdx - 1]);
                         this.supCells.push(cell2);
                     }
                     if (colIdx + 1 < this.arrCols.length) {
-                        const cell2 = this.findCellById(this.arrCols[colIdx + 1] + '-' + this.arrRows[rowIdx]);
+                        const cell2 = this.findCellById(this.arrRows[rowIdx] + '-' + this.arrCols[colIdx + 1]);
                         this.supCells.push(cell2);
                     }
                     if (!cell.isFree) {
@@ -369,6 +447,20 @@ export default class PlayerField {
                     }
                     this.shipCells.push(cell);
                     rowIdx++;
+                } else {
+                    if (rowIdx - 1 >= 0) {
+                        const cell2 = this.findCellById(this.arrRows[rowIdx - 1] + '-' + this.arrCols[colIdx]);
+                        this.supCells.push(cell2);
+                    }
+                    if (rowIdx + 1 < this.arrRows.length) {
+                        const cell2 = this.findCellById(this.arrRows[rowIdx + 1] + '-' + this.arrCols[colIdx]);
+                        this.supCells.push(cell2);
+                    }
+                    if (!cell.isFree) {
+                        this.isGreen = false;
+                    }
+                    this.shipCells.push(cell);
+                    colIdx++;
                 }
             } else {
                 this.isGreen = false;
@@ -378,45 +470,45 @@ export default class PlayerField {
 
         if (startCellColIdx >= 0) {
             if (angle === 90) {
-                const x1 = startCellColIdx - 1;
+                const x1 = startCellRowIdx - 1;
                 if (x1 >= 0) {
-                    this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx]));
-                    if (startCellRowIdx - 1 >= 0) {
-                        this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx - 1]));
+                    this.supCells.push(this.findCellById(this.arrRows[x1] + '-' + this.arrCols[startCellColIdx]));
+                    if (startCellColIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrRows[x1] + '-' + this.arrCols[startCellColIdx - 1]));
                     }
-                    if (startCellRowIdx + 1 < this.arrRows.length) {
-                        this.supCells.push(this.findCellById(this.arrCols[x1] + '-' + this.arrRows[startCellRowIdx + 1]));
+                    if (startCellColIdx + 1 < this.arrCols.length) {
+                        this.supCells.push(this.findCellById(this.arrRows[x1] + '-' + this.arrCols[startCellColIdx + 1]));
                     }
                 }
-                const x2 = startCellColIdx + ship.type;
-                if (x2 < this.arrCols.length) {
-                    this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx]));
-                    if (startCellRowIdx - 1 >= 0) {
-                        this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx - 1]));
+                const x2 = startCellRowIdx + ship.type;
+                if (x2 < this.arrRows.length) {
+                    this.supCells.push(this.findCellById(this.arrRows[x2] + '-' + this.arrCols[startCellColIdx]));
+                    if (startCellColIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrRows[x2] + '-' + this.arrCols[startCellColIdx - 1]));
                     }
-                    if (startCellRowIdx + 1 < this.arrRows.length) {
-                        this.supCells.push(this.findCellById(this.arrCols[x2] + '-' + this.arrRows[startCellRowIdx + 1]));
+                    if (startCellColIdx + 1 < this.arrCols.length) {
+                        this.supCells.push(this.findCellById(this.arrRows[x2] + '-' + this.arrCols[startCellColIdx + 1]));
                     }
                 }
             } else {
-                const y1 = startCellRowIdx - 1;
+                const y1 = startCellColIdx - 1;
                 if (y1 >= 0) {
-                    this.supCells.push(this.findCellById(this.arrCols[startCellColIdx] + '-' + this.arrRows[y1]));
-                    if (startCellColIdx - 1 >= 0) {
-                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y1]));
+                    this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx] + '-' + this.arrCols[y1]));
+                    if (startCellRowIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx - 1] + '-' + this.arrCols[y1]));
                     }
-                    if (startCellColIdx + 1 < this.arrCols.length) {
-                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y1]));
+                    if (startCellRowIdx + 1 < this.arrRows.length) {
+                        this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx + 1] + '-' + this.arrCols[y1]));
                     }
                 }
-                const y2 = startCellRowIdx + ship.type;
+                const y2 = startCellColIdx + ship.type;
                 if (y2 < this.arrCols.length) {
-                    this.supCells.push(this.findCellById(this.arrCols[startCellColIdx] + '-' + this.arrRows[y2]));
-                    if (startCellColIdx - 1 >= 0) {
-                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx - 1] + '-' + this.arrRows[y2]));
+                    this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx] + '-' + this.arrCols[y2]));
+                    if (startCellRowIdx - 1 >= 0) {
+                        this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx - 1] + '-' + this.arrCols[y2]));
                     }
-                    if (startCellColIdx + 1 < this.arrCols.length) {
-                        this.supCells.push(this.findCellById(this.arrCols[startCellColIdx + 1] + '-' + this.arrRows[y2]));
+                    if (startCellRowIdx + 1 < this.arrCols.length) {
+                        this.supCells.push(this.findCellById(this.arrRows[startCellRowIdx + 1] + '-' + this.arrCols[y2]));
                     }
                 }
             }
@@ -489,7 +581,7 @@ export default class PlayerField {
             angle = 90
         }
 
-        const startCell = ship.cellsOnField?.main[0].col + '-' + ship.cellsOnField?.main[0].row;
+        const startCell = ship.cellsOnField?.main[0].row + '-' + ship.cellsOnField?.main[0].col;
         this.calcFromStartCell(startCell, ship, angle);
 
         if (this.isGreen) {
@@ -520,7 +612,7 @@ export default class PlayerField {
 
     renderShip(ship: Ship) {
         ship.cellsOnField?.main.forEach(cellObjId => {
-            const cellId = cellObjId.col + '-' + cellObjId.row;
+            const cellId = cellObjId.row + '-' + cellObjId.col;
             const cell = this.findCellById(cellId);
             //if (cell.isFree) {
             cell.graphics.fillStyle('green');
@@ -530,7 +622,7 @@ export default class PlayerField {
             // }
         });
         ship.cellsOnField?.sup.forEach(cellObjId => {
-            const cellId = cellObjId.col + '-' + cellObjId.row;
+            const cellId = cellObjId.row + '-' + cellObjId.col;
             const cell = this.findCellById(cellId);
             //if (cell.isFree) {
             cell.graphics.fillStyle('#a7ffb5');
@@ -576,7 +668,7 @@ export default class PlayerField {
         return false;
     }
 
-    isPointOnFiled(point:TPoint){
+    isPointOnFiled(point: TPoint) {
         if ((point.x >= this.x && point.x <= this.width) && (point.y >= this.y && point.y <= this.height)) {
             return true;
         } else {

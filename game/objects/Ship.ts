@@ -8,7 +8,7 @@ import GunTower from './GunTower';
 
 export type TShips = 4 | 3 | 2 | 1;
 
-type TCellObjId = { col: string, row: number };
+type TCellObjId = { col: number, row: string };
 type TCells = { main: TCellObjId[], sup: TCellObjId[] };
 
 const initPos = {

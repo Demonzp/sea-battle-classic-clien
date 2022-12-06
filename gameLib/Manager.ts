@@ -4,6 +4,7 @@ import GameObject from './GameObject';
 import Graphics from './Graphics';
 import Scene from './Scene';
 import Sprite from './Sprite';
+import Text from './Text';
 
 export default class Manager{
   scene: Scene;
@@ -16,6 +17,11 @@ export default class Manager{
   graphics(): Graphics{
     //console.log('register graphics');
     return new Graphics(this.scene);
+  }
+
+  text(text:string, x?:number, y?:number, width?:number): Text{
+    return new Text(this.scene, text, x, y, width);
+    //this._sprite(scene, key, x, y);
   }
 
   sprite(key:string, x?:number, y?:number, width?:number, height?:number): Sprite{
