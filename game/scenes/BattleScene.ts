@@ -1,4 +1,5 @@
 import Scene from '../../gameLib/Scene';
+import { TShipOnFleatShema } from '../../store/slices/game';
 import store from '../../store/store';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
@@ -33,12 +34,10 @@ export default class Battle extends Scene{
 
     this.input.on('pointermove', (point)=>{
       this.plFieldEnemy?.pointerMove(point);
-      //this.ships.forEach(ship=>ship.pointerMove(point));
+      this.ships.forEach(ship=>ship.setTarget(point));
       //console.log('pointermove');
     });
-    // const graphics = this.add.graphics();
-    // graphics.fillStyle('#ff0004');
-    // graphics.fillRect(300, 400, 5,5);
+
     const shipFour = new Ship(this, 0, 0, 4);
     const shipTreeOne = new Ship(this, 0, 0, 3);
     const shipTreeTwo = new Ship(this, 0, 0, 3);
@@ -64,10 +63,37 @@ export default class Battle extends Scene{
     );
     //console.log('gameObjects = ', this.add.gameObjects);
     const fleatShema = store.getState().game.fleatShema;
-    //this.parserFleatShema(fleatShema);
+    this.parserFleatShema(fleatShema);
+  }
+
+  parserFleatShema(fleatShema:TShipOnFleatShema[]){
+    //console.log('fleatShema = ', fleatShema);
+    const arrShipId:string[] = [];
+    fleatShema.forEach(shipShema=>{
+      const ship = this.ships.find(s=>{
+        if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
+          return true;
+        }
+
+        return false;
+      });
+
+      if(ship){
+        //console.log('ship = ', ship);
+        arrShipId.push(ship.id);
+        ship.angle = shipShema.angle;
+        this.plField?.calcFromStartCell(shipShema.startPos, ship, ship.angle);
+        //console.log(this.plField?.isGreen);
+        ship.x = this.plField?.shipPos.x!;
+        ship.y = this.plField?.shipPos.y!;
+        this.plField?.dropShip(ship);
+      }
+    });
+    this.plField?.clearField();
+    this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
   }
 
   update(): void {
-
+    this.ships.forEach(ship=>ship.update());
   }
 }

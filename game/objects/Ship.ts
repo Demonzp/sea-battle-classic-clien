@@ -33,6 +33,8 @@ export default class Ship {
   isRot = false;
   toDot: TPoint = { ...initPos };
   posOnField: TPoint = { ...initPos };
+  targetPos: TPoint = {...initPos};
+  isOnTarget = true;
   cellsOnField: TCells | null = null;
   startPos: TPoint;
   speed = 4;
@@ -83,7 +85,7 @@ export default class Ship {
         ];
         for (let i = 0; i < arrPosGuns.length; i++) {
           const gunPos = arrPosGuns[i];
-          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 4, gunPos.angle, this.scale);
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, this, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
@@ -103,7 +105,7 @@ export default class Ship {
         ];
         for (let i = 0; i < arrPosGuns2.length; i++) {
           const gunPos = arrPosGuns2[i];
-          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 3, gunPos.angle, this.scale);
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, this, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
@@ -121,7 +123,7 @@ export default class Ship {
         ];
         for (let i = 0; i < arrPosGuns3.length; i++) {
           const gunPos = arrPosGuns3[i];
-          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 2, gunPos.angle, this.scale);
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, this, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
@@ -138,7 +140,7 @@ export default class Ship {
         ];
         for (let i = 0; i < arrPosGuns4.length; i++) {
           const gunPos = arrPosGuns4[i];
-          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, 1, gunPos.angle, this.scale);
+          const gunTower = new GunTower(this.scene, gunPos.x, gunPos.y, this, gunPos.angle, this.scale);
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
@@ -226,6 +228,12 @@ export default class Ship {
       this.y = point.y + this.dy;
       this.scene.plField?.colligionShip(this);
     }
+  }
+
+  setTarget(point: TPointer){
+    this.isOnTarget = false;
+    this.targetPos.x = point.x;
+    this.targetPos.y = point.y;
   }
 
   setOnField() {

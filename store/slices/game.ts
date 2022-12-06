@@ -32,16 +32,16 @@ const initialState: IGame = {
   isLoadedGame: false,
   gameScene: 'loading',
   fleatShema: [
-    // { type: 4, angle: 0, startPos: 'A-7' },
-    // { type: 3, angle: 0, startPos: 'A-3' },
-    // { type: 3, angle: 0, startPos: 'C-8' },
-    // { type: 2, angle: 0, startPos: 'C-5' },
-    // { type: 2, angle: 0, startPos: 'C-2' },
-    // { type: 2, angle: 0, startPos: 'E-9' },
-    // { type: 1, angle: 0, startPos: 'A-1' },
-    // { type: 1, angle: 0, startPos: 'E-7' },
-    // { type: 1, angle: 0, startPos: 'E-5' },
-    // { type: 1, angle: 0, startPos: 'E-3' }
+    { type: 4, angle: 0, startPos: 'A-7' },
+    { type: 3, angle: 0, startPos: 'A-3' },
+    { type: 3, angle: 0, startPos: 'C-8' },
+    { type: 2, angle: 0, startPos: 'C-5' },
+    { type: 2, angle: 0, startPos: 'C-2' },
+    { type: 2, angle: 0, startPos: 'E-9' },
+    { type: 1, angle: 0, startPos: 'A-1' },
+    { type: 1, angle: 0, startPos: 'E-7' },
+    { type: 1, angle: 0, startPos: 'E-5' },
+    { type: 1, angle: 0, startPos: 'E-3' }
   ],
   cursor:'auto',
   queue: {
@@ -84,7 +84,7 @@ const sliceGame = createSlice({
     },
 
     setFleatShema(state, action: PayloadAction<TShipOnFleatShema[]>) {
-      console.log('FleatShema = ', action.payload);
+      //console.log('FleatShema = ', action.payload);
       state.fleatShema = action.payload;
     },
   },

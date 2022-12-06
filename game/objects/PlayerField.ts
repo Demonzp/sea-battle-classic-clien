@@ -180,14 +180,12 @@ export default class PlayerField {
         this.cursor.setZindex(2);
     }
 
-    setType(type: TType) {
-        this.type = type;
+    clearField(){
+        this.cells.forEach(cell=>cell.graphics.fillStyle('white'));
     }
 
-    parceStore(fleatShema: TShipOnFleatShema[]) {
-        fleatShema.forEach(shipShema => {
-
-        });
+    setType(type: TType) {
+        this.type = type;
     }
 
     findCellById(id: string) {

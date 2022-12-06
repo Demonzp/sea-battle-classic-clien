@@ -45,6 +45,7 @@ const GameComp = () => {
     if(isLoadedGame){
       console.log('isLoadedGame');
       dispatch(setScene('battle'));
+      //dispatch(setScene('fleatShema'));
     }
     
   }, [isLoadedGame]);
