@@ -7,7 +7,7 @@ class SocketInst{
         this.socket = io(url, {path,auth:{token}});
     }
 
-    on<T>(event:string,callback:(args?:T)=>void){
+    on<T>(event:string,callback:(args:T)=>void){
         this.socket?.on(event, callback);
     }
 

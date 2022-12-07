@@ -31,6 +31,8 @@ interface ICell extends ICellBase {
     isFree: boolean;
     isLive: boolean;
     ship: TCellShip | null;
+    spriteFree: Sprite;
+    spriteShip: Sprite;
 }
 
 interface ICellBase {
@@ -148,6 +150,11 @@ export default class PlayerField {
                 }
                 if (j > 0 && i > 0) {
                     const cellGraph = this.scene.add.graphics();
+                    const half = this.step/2;
+                    const spriteFree = this.scene.add.sprite('shot-cell', posX+half,posY+half,this.step);
+                    spriteFree.alpha = 0;
+                    const spriteShip = this.scene.add.sprite('shot-cell-ship', posX+half,posY+half,this.step);
+                    spriteShip.alpha = 0;
                     cellGraph.fillStyle('white');
                     const cell: ICell = {
                         id: this.arrRows[i - 1] + '-' + this.arrCols[j - 1],
@@ -155,6 +162,8 @@ export default class PlayerField {
                         isLive: true,
                         ship: null,
                         graphics: cellGraph,
+                        spriteFree,
+                        spriteShip,
                         pos: {
                             x0: posX,
                             y0: posY,
@@ -179,6 +188,10 @@ export default class PlayerField {
         this.height = this.cells[this.cells.length - 1].pos.y1;
         console.log('cells = ', this.cells);
         this.cursor.setZindex(2);
+    }
+
+    parseServerData(){
+
     }
 
     clearField(){

@@ -7,8 +7,9 @@ import Queue from '../../game/scenes/QueueScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
+import { initGame } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IGameServerState, IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
+import { IGameServerStateRes, IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -35,13 +36,18 @@ const GameComp = () => {
       });
       socketInst.on<IQueue>('to-queue', (data) => {
         console.log('to-queue = ', data);
-        dispatch(setToQueue(data!));
+        dispatch(setToQueue(data));
+      });
+      socketInst.on<IQueue>('to-queue', (data) => {
+        console.log('to-queue = ', data);
+        dispatch(setToQueue(data));
       });
       socketInst.on<IQueueUpdate>('update-queue', (data) => {
         console.log('update-queue = ', data);
       });
-      socketInst.on<IGameServerState>('init-game', (data) => {
+      socketInst.on<IGameServerStateRes>('init-game', (data) => {
         console.log('init-game = ', data);
+        dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
     }

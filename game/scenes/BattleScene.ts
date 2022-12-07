@@ -94,6 +94,10 @@ export default class Battle extends Scene{
     this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
   }
 
+  // parseField(){
+  //   this.plField
+  // }
+
   update(): void {
     this.ships.forEach(ship=>ship.update());
   }

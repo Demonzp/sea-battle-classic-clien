@@ -1,15 +1,25 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
+import { initGame } from '../actions/game';
 
 export type TEnemy = {
   id: string;
   name: string;
 }
 
-export interface IGameServerState{
+export interface IGameServerStateParseRes extends IGameServerStateBase{
+  whoStep: typeof initialState.whoStep;
+}
+
+export interface IGameServerStateRes extends IGameServerStateBase{
+  whoStep: string;
+}
+
+export interface IGameServerStateBase{
   id: string;
   cells: TFieldShemaCell [];
   whoStep: string;
+  fleatShema: TShipOnFleatShema [];
   enemyCells: TFieldShemaCell [];
   enemyShips: [];
   timeToBegin: number;
@@ -34,22 +44,31 @@ export type TShipOnFleatShema = {
 
 export type TFieldShemaCell = {
   id: string;
-  isLive: true;
-  isFree: false;
+  isLive: boolean;
+  isFree: boolean;
 };
 
 export interface IGame {
+  id: string;
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
   fleatShema: TShipOnFleatShema[];
+  fieldShema: TFieldShemaCell[];
   fieldShemaEnemy: TFieldShemaCell[];
   queue: IQueueUpdate;
   cursor: 'none'|'auto'|'grab';
   whoStep: 'you'|'enemy';
+  isLoaded: boolean;
+  timeToBegin: number;
+  enemyInfo: TEnemy|null;
 }
 
 const initialState: IGame = {
+  id: '',
+  isLoaded: false,
+  enemyInfo: null,
+  timeToBegin: 0,
   isInitClienGame: false,
   isLoadedGame: false,
   gameScene: 'loading',
@@ -66,6 +85,7 @@ const initialState: IGame = {
     { type: 1, angle: 0, startPos: 'E-3' }
   ],
   fieldShemaEnemy:[],
+  fieldShema:[],
   cursor:'auto',
   queue: {
     time: 0,
@@ -113,7 +133,18 @@ const sliceGame = createSlice({
     },
   },
   extraReducers: (builder) => {
-
+    builder.addCase(initGame.fulfilled, (state, {payload})=>{
+      console.log('getUser.fulfilled = ', payload);
+      state.whoStep = payload.whoStep;
+      state.id = payload.id;
+      state.enemyInfo = payload.enemyInfo;
+      state.fieldShema = payload.cells;
+      state.fieldShemaEnemy = payload.enemyCells;
+      state.timeToBegin = payload.timeToBegin;
+      state.isLoaded = true;
+      state.gameScene = 'battle';
+      //state.initUser = true;
+  });
   }
 });
 
