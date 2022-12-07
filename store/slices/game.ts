@@ -1,6 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
 
+export type TEnemy = {
+  id: string;
+  name: string;
+}
+
+export interface IGameServerState{
+  id: string;
+  cells: TFieldShemaCell [];
+  whoStep: string;
+  enemyCells: TFieldShemaCell [];
+  enemyShips: [];
+  timeToBegin: number;
+  enemyInfo: TEnemy;
+}
 
 export interface IQueueUpdate extends IQueue {
   time: number;
@@ -13,9 +27,15 @@ export interface IQueue {
 
 export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle';
 export type TShipOnFleatShema = {
-  type: TShips,
-  angle: number,
-  startPos: string
+  type: TShips;
+  angle: number;
+  startPos: string;
+};
+
+export type TFieldShemaCell = {
+  id: string;
+  isLive: true;
+  isFree: false;
 };
 
 export interface IGame {
@@ -23,8 +43,10 @@ export interface IGame {
   isLoadedGame: boolean;
   gameScene: TGameScenes;
   fleatShema: TShipOnFleatShema[];
+  fieldShemaEnemy: TFieldShemaCell[];
   queue: IQueueUpdate;
   cursor: 'none'|'auto'|'grab';
+  whoStep: 'you'|'enemy';
 }
 
 const initialState: IGame = {
@@ -43,12 +65,14 @@ const initialState: IGame = {
     { type: 1, angle: 0, startPos: 'E-5' },
     { type: 1, angle: 0, startPos: 'E-3' }
   ],
+  fieldShemaEnemy:[],
   cursor:'auto',
   queue: {
     time: 0,
     online: 0,
     queue: 0
-  }
+  },
+  whoStep: 'enemy',
 };
 
 const sliceGame = createSlice({

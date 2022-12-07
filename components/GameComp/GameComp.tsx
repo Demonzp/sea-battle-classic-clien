@@ -8,7 +8,7 @@ import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
+import { IGameServerState, IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -19,34 +19,38 @@ const GameComp = () => {
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
   const { gameScene, fleatShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
-  const { initUser, user } = useAppSelector(state => state.app);
+  const { initUser, user, isConnect } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   console.log('rerender GameComp');
 
   useEffect(() => {
-    // if (initUser) {
-    //   socketInst.init({ path: '/api/socket.io', token: user?.id });
-    //   socketInst.on('connect', () => {
-    //     toShipyard();
-    //   });
-    //   socketInst.on<{ data: string }>('loged', (data) => {
-    //     console.log('loged = ', data?.data);
-    //   });
-    //   socketInst.on<IQueue>('to-queue', (data) => {
-    //     console.log('to-queue = ', data);
-    //     dispatch(setToQueue(data!));
-    //   });
-    //   socketInst.on<IQueueUpdate>('update-queue', (data) => {
-    //     console.log('update-queue = ', data);
-    //   });
-    //   socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
-    // }
-    
-    if(isLoadedGame){
-      console.log('isLoadedGame');
-      dispatch(setScene('battle'));
-      //dispatch(setScene('fleatShema'));
+    if (initUser) {
+      socketInst.init({ path: '/api/socket.io', token: user?.id });
+      socketInst.on('connect', () => {
+        //toShipyard();
+      });
+      socketInst.on<{ data: string }>('loged', (data) => {
+        toShipyard();
+        console.log('loged = ', data?.data);
+      });
+      socketInst.on<IQueue>('to-queue', (data) => {
+        console.log('to-queue = ', data);
+        dispatch(setToQueue(data!));
+      });
+      socketInst.on<IQueueUpdate>('update-queue', (data) => {
+        console.log('update-queue = ', data);
+      });
+      socketInst.on<IGameServerState>('init-game', (data) => {
+        console.log('init-game = ', data);
+      });
+      socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
     }
+    
+    // if(isLoadedGame){
+    //   console.log('isLoadedGame');
+    //   //dispatch(setScene('battle'));
+    //   dispatch(setScene('shipyard'));
+    // }
     
   }, [isLoadedGame]);
 
@@ -88,7 +92,7 @@ const GameComp = () => {
   // }, [initUser]);
 
   useEffect(() => {
-    //dispatch(getUser());
+    dispatch(getUser());
     //axios.get('/api');
   }, []);
 

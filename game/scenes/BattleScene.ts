@@ -16,6 +16,7 @@ export default class Battle extends Scene{
   create(): void {
     console.log('Battle create');
     this.input.on('pointerup', (point)=>{
+      this.plFieldEnemy?.pointerUp(point);
       //console.log('pointerup');
       //this.ships.forEach(ship=>ship.pointerUp());
     });

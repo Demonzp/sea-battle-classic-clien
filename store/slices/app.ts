@@ -3,8 +3,11 @@ import jwtDecode from 'jwt-decode';
 import { TGoogleAuthData, TGoogleAuthRes } from '../../components/SignInWithGoogleBtn/SignInWithGoogleBtn';
 import { getUser } from '../actions/app';
 
+const between = (min:number, max:number)=>{
+    return Math.floor(min + Math.random() * (max + 1 - min));
+} 
 const fackeUser: TUser = {
-    id: '1',
+    id: String(between(40,50)),
     name: 'Petya',
     firstName: 'Petya',
     secondName: 'Drisch',
@@ -23,12 +26,14 @@ export interface IApp{
     token: string|null;
     user: TUser|null;
     initUser: boolean;
+    isConnect: boolean; 
 }
 
 const initialState: IApp = {
     token: null,
     user: fackeUser,
-    initUser: false
+    initUser: false,
+    isConnect: false
 };
 
 const sliceApp = createSlice({

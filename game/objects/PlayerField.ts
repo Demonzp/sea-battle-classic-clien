@@ -7,6 +7,7 @@ import Sprite from '../../gameLib/Sprite';
 import { setCursor, setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
 import store from '../../store/store';
 import Ship, { TShips } from './Ship';
+import socketInst from '../../utils/socket';
 
 export type TType = 'player' | 'enemy';
 
@@ -197,6 +198,28 @@ export default class PlayerField {
         return this.cellsHead.find(cell => cell.id === id)!;
     }
 
+    isPointOnCell(cellPoint: TCellBody, point: TPoint){
+        if (
+            (cellPoint.x0 < point.x && cellPoint.x1 > point.x) &&
+            (cellPoint.y0 < point.y && cellPoint.y1 > point.y)
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    pointerUp(pointer: TPointer){
+        if(this.type === 'enemy' && store.getState().game.whoStep==='you' && this.isPointOnFiled(pointer)){
+            const targetCell = this.cells.find(cell=>this.isPointOnCell(cell.pos, pointer));
+            if(targetCell){
+                if(targetCell.isLive){
+                    socketInst.emit('shot', {cellId: targetCell.id});
+                }
+            }
+        }
+    }
+
     pointerMove(pointer: TPointer) {
         if (this.type === 'enemy' && this.isPointOnFiled(pointer)) {
 
@@ -210,10 +233,7 @@ export default class PlayerField {
                 cell.graphics.fillStyle('white');
             });
             this.cells.forEach(cell => {
-                if (
-                    (cell.pos.x0 < pointer.x && cell.pos.x1 > pointer.x) &&
-                    (cell.pos.y0 < pointer.y && cell.pos.y1 > pointer.y)
-                ) {
+                if (this.isPointOnCell(cell.pos, pointer)) {
                     const row = this.findCellHeadById(cell.id.split('-')[0]);
                     const col = this.findCellHeadById(cell.id.split('-')[1]);
                     if(cell.isFree&&cell.isLive){
