@@ -19,7 +19,7 @@ const GameComp = () => {
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
-  const { gameScene, fleatShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
+  const { gameScene, fleetShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
   const { initUser, user, isConnect } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   console.log('rerender GameComp');
@@ -44,6 +44,9 @@ const GameComp = () => {
       });
       socketInst.on<IQueueUpdate>('update-queue', (data) => {
         console.log('update-queue = ', data);
+      });
+      socketInst.on<any>('shot', (data) => {
+        console.log('shot = ', data);
       });
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
         console.log('init-game = ', data);
@@ -133,7 +136,7 @@ const GameComp = () => {
   };
 
   const toBattle = () => {
-    socketInst.emit('to-queue', fleatShema);
+    socketInst.emit('to-queue', fleetShema);
     //game?.scene.start('Loading');
   }
 
@@ -154,7 +157,7 @@ const GameComp = () => {
                   <button style={{ height: 40 }} onClick={toShipyard}>Shipyard</button>
                 }
                 {
-                  fleatShema.length >= 10 &&
+                  fleetShema.length >= 10 &&
                   <button style={{ height: 40 }} onClick={toBattle}>to battle!</button>
                 }
               </> :

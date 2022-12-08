@@ -19,7 +19,7 @@ export interface IGameServerStateBase{
   id: string;
   cells: TFieldShemaCell [];
   whoStep: string;
-  fleatShema: TShipOnFleatShema [];
+  fleetShema: TShipOnFleetShema [];
   enemyCells: TFieldShemaCell [];
   enemyShips: [];
   timeToBegin: number;
@@ -36,7 +36,7 @@ export interface IQueue {
 };
 
 export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle';
-export type TShipOnFleatShema = {
+export type TShipOnFleetShema = {
   type: TShips;
   angle: number;
   startPos: string;
@@ -53,7 +53,7 @@ export interface IGame {
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
-  fleatShema: TShipOnFleatShema[];
+  fleetShema: TShipOnFleetShema[];
   fieldShema: TFieldShemaCell[];
   fieldShemaEnemy: TFieldShemaCell[];
   queue: IQueueUpdate;
@@ -72,7 +72,7 @@ const initialState: IGame = {
   isInitClienGame: false,
   isLoadedGame: false,
   gameScene: 'loading',
-  fleatShema: [
+  fleetShema: [
     { type: 4, angle: 0, startPos: 'A-7' },
     { type: 3, angle: 0, startPos: 'A-3' },
     { type: 3, angle: 0, startPos: 'C-8' },
@@ -115,6 +115,10 @@ const sliceGame = createSlice({
       }
     },
 
+    setStatusLoading(state, action: PayloadAction<boolean>){
+      state.isLoaded = action.payload;
+    },
+
     updateQueue(state, action: PayloadAction<IQueueUpdate>) {
       state.queue = action.payload;
     },
@@ -127,9 +131,9 @@ const sliceGame = createSlice({
       state.gameScene = action.payload;
     },
 
-    setFleatShema(state, action: PayloadAction<TShipOnFleatShema[]>) {
-      //console.log('FleatShema = ', action.payload);
-      state.fleatShema = action.payload;
+    setFleatShema(state, action: PayloadAction<TShipOnFleetShema[]>) {
+      console.log('FleatShema = ', action.payload);
+      state.fleetShema = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -148,6 +152,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading } = sliceGame.actions;
 
 export default sliceGame;

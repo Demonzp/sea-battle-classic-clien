@@ -1,5 +1,5 @@
 import Scene from '../../gameLib/Scene';
-import { TShipOnFleatShema } from '../../store/slices/game';
+import { TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
@@ -50,15 +50,15 @@ export default class FleatShema extends Scene{
       shipOneFour,
     );
     //console.log('gameObjects = ', this.add.gameObjects);
-    const fleatShema = store.getState().game.fleatShema;
+    const fleatShema = store.getState().game.fleetShema;
     this.parserFleatShema(fleatShema);
     //this.ships.push(shipTreeOne);
   }
 
-  parserFleatShema(fleatShema:TShipOnFleatShema[]){
+  parserFleatShema(fleetShema:TShipOnFleetShema[]){
     //console.log('fleatShema = ', fleatShema);
     const arrShipId:string[] = [];
-    fleatShema.forEach(shipShema=>{
+    fleetShema.forEach(shipShema=>{
       const ship = this.ships.find(s=>{
         if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
           return true;

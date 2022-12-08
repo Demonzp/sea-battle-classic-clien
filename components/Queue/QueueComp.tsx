@@ -10,7 +10,7 @@ const QueueComp = () => {
     const [hour, setHour] = useState('00');
     const [timeCreate, _] = useState(Date.now());
     const dispatch = useAppDispatch();
-    const { queue, online } = useAppSelector(state => state.game.queue);
+    const { queue } = useAppSelector(state => state.game);
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -40,10 +40,10 @@ const QueueComp = () => {
                     time in queue: {hour}:{min}:{sec}
                 </div>
                 <div style={{ marginTop: 20 }}>
-                    online: {online}
+                    online: {queue.online}
                 </div>
                 <div style={{ marginTop: 20 }}>
-                    queue: {queue}
+                    queue: {queue.queue}
                 </div>
             </div>
         </div>

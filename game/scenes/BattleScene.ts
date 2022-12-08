@@ -1,5 +1,5 @@
 import Scene from '../../gameLib/Scene';
-import { TShipOnFleatShema } from '../../store/slices/game';
+import { TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
@@ -63,14 +63,16 @@ export default class Battle extends Scene{
       shipOneFour,
     );
     //console.log('gameObjects = ', this.add.gameObjects);
-    const fleatShema = store.getState().game.fleatShema;
+    const fleatShema = store.getState().game.fleetShema;
     this.parserFleatShema(fleatShema);
+    this.parseField();
+    store.subscribe(()=>{console.log('стейт измянился!!!!!!!!!!!');})
   }
 
-  parserFleatShema(fleatShema:TShipOnFleatShema[]){
+  parserFleatShema(fleetShema:TShipOnFleetShema[]){
     //console.log('fleatShema = ', fleatShema);
     const arrShipId:string[] = [];
-    fleatShema.forEach(shipShema=>{
+    fleetShema.forEach(shipShema=>{
       const ship = this.ships.find(s=>{
         if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
           return true;
@@ -94,9 +96,10 @@ export default class Battle extends Scene{
     this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
   }
 
-  // parseField(){
-  //   this.plField
-  // }
+  parseField(){
+    this.plField?.parseServerData(store.getState().game.fieldShema);
+    this.plFieldEnemy?.parseServerData(store.getState().game.fieldShemaEnemy);
+  }
 
   update(): void {
     this.ships.forEach(ship=>ship.update());

@@ -4,10 +4,11 @@ import Text from '../../gameLib/Text';
 import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
-import { setCursor, setFleatShema, TShipOnFleatShema } from '../../store/slices/game';
+import { setCursor, setFleatShema, TFieldShemaCell } from '../../store/slices/game';
 import store from '../../store/store';
 import Ship, { TShips } from './Ship';
 import socketInst from '../../utils/socket';
+import { shot } from '../../store/actions/game';
 
 export type TType = 'player' | 'enemy';
 
@@ -190,8 +191,21 @@ export default class PlayerField {
         this.cursor.setZindex(2);
     }
 
-    parseServerData(){
+    parseServerData(data: TFieldShemaCell[]){
+        data.forEach(shemaCell=>{
+            if(!shemaCell.isLive){
+                this.renderShot(shemaCell);
+            }
+        });
+    }
 
+    renderShot(shemaCell: TFieldShemaCell){
+        const cell = this.findCellById(shemaCell.id);
+        if(shemaCell.isFree){
+            cell.spriteFree.alpha = 1;
+        }else{
+            cell.spriteShip.alpha = 1;
+        }
     }
 
     clearField(){
@@ -226,8 +240,9 @@ export default class PlayerField {
         if(this.type === 'enemy' && store.getState().game.whoStep==='you' && this.isPointOnFiled(pointer)){
             const targetCell = this.cells.find(cell=>this.isPointOnCell(cell.pos, pointer));
             if(targetCell){
-                if(targetCell.isLive){
-                    socketInst.emit('shot', {cellId: targetCell.id});
+                if(targetCell.isLive && store.getState().game.whoStep==='you' && store.getState().game.isLoaded){
+                    store.dispatch(shot({cellId: targetCell.id}));
+                    //socketInst.emit('shot', {cellId: targetCell.id});
                 }
             }
         }
