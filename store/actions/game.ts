@@ -1,7 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import socketInst from '../../utils/socket';
-import { IGameServerStateParseRes, IGameServerStateRes, setFleatShema, setStatusLoading } from '../slices/game';
+import { IGameServerStateParseRes, IGameServerStateRes, IShotParseRes, IShotRes, setFleatShema, setStatusLoading, TGameError, TWhoStep } from '../slices/game';
 import { AppState } from '../store';
+
+const parseWhoStep = (userId: string, whoId: string): TWhoStep => {
+    return whoId === userId ? 'you' : 'enemy';
+};
 
 export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerStateRes,
     {
@@ -14,7 +18,8 @@ export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerSt
             console.log('serverData = ', serverData);
             const parseData: IGameServerStateParseRes = {
                 ...serverData,
-                whoStep: serverData.whoStep === getState().app.user?.id ? 'you' : 'enemy'
+                enemyInfo: serverData.enemyData,
+                whoStep: parseWhoStep(getState().app.user!.id, serverData.whoStep)
             }
 
             dispatch(setFleatShema(serverData.fleetShema));
@@ -23,17 +28,58 @@ export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerSt
         }
     );
 
-export const shot = createAsyncThunk<null, {cellId: string},
+export const shotRes = createAsyncThunk<IShotParseRes, IShotRes,
+    {
+        state: AppState
+    }
+>
+    (
+        'game/shotRes',
+        async (serverData, { getState }) => {
+            console.log('serverData = ', serverData);
+            const parseData: IShotParseRes = {
+                ...serverData,
+                whoStep: parseWhoStep(getState().app.user!.id, serverData.whoStep)
+            }
+
+            //dispatch(setFleatShema(serverData.fleetShema));
+
+            return parseData;
+        }
+    );
+
+export const shot = createAsyncThunk<void, { cellId: string },
     {
         state: AppState
     }
 >
     (
         'game/shot',
-        async (data, { dispatch }) => {
+        async (data, { dispatch, getState }) => {
+            if (!getState().game.isLoaded) {
+                console.log('game is Locked by server!');
+                throw Error('game is Locked by server!');
+            }
             dispatch(setStatusLoading(false));
             console.log('Стреляю!!!');
             socketInst.emit('shot', data);
-            return null;
+        }
+    );
+
+export const gameErrorRes = createAsyncThunk<void, TGameError,
+    {
+        state: AppState
+    }
+>
+    (
+        'game/gameErrorRes',
+        async (_, { dispatch }) => {
+            // if (!getState().game.isLoaded) {
+            //     console.log('game is Locked by server!');
+            //     throw Error('game is Locked by server!');
+            // }
+            dispatch(setStatusLoading(true));
+            //console.log('Стреляю!!!');
+            //socketInst.emit('shot', data);
         }
     );

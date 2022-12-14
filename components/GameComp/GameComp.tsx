@@ -7,9 +7,9 @@ import Queue from '../../game/scenes/QueueScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
-import { initGame } from '../../store/actions/game';
+import { gameErrorRes, initGame, shotRes } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IGameServerStateRes, IQueue, IQueueUpdate, setScene, setToQueue } from '../../store/slices/game';
+import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, setScene, setToQueue, TGameError } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -45,8 +45,13 @@ const GameComp = () => {
       socketInst.on<IQueueUpdate>('update-queue', (data) => {
         console.log('update-queue = ', data);
       });
-      socketInst.on<any>('shot', (data) => {
+      socketInst.on<IShotRes>('shot', (data) => {
         console.log('shot = ', data);
+        dispatch(shotRes(data));
+      });
+      socketInst.on<TGameError>('game-error', (data) => {
+        console.log('game-error = ', data);
+        dispatch(gameErrorRes(data));
       });
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
         console.log('init-game = ', data);
@@ -107,6 +112,7 @@ const GameComp = () => {
 
   useEffect(() => {
     if (!game) {
+      console.log('setGame');
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,

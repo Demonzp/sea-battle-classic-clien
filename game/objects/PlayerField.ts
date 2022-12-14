@@ -237,10 +237,10 @@ export default class PlayerField {
     }
 
     pointerUp(pointer: TPointer){
-        if(this.type === 'enemy' && store.getState().game.whoStep==='you' && this.isPointOnFiled(pointer)){
+        if(this.type === 'enemy' && this.isPointOnFiled(pointer)){
             const targetCell = this.cells.find(cell=>this.isPointOnCell(cell.pos, pointer));
             if(targetCell){
-                if(targetCell.isLive && store.getState().game.whoStep==='you' && store.getState().game.isLoaded){
+                if(targetCell.isLive){
                     store.dispatch(shot({cellId: targetCell.id}));
                     //socketInst.emit('shot', {cellId: targetCell.id});
                 }

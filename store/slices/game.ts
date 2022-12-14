@@ -1,29 +1,49 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
-import { initGame } from '../actions/game';
+import { initGame, shotRes } from '../actions/game';
+import { AppState } from '../store';
+
+export type TGameError = {
+  message: string;
+}
+
+export interface IShotParseRes extends IShotResBase{
+  whoStep: typeof initialState.whoStep;
+}
+
+export interface IShotRes extends IShotResBase {
+  whoStep: string,
+}
+
+export interface IShotResBase {
+  whoShot: string,
+  enemyShips: TShipOnFleetShema[],
+  cell: TFieldShemaCell
+}
 
 export type TEnemy = {
   id: string;
   name: string;
 }
 
-export interface IGameServerStateParseRes extends IGameServerStateBase{
+export interface IGameServerStateParseRes extends IGameServerStateBase {
   whoStep: typeof initialState.whoStep;
-}
-
-export interface IGameServerStateRes extends IGameServerStateBase{
-  whoStep: string;
-}
-
-export interface IGameServerStateBase{
-  id: string;
-  cells: TFieldShemaCell [];
-  whoStep: string;
-  fleetShema: TShipOnFleetShema [];
-  enemyCells: TFieldShemaCell [];
-  enemyShips: [];
-  timeToBegin: number;
   enemyInfo: TEnemy;
+}
+
+export interface IGameServerStateRes extends IGameServerStateBase {
+  whoStep: string;
+  enemyData: TEnemy;
+}
+
+export interface IGameServerStateBase {
+  id: string;
+  cells: TFieldShemaCell[];
+  whoStep: string;
+  fleetShema: TShipOnFleetShema[];
+  enemyCells: TFieldShemaCell[];
+  enemyShips: TShipOnFleetShema[];
+  timeToBegin: number;
 }
 
 export interface IQueueUpdate extends IQueue {
@@ -48,20 +68,23 @@ export type TFieldShemaCell = {
   isFree: boolean;
 };
 
+export type TWhoStep = 'you' | 'enemy';
+
 export interface IGame {
   id: string;
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
   fleetShema: TShipOnFleetShema[];
+  fleetShemaEnemy: TShipOnFleetShema[];
   fieldShema: TFieldShemaCell[];
   fieldShemaEnemy: TFieldShemaCell[];
   queue: IQueueUpdate;
-  cursor: 'none'|'auto'|'grab';
-  whoStep: 'you'|'enemy';
+  cursor: 'none' | 'auto' | 'grab';
+  whoStep: TWhoStep;
   isLoaded: boolean;
   timeToBegin: number;
-  enemyInfo: TEnemy|null;
+  enemyInfo: TEnemy | null;
 }
 
 const initialState: IGame = {
@@ -84,9 +107,10 @@ const initialState: IGame = {
     { type: 1, angle: 0, startPos: 'E-5' },
     { type: 1, angle: 0, startPos: 'E-3' }
   ],
-  fieldShemaEnemy:[],
-  fieldShema:[],
-  cursor:'auto',
+  fleetShemaEnemy: [],
+  fieldShemaEnemy: [],
+  fieldShema: [],
+  cursor: 'auto',
   queue: {
     time: 0,
     online: 0,
@@ -115,7 +139,7 @@ const sliceGame = createSlice({
       }
     },
 
-    setStatusLoading(state, action: PayloadAction<boolean>){
+    setStatusLoading(state, action: PayloadAction<boolean>) {
       state.isLoaded = action.payload;
     },
 
@@ -123,7 +147,7 @@ const sliceGame = createSlice({
       state.queue = action.payload;
     },
 
-    setCursor(state, action: PayloadAction<typeof initialState.cursor>){
+    setCursor(state, action: PayloadAction<typeof initialState.cursor>) {
       state.cursor = action.payload;
     },
 
@@ -135,9 +159,14 @@ const sliceGame = createSlice({
       console.log('FleatShema = ', action.payload);
       state.fleetShema = action.payload;
     },
+
+    updateAfterShot(state, action: PayloadAction<IShotParseRes>){
+      state.whoStep = action.payload.whoStep;
+      
+    },
   },
   extraReducers: (builder) => {
-    builder.addCase(initGame.fulfilled, (state, {payload})=>{
+    builder.addCase(initGame.fulfilled, (state, { payload }) => {
       console.log('getUser.fulfilled = ', payload);
       state.whoStep = payload.whoStep;
       state.id = payload.id;
@@ -148,7 +177,29 @@ const sliceGame = createSlice({
       state.isLoaded = true;
       state.gameScene = 'battle';
       //state.initUser = true;
-  });
+    });
+
+    builder.addCase(shotRes.fulfilled, (state, { payload }) => {
+      console.log('shotRes.fulfilled = ', payload);
+      state.whoStep = payload.whoStep;
+      state.fleetShemaEnemy = payload.enemyShips;
+      console.log('enemyInfo = ', state.enemyInfo?.id);
+      if(payload.whoShot!==state.enemyInfo?.id){
+        state.fieldShemaEnemy.forEach(cell=>{
+          if(cell.id===payload.cell.id){
+            cell.isLive = payload.cell.isLive;
+          }
+        });
+      }else{
+        state.fieldShema.forEach(cell=>{
+          if(cell.id===payload.cell.id){
+            cell.isLive = payload.cell.isLive;
+          }
+        });
+      }
+      state.isLoaded = true;
+      //state.initUser = true;
+    });
   }
 });
 

@@ -1,12 +1,15 @@
 import Scene from '../../gameLib/Scene';
-import { TShipOnFleetShema } from '../../store/slices/game';
+import { TFieldShemaCell, TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
+import { compairValuesObjs } from '../../utils/global';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
 
 export default class Battle extends Scene{
   plField: PlayerField|null = null;
   plFieldEnemy: PlayerField|null = null;
+  prevShema: TFieldShemaCell [] = [];
+  prevShemaEnemy: TFieldShemaCell [] = [];
   ships: Ship[] = [];
 
   constructor(){
@@ -63,10 +66,42 @@ export default class Battle extends Scene{
       shipOneFour,
     );
     //console.log('gameObjects = ', this.add.gameObjects);
-    const fleatShema = store.getState().game.fleetShema;
-    this.parserFleatShema(fleatShema);
+    const fleetShema = store.getState().game.fleetShema;
+    this.parserFleatShema(fleetShema);
+    let shema = store.getState().game.fieldShema;
+    let shemaEnemy = store.getState().game.fieldShemaEnemy;
+    this.prevShema = shema;
+    this.prevShemaEnemy = shemaEnemy;
     this.parseField();
-    store.subscribe(()=>{console.log('стейт измянился!!!!!!!!!!!');})
+    store.subscribe(()=>{
+      shema = store.getState().game.fieldShema;
+      for (let i = 0; i < shema.length; i++) {
+        const cell = shema[i];
+        if(this.prevShema[i]){
+          if(!compairValuesObjs(cell, this.prevShema[i])){
+            console.log('Мой стейт измянился!!!!!!!!!!!');
+            this.prevShema = shema;
+            this.plField?.parseServerData(shema);
+            return;
+          }
+        }
+      }
+
+      shemaEnemy = store.getState().game.fieldShemaEnemy;
+      for (let i = 0; i < shemaEnemy.length; i++) {
+        const cell = shemaEnemy[i];
+        if(this.prevShemaEnemy[i]){
+          if(!compairValuesObjs(cell, this.prevShemaEnemy[i])){
+            console.log('Противника стейт измянился!!!!!!!!!!!');
+            this.prevShemaEnemy = shemaEnemy;
+            this.plFieldEnemy?.parseServerData(shemaEnemy);
+            return;
+          }
+        }
+      }
+      
+      
+    });
   }
 
   parserFleatShema(fleetShema:TShipOnFleetShema[]){

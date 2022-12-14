@@ -7,7 +7,7 @@ const between = (min:number, max:number)=>{
     return Math.floor(min + Math.random() * (max + 1 - min));
 } 
 const fackeUser: TUser = {
-    id: String(between(40,50)),
+    id: String(between(10,1000)),
     name: 'Petya',
     firstName: 'Petya',
     secondName: 'Drisch',
