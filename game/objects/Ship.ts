@@ -186,7 +186,7 @@ export default class Ship {
       this.dy = this.y - point.y;
       this.timerClick = Date.now();
       console.log('this.timerClick = ', this.timerClick);
-      this.mainContainer.setZindex(1);
+      this.mainContainer.setZindex(2);
       this.scene.plField?.upShip(this);
     }
     

@@ -188,12 +188,14 @@ const sliceGame = createSlice({
         state.fieldShemaEnemy.forEach(cell=>{
           if(cell.id===payload.cell.id){
             cell.isLive = payload.cell.isLive;
+            cell.isFree = payload.cell.isFree;
           }
         });
       }else{
         state.fieldShema.forEach(cell=>{
           if(cell.id===payload.cell.id){
             cell.isLive = payload.cell.isLive;
+            cell.isFree = payload.cell.isFree;
           }
         });
       }

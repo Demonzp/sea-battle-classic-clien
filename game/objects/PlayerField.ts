@@ -156,6 +156,7 @@ export default class PlayerField {
                     spriteFree.alpha = 0;
                     const spriteShip = this.scene.add.sprite('shot-cell-ship', posX+half,posY+half,this.step);
                     spriteShip.alpha = 0;
+                    spriteShip.setZindex(2);
                     cellGraph.fillStyle('white');
                     const cell: ICell = {
                         id: this.arrRows[i - 1] + '-' + this.arrCols[j - 1],
@@ -201,10 +202,12 @@ export default class PlayerField {
 
     renderShot(shemaCell: TFieldShemaCell){
         const cell = this.findCellById(shemaCell.id);
+        console.log('renderShot = ', shemaCell);
         if(shemaCell.isFree){
             cell.spriteFree.alpha = 1;
         }else{
             cell.spriteShip.alpha = 1;
+            cell.spriteShip.setZindex(2);
         }
     }
 

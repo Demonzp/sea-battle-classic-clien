@@ -27,7 +27,7 @@ export default class Game{
   private _scenes = new ScenesManager(this);
   isInit = false;
   requestAnimateId: number|null = null;
-  numFrames = 30;
+  numFrames = 60;
   currentDelta = 60;
   timerFrames = 0;
   prevTime = 0;

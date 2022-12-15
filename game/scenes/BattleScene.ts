@@ -98,9 +98,7 @@ export default class Battle extends Scene{
             return;
           }
         }
-      }
-      
-      
+      }      
     });
   }
 
