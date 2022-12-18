@@ -11,6 +11,7 @@ export default class Battle extends Scene{
   prevShema: TFieldShemaCell [] = [];
   prevShemaEnemy: TFieldShemaCell [] = [];
   ships: Ship[] = [];
+  shipsEnamy: Ship[] = [];
 
   constructor(){
     super('Battle');
@@ -79,7 +80,7 @@ export default class Battle extends Scene{
         const cell = shema[i];
         if(this.prevShema[i]){
           if(!compairValuesObjs(cell, this.prevShema[i])){
-            console.log('Мой стейт измянился!!!!!!!!!!!');
+            //console.log('Мой стейт измянился!!!!!!!!!!!');
             this.prevShema = shema;
             this.plField?.parseServerData(shema);
             return;
@@ -92,14 +93,34 @@ export default class Battle extends Scene{
         const cell = shemaEnemy[i];
         if(this.prevShemaEnemy[i]){
           if(!compairValuesObjs(cell, this.prevShemaEnemy[i])){
-            console.log('Противника стейт измянился!!!!!!!!!!!');
+            //console.log('Противника стейт измянился!!!!!!!!!!!');
             this.prevShemaEnemy = shemaEnemy;
             this.plFieldEnemy?.parseServerData(shemaEnemy);
+            const fleetShema = store.getState().game.fleetShemaEnemy;
+            this.parserFleatShemaEnamy(fleetShema);
             return;
           }
         }
-      }      
+      }
+      
     });
+  }
+
+  parserFleatShemaEnamy(fleetShema:TShipOnFleetShema[]){
+    //const arrShipId:string[] = [];
+    fleetShema.forEach(shipShema=>{
+      if(!this.shipsEnamy.find(ship=>ship.id===shipShema.id)){
+        const ship = new Ship(this, 0, 0, shipShema.type); 
+        ship.angle = shipShema.angle;
+        this.plFieldEnemy!.calcFromStartCell(shipShema.startPos, ship, ship.angle);
+        ship.x = this.plFieldEnemy!.shipPos.x!;
+        ship.y = this.plFieldEnemy!.shipPos.y!;
+        this.plFieldEnemy!.dropShip(ship);
+        ship.id = shipShema.id;
+        this.shipsEnamy.push(ship);
+      }
+    });
+    this.plFieldEnemy!.clearField();
   }
 
   parserFleatShema(fleetShema:TShipOnFleetShema[]){
@@ -136,5 +157,6 @@ export default class Battle extends Scene{
 
   update(): void {
     this.ships.forEach(ship=>ship.update());
+    this.shipsEnamy.forEach(ship=>ship.update());
   }
 }

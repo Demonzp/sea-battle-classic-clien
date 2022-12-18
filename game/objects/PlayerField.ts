@@ -203,6 +203,7 @@ export default class PlayerField {
     renderShot(shemaCell: TFieldShemaCell){
         const cell = this.findCellById(shemaCell.id);
         console.log('renderShot = ', shemaCell);
+        cell.isLive = false;
         if(shemaCell.isFree){
             cell.spriteFree.alpha = 1;
         }else{
@@ -267,7 +268,7 @@ export default class PlayerField {
                 if (this.isPointOnCell(cell.pos, pointer)) {
                     const row = this.findCellHeadById(cell.id.split('-')[0]);
                     const col = this.findCellHeadById(cell.id.split('-')[1]);
-                    if(cell.isFree&&cell.isLive){
+                    if(cell.isLive){
                         row.graphics.fillStyle('#a7ffb5');
                         col.graphics.fillStyle('#a7ffb5');
                     }else{

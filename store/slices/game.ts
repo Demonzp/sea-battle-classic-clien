@@ -57,6 +57,7 @@ export interface IQueue {
 
 export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle';
 export type TShipOnFleetShema = {
+  id: string;
   type: TShips;
   angle: number;
   startPos: string;
@@ -96,16 +97,16 @@ const initialState: IGame = {
   isLoadedGame: false,
   gameScene: 'loading',
   fleetShema: [
-    { type: 4, angle: 0, startPos: 'A-7' },
-    { type: 3, angle: 0, startPos: 'A-3' },
-    { type: 3, angle: 0, startPos: 'C-8' },
-    { type: 2, angle: 0, startPos: 'C-5' },
-    { type: 2, angle: 0, startPos: 'C-2' },
-    { type: 2, angle: 0, startPos: 'E-9' },
-    { type: 1, angle: 0, startPos: 'A-1' },
-    { type: 1, angle: 0, startPos: 'E-7' },
-    { type: 1, angle: 0, startPos: 'E-5' },
-    { type: 1, angle: 0, startPos: 'E-3' }
+    { type: 4, angle: 0, startPos: 'A-7', id: '1' },
+    { type: 3, angle: 0, startPos: 'A-3', id: '2' },
+    { type: 3, angle: 0, startPos: 'C-8', id: '3' },
+    { type: 2, angle: 0, startPos: 'C-5', id: '4' },
+    { type: 2, angle: 0, startPos: 'C-2', id: '5' },
+    { type: 2, angle: 0, startPos: 'E-9', id: '6' },
+    { type: 1, angle: 0, startPos: 'A-1', id: '7' },
+    { type: 1, angle: 0, startPos: 'E-7', id: '8' },
+    { type: 1, angle: 0, startPos: 'E-5', id: '9' },
+    { type: 1, angle: 0, startPos: 'E-3', id: '10' }
   ],
   fleetShemaEnemy: [],
   fieldShemaEnemy: [],
