@@ -65,7 +65,7 @@ export default class Ship {
   }
 
   create() {
-    console.log('Ship create');
+    //console.log('Ship create');
     const lineWidth = 2;
     const min = Math.min(this.scene.width, this.scene.height);
     const step = (min - lineWidth) / 11;
@@ -179,13 +179,13 @@ export default class Ship {
   }
 
   pointerDown(point: TPointer) {
-    console.log('pointerdown!!!!');
+    //console.log('pointerdown!!!!');
     if(!this.isPointerDown){
       this.isPointerDown = true;
       this.dx = this.x - point.x;
       this.dy = this.y - point.y;
       this.timerClick = Date.now();
-      console.log('this.timerClick = ', this.timerClick);
+      //console.log('this.timerClick = ', this.timerClick);
       this.mainContainer.setZindex(2);
       this.scene.plField?.upShip(this);
     }
@@ -194,7 +194,7 @@ export default class Ship {
 
   pointerUp() {
     if (this.isPointerDown) {
-      console.log('this.timerClick = ', Date.now() - this.timerClick, ' || ', this.timeIsClick);
+      //console.log('this.timerClick = ', Date.now() - this.timerClick, ' || ', this.timeIsClick);
       if (Date.now() - this.timerClick <= this.timeIsClick) {
         if (this.angle === 90) {
           if (!this.scene.plField?.isOnField(this)) {
@@ -217,7 +217,7 @@ export default class Ship {
       }
       this.mainContainer.setZindex(0);
       //this.dropShip();
-      console.log('pointerUp set false');
+      //console.log('pointerUp set false');
       this.isPointerDown = false;
     }
   }
@@ -237,9 +237,9 @@ export default class Ship {
   }
 
   setOnField() {
-    console.log('posOnField = ', this.posOnField, '||', initPos);
+    //console.log('posOnField = ', this.posOnField, '||', initPos);
     if (this.posOnField.x !== initPos.x) {
-      console.log('setOnField');
+      //console.log('setOnField');
       this.x = this.posOnField.x;
       this.y = this.posOnField.y;
       //console.log(this.mainContainer.x,'||',this.mainContainer.y);
@@ -249,7 +249,7 @@ export default class Ship {
   }
 
   setOnStart() {
-    console.log('setOnStart');
+    //console.log('setOnStart');
     this.x = this.startPos.x;
     this.y = this.startPos.y;
     this.cellsOnField = null;

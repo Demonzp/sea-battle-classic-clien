@@ -188,7 +188,7 @@ export default class PlayerField {
         }
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
-        console.log('cells = ', this.cells);
+        //console.log('cells = ', this.cells);
         this.cursor.setZindex(2);
     }
 
@@ -202,7 +202,7 @@ export default class PlayerField {
 
     renderShot(shemaCell: TFieldShemaCell){
         const cell = this.findCellById(shemaCell.id);
-        console.log('renderShot = ', shemaCell);
+        //console.log('renderShot = ', shemaCell);
         cell.isLive = false;
         if(shemaCell.isFree){
             cell.spriteFree.alpha = 1;
@@ -405,6 +405,7 @@ export default class PlayerField {
         this.ships.push(ship);
         store.dispatch(setFleatShema(this.ships.map((ship) => {
             return {
+                id: ship.id,
                 type: ship.type,
                 angle: ship.angle,
                 startPos: ship.cellsOnField?.main[0].row + '-' + ship.cellsOnField?.main[0].col
@@ -437,17 +438,17 @@ export default class PlayerField {
     }
 
     upShip(ship: Ship) {
-        console.log('upShip');
+        //console.log('upShip');
         this.ships = this.ships.filter(s => s.id !== ship.id);
         this.clearByShip(ship);
     }
 
     dropShip(ship: Ship) {
         //this.clearByShip(ship);
-        console.log('dropShip ', ship.isHasPrevPosField(), '||', this.isGreen, '||', (ship.isHasPrevPosField() || this.isGreen));
+        //console.log('dropShip ', ship.isHasPrevPosField(), '||', this.isGreen, '||', (ship.isHasPrevPosField() || this.isGreen));
         this.clearAfterMove();
         if (this.isOnField(ship) && (ship.isHasPrevPosField() || this.isGreen)) {
-            console.log('this.isGreen = ', this.isGreen);
+            //console.log('this.isGreen = ', this.isGreen);
             //if(this.isGreen){
             //this.ships.push(ship);
             //console.log('this.shipPos = ', this.shipPos);
@@ -639,9 +640,9 @@ export default class PlayerField {
             this.dropShip(ship);
             //this.addShip(ship);
             //ship.setOnField();
-            console.log('Может повернуть = ', angle);
+            //console.log('Может повернуть = ', angle);
         } else {
-            console.log('Не может повернуть = ', angle);
+            //console.log('Не может повернуть = ', angle);
             setTimeout(() => {
                 this.addShip(ship);
                 this.dropShip(ship);
@@ -714,7 +715,7 @@ export default class PlayerField {
         if (this.ships.find(s => s.id === ship.id)) {
             return true;
         }
-        console.log('нету коробля на поле!!!!!!!!');
+        //console.log('нету коробля на поле!!!!!!!!');
         return false;
     }
 

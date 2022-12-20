@@ -22,7 +22,7 @@ const GameComp = () => {
   const { gameScene, fleetShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
   const { initUser, user, isConnect } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
-  console.log('rerender GameComp');
+  //console.log('rerender GameComp');
 
   useEffect(() => {
     if (initUser) {
@@ -32,29 +32,29 @@ const GameComp = () => {
       });
       socketInst.on<{ data: string }>('loged', (data) => {
         toShipyard();
-        console.log('loged = ', data?.data);
+        //console.log('loged = ', data?.data);
       });
       socketInst.on<IQueue>('to-queue', (data) => {
-        console.log('to-queue = ', data);
+        //console.log('to-queue = ', data);
         dispatch(setToQueue(data));
       });
       socketInst.on<IQueue>('to-queue', (data) => {
-        console.log('to-queue = ', data);
+        //console.log('to-queue = ', data);
         dispatch(setToQueue(data));
       });
       socketInst.on<IQueueUpdate>('update-queue', (data) => {
-        console.log('update-queue = ', data);
+        //console.log('update-queue = ', data);
       });
       socketInst.on<IShotRes>('shot', (data) => {
-        console.log('shot = ', data);
+        //console.log('shot = ', data);
         dispatch(shotRes(data));
       });
       socketInst.on<TGameError>('game-error', (data) => {
-        console.log('game-error = ', data);
+        //console.log('game-error = ', data);
         dispatch(gameErrorRes(data));
       });
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
-        console.log('init-game = ', data);
+        //console.log('init-game = ', data);
         dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
@@ -69,9 +69,12 @@ const GameComp = () => {
   }, [isLoadedGame]);
 
   useEffect(() => {
-    if (gameScene === 'loading' || gameScene === 'queue') {
+    //console.log('gameScene= ', gameScene);
+    if (gameScene === 'loading' || gameScene === 'queue' || gameScene === 'battle') {
+      //console.log('setIsShowMainButtons= ', false);
       setIsShowMainButtons(false);
     } else {
+      //console.log('setIsShowMainButtons= ', true);
       setIsShowMainButtons(true);
     }
 
@@ -112,7 +115,7 @@ const GameComp = () => {
 
   useEffect(() => {
     if (!game) {
-      console.log('setGame');
+      //console.log('setGame');
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,
@@ -125,7 +128,7 @@ const GameComp = () => {
   useEffect(() => {
     return () => {
       if (game) {
-        console.log('killGame!!!');
+        //console.log('killGame!!!');
         game.destroy();
       }
     }

@@ -15,7 +15,7 @@ export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerSt
     (
         'game/initGame',
         async (serverData, { dispatch, getState }) => {
-            console.log('serverData = ', serverData);
+            //console.log('serverData = ', serverData);
             const parseData: IGameServerStateParseRes = {
                 ...serverData,
                 enemyInfo: serverData.enemyData,
@@ -36,7 +36,7 @@ export const shotRes = createAsyncThunk<IShotParseRes, IShotRes,
     (
         'game/shotRes',
         async (serverData, { getState }) => {
-            console.log('serverData = ', serverData);
+            //console.log('serverData = ', serverData);
             const parseData: IShotParseRes = {
                 ...serverData,
                 whoStep: parseWhoStep(getState().app.user!.id, serverData.whoStep)

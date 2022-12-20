@@ -62,16 +62,16 @@ const sliceApp = createSlice({
     },
     extraReducers:(builder)=>{
         builder.addCase(getUser.pending, ()=>{
-            console.log('go to server!!!');
+            //console.log('go to server!!!');
         });
 
         builder.addCase(getUser.fulfilled, (state, {payload})=>{
-            console.log('getUser.fulfilled = ', payload);
+            //console.log('getUser.fulfilled = ', payload);
             state.initUser = true;
         });
 
         builder.addCase(getUser.rejected, (state, {payload})=>{
-            console.log('getUser.rejected = ', payload);
+            //console.log('getUser.rejected = ', payload);
         });
     }
 });

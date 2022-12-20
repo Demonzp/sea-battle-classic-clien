@@ -157,7 +157,7 @@ const sliceGame = createSlice({
     },
 
     setFleatShema(state, action: PayloadAction<TShipOnFleetShema[]>) {
-      console.log('FleatShema = ', action.payload);
+      //console.log('FleatShema = ', action.payload);
       state.fleetShema = action.payload;
     },
 
@@ -168,7 +168,7 @@ const sliceGame = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(initGame.fulfilled, (state, { payload }) => {
-      console.log('getUser.fulfilled = ', payload);
+      //console.log('getUser.fulfilled = ', payload);
       state.whoStep = payload.whoStep;
       state.id = payload.id;
       state.enemyInfo = payload.enemyInfo;
@@ -181,10 +181,10 @@ const sliceGame = createSlice({
     });
 
     builder.addCase(shotRes.fulfilled, (state, { payload }) => {
-      console.log('shotRes.fulfilled = ', payload);
+      //console.log('shotRes.fulfilled = ', payload);
       state.whoStep = payload.whoStep;
       state.fleetShemaEnemy = payload.enemyShips;
-      console.log('enemyInfo = ', state.enemyInfo?.id);
+      //console.log('enemyInfo = ', state.enemyInfo?.id);
       if(payload.whoShot!==state.enemyInfo?.id){
         state.fieldShemaEnemy.forEach(cell=>{
           if(cell.id===payload.cell.id){

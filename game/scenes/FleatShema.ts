@@ -12,7 +12,7 @@ export default class FleatShema extends Scene{
   }
 
   create(): void {
-    console.log('FleatShema create');
+    //console.log('FleatShema create');
     this.input.on('pointerup', ()=>{
       //console.log('pointerup');
       this.ships.forEach(ship=>ship.pointerUp());

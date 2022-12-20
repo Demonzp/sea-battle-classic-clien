@@ -13,7 +13,7 @@ export default class MainScene extends Scene{
   }
 
   create(): void {
-    console.log('scene:', this.key);
+    //console.log('scene:', this.key);
 
     const grapfics = this.add.graphics();
     const lineWidth = 2;
@@ -56,7 +56,7 @@ export default class MainScene extends Scene{
     //this.contShip.on('pointerdown', this.click, this);
     this.ship.on('pointerdown', this.click, this);
     gun.on('pointerdown', ()=>{
-      console.log('click on gun'); 
+      //console.log('click on gun'); 
     });
     //this.contGun.angle=90;
     //this.input.on('', this.click, this);
@@ -64,7 +64,7 @@ export default class MainScene extends Scene{
   }
 
   click(pointer: TPointer){
-    console.log('pointer = ', pointer);
+    //console.log('pointer = ', pointer);
     //this.input.off(EInputEvents.pointerdown, this.click, this);
     //this.input.off(EInputEvents.pointerdown, ()=>{console.log()}, this);
   }

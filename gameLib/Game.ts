@@ -81,7 +81,7 @@ export default class Game{
   }
 
   private async preload(){
-    console.log('game width = ', this.width);
+    //console.log('game width = ', this.width);
     await this.load.preloadImages();
     this._scenes.initFirstScene();
   }
