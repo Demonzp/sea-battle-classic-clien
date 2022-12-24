@@ -1,3 +1,4 @@
+import Game from './Game';
 import Scene from './Scene';
 
 export type TComands = {
@@ -15,7 +16,7 @@ export default class Graphics{
 
   constructor(scene: Scene){
     this.scene = scene;
-    this.id = scene.game.createId();
+    this.id = Game.createId();
     scene.add.registerGameObject(this);
   }
 

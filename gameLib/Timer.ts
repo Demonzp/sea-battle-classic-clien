@@ -1,3 +1,4 @@
+import Game from './Game';
 import Scene from './Scene';
 
 export type TDataTimers = {
@@ -17,7 +18,7 @@ export default class Timer{
 
   on(callback: ()=>void, time: number, context: any, repeat?: boolean): string{
     const timer:TDataTimers = {
-      id: this.scene.game.createId(),
+      id: Game.createId(),
       time: 0,
       timer: Math.floor((time*1000)/this.scene.game.currentDelta),
       repeat: repeat?repeat:false,

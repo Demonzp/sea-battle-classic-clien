@@ -77,14 +77,10 @@ export default class Scene{
     //console.log('gameObjects = ', this.add.gameObjects);
   }
 
-  createId(){
-    return this.game.createId();
-  }
-
   _baseInit(game: Game, canvas: HTMLCanvasElement, ctx: CanvasRenderingContext2D){
     this._game = game;
     if(this.key.length<=0){
-      this.key = this._game!.createId();
+      this.key = Game.createId();
     }
     
     this.canvas = canvas;

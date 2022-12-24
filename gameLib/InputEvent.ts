@@ -45,7 +45,7 @@ export default class InputEvent{
   }
 
   on(event: TInputEvents, sceneId: string, handler: (pointer:TPointer)=>void, context?:any): string{
-    const id = this.game.createId();
+    const id = Game.createId();
     switch (event) {
       case 'pointerdown':
         this.pointerDownCallbacks.push({

@@ -26,6 +26,11 @@ export type TEnemy = {
   name: string;
 }
 
+export type TItemMsg = {
+  id:string;
+  message: string;
+}
+
 export interface IGameServerStateParseRes extends IGameServerStateBase {
   whoStep: typeof initialState.whoStep;
   enemyInfo: TEnemy;
@@ -73,6 +78,7 @@ export type TWhoStep = 'you' | 'enemy';
 
 export interface IGame {
   id: string;
+  bubbleMsg: TItemMsg [];
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
@@ -90,6 +96,7 @@ export interface IGame {
 
 const initialState: IGame = {
   id: '',
+  bubbleMsg: [],
   isLoaded: false,
   enemyInfo: null,
   timeToBegin: 0,
@@ -161,6 +168,14 @@ const sliceGame = createSlice({
       state.fleetShema = action.payload;
     },
 
+    readBubbleMsg(state, action: PayloadAction<string>){
+      state.bubbleMsg = state.bubbleMsg.filter(msg=>msg.id!==action.payload);
+    },
+
+    setBubbleMsg(state, action: PayloadAction<TItemMsg>){
+      state.bubbleMsg.push(action.payload);
+    },
+
     updateAfterShot(state, action: PayloadAction<IShotParseRes>){
       state.whoStep = action.payload.whoStep;
       
@@ -177,6 +192,11 @@ const sliceGame = createSlice({
       state.timeToBegin = payload.timeToBegin;
       state.isLoaded = true;
       state.gameScene = 'battle';
+      // if(payload.whoStep==='enemy'){
+      //   state.bubbleMsg.push(`is '${state.enemyInfo?.name}' turn!`);
+      // }else{
+      //   state.bubbleMsg.push(`is Your turn!`);
+      // }
       //state.initUser = true;
     });
 
@@ -185,6 +205,7 @@ const sliceGame = createSlice({
       state.whoStep = payload.whoStep;
       state.fleetShemaEnemy = payload.enemyShips;
       //console.log('enemyInfo = ', state.enemyInfo?.id);
+      
       if(payload.whoShot!==state.enemyInfo?.id){
         state.fieldShemaEnemy.forEach(cell=>{
           if(cell.id===payload.cell.id){
@@ -206,6 +227,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg } = sliceGame.actions;
 
 export default sliceGame;

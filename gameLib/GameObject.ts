@@ -1,5 +1,5 @@
 import Container from './Container';
-import { TPoint } from './Game';
+import Game, { TPoint } from './Game';
 import { ICallbackData, TPointer } from './InputEvent';
 import Scene from './Scene';
 
@@ -43,7 +43,7 @@ export default class GameObject{
   constructor(scene: Scene, key: string, name: TGameObjectNames, x=0, y=0, width=0, height=0, angle=0){
     this.scene = scene;
     this._parent = scene;
-    this.id = scene.createId();
+    this.id = Game.createId();
     this.key = key;
     this.name = name;
     this._x = x;
@@ -164,7 +164,7 @@ export default class GameObject{
   }
 
   on(event: TGameObjectEvents, handler: (pointer: TPointer)=>void, context?:any):string{
-    const id = this.scene.game.createId();
+    const id = Game.createId();
     switch (event) {
       case 'pointerdown':
         //id = this.scene.input.on(event, this.onPointerDown, this);

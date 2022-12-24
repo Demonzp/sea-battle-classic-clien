@@ -1,5 +1,5 @@
 import Container from '../../gameLib/Container';
-import { TPoint } from '../../gameLib/Game';
+import Game, { TPoint } from '../../gameLib/Game';
 import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
@@ -47,7 +47,7 @@ export default class Ship {
 
   constructor(scene: Scene, x: number, y: number, type: TShips, angle = 0, scale = 1) {
     this.scene = scene as FleatShema;
-    this.id = scene.createId();
+    this.id = Game.createId();
     this.startPos = {
       x,
       y

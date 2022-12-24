@@ -1,3 +1,4 @@
+import { it } from 'node:test';
 import { useEffect, useRef, useState } from 'react';
 import Battle from '../../game/scenes/BattleScene';
 import FleatShema from '../../game/scenes/FleatShema';
@@ -9,7 +10,7 @@ import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
 import { gameErrorRes, initGame, shotRes } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, setScene, setToQueue, TGameError } from '../../store/slices/game';
+import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setScene, setToQueue, TGameError } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -19,10 +20,20 @@ const GameComp = () => {
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
-  const { gameScene, fleetShema, isLoadedGame, cursor } = useAppSelector(state => state.game);
+  const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg } = useAppSelector(state => state.game);
   const { initUser, user, isConnect } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
+  //const [message, setMessage] = useState('');
+  //const [labelClass, setLabelClass] = useState(styles.msg);
   //console.log('rerender GameComp');
+
+  // useEffect(()=>{
+  //   const timer = setTimeout(()=>{
+  //     setMessage('Yor Torn!');
+  //   }, 1000);
+
+  //   return ()=>clearTimeout(timer);
+  // }, []);
 
   useEffect(() => {
     if (initUser) {
@@ -59,13 +70,13 @@ const GameComp = () => {
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
     }
-    
+
     // if(isLoadedGame){
     //   console.log('isLoadedGame');
     //   //dispatch(setScene('battle'));
     //   dispatch(setScene('shipyard'));
     // }
-    
+
   }, [isLoadedGame]);
 
   useEffect(() => {
@@ -147,11 +158,17 @@ const GameComp = () => {
   const toBattle = () => {
     socketInst.emit('to-queue', fleetShema);
     //game?.scene.start('Loading');
-  }
+  };
+
+  const onAnimationEnd = (id: string) => {
+    console.log('onTransitionEnd');
+    dispatch(readBubbleMsg(id));
+    //setMessage('');
+  };
 
   return (
     //<canvas ref={refCanvas}/>
-    <div className={styles.mainCont} style={{cursor}}>
+    <div className={styles.mainCont} style={{ cursor }}>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
           {
@@ -177,6 +194,34 @@ const GameComp = () => {
           gameScene === 'queue' &&
           <QueueComp />
         }
+        {
+          <div className={styles.contMsg}>
+            {
+              bubbleMsg.map((item) => {
+                return (
+                  
+                    <label
+                      key={item.id}
+                      className={styles.msg}
+                      onAnimationEnd={()=>onAnimationEnd(item.id)}
+                    >
+                      {item.message}
+                    </label>
+                );
+              })
+            }
+          </div>
+          // bubbleMsg.length>0&&
+          //   <div className={styles.contMsg}>
+          //     <label 
+          //       className={styles.msg}
+          //       onAnimationEnd={onAnimationEnd}
+          //     >
+          //       {bubbleMsg}
+          //     </label>
+          //   </div>
+        }
+
       </div>
       <canvas ref={refCanvas} />
     </div>
