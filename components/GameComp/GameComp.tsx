@@ -10,10 +10,11 @@ import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
 import { gameErrorRes, initGame, shotRes } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setScene, setToQueue, TGameError } from '../../store/slices/game';
+import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setGameOver, setScene, setToQueue, TGameError, TGameStatistic } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
+import BattleTable from '../BattleTable';
 import Modal from '../Modal';
 import QueueComp from '../Queue';
 
@@ -70,8 +71,9 @@ const GameComp = () => {
         //console.log('init-game = ', data);
         dispatch(initGame(data));
       });
-      socketInst.on<any>('game-over', (data) => {
+      socketInst.on<TGameStatistic>('game-over', (data) => {
         console.log('game-over = ', data);
+        dispatch(setGameOver(data));
         //dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
@@ -176,7 +178,7 @@ const GameComp = () => {
     //<canvas ref={refCanvas}/>
     <div className={styles.mainCont} style={{ cursor }}>
       <Modal isActive={isModal} setIsActive={setIsModal}>
-
+        <BattleTable />
       </Modal>
       <div className={styles.cont}>
         <div className={styles.contBtns}>

@@ -1,10 +1,24 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
 import { initGame, shotRes } from '../actions/game';
-import { AppState } from '../store';
 
 export type TGameError = {
   message: string;
+}
+
+export type TGameStatistic = {
+  time: number;
+  shots: number;
+  you: TUserStatistic;
+  enemy: TUserStatistic;
+}
+
+export type TUserStatistic = {
+  shoots: number;
+  hits: number;
+  miss: number;
+  lossesShips: number;
+  killShips: number;
 }
 
 export interface IShotParseRes extends IShotResBase{
@@ -92,6 +106,7 @@ export interface IGame {
   isLoaded: boolean;
   timeToBegin: number;
   enemyInfo: TEnemy | null;
+  gameStatistic: TGameStatistic | null;
 }
 
 const initialState: IGame = {
@@ -125,6 +140,7 @@ const initialState: IGame = {
     queue: 0
   },
   whoStep: 'enemy',
+  gameStatistic: null
 };
 
 const sliceGame = createSlice({
@@ -178,8 +194,11 @@ const sliceGame = createSlice({
 
     updateAfterShot(state, action: PayloadAction<IShotParseRes>){
       state.whoStep = action.payload.whoStep;
-      
     },
+
+    setGameOver(state, action: PayloadAction<TGameStatistic>){
+      state.gameStatistic = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(initGame.fulfilled, (state, { payload }) => {
@@ -227,6 +246,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg, setGameOver } = sliceGame.actions;
 
 export default sliceGame;

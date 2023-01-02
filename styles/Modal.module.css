@@ -7,7 +7,7 @@
     left: 0;
     z-index: 1001;
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     justify-content: center;
     opacity: 0;
     pointer-events: none;
@@ -24,14 +24,16 @@
     padding: 20;
     border-radius: 12px;
     background-color: white;
-    margin-bottom: 60vh;
+    margin-top: 15vh;
+    margin-bottom: 35vh;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     min-height: 200px;
     min-width: 420px;
-    position: relative;
+    /* position: relative; */
     transform: scale(0.5);
     transition: 0.4s all;
+    
 }
 
 .contentActive{
