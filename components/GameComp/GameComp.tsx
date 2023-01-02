@@ -14,6 +14,7 @@ import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, set
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
+import Modal from '../Modal';
 import QueueComp from '../Queue';
 
 const GameComp = () => {
@@ -23,6 +24,7 @@ const GameComp = () => {
   const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg } = useAppSelector(state => state.game);
   const { initUser, user, isConnect } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
+  const [isModal, setIsModal] = useState(false);
   //const [message, setMessage] = useState('');
   //const [labelClass, setLabelClass] = useState(styles.msg);
   //console.log('rerender GameComp');
@@ -67,6 +69,10 @@ const GameComp = () => {
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
         //console.log('init-game = ', data);
         dispatch(initGame(data));
+      });
+      socketInst.on<any>('game-over', (data) => {
+        console.log('game-over = ', data);
+        //dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
     }
@@ -169,6 +175,9 @@ const GameComp = () => {
   return (
     //<canvas ref={refCanvas}/>
     <div className={styles.mainCont} style={{ cursor }}>
+      <Modal isActive={isModal} setIsActive={setIsModal}>
+
+      </Modal>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
           {
@@ -186,6 +195,7 @@ const GameComp = () => {
                   fleetShema.length >= 10 &&
                   <button style={{ height: 40 }} onClick={toBattle}>to battle!</button>
                 }
+                <button style={{ height: 40 }} onClick={()=>setIsModal(true)}>modal</button>
               </> :
               null
           }
