@@ -211,7 +211,7 @@ const GameComp = () => {
                   fleetShema.length >= 10 &&
                   <button style={{ height: 40 }} onClick={toBattle}>to battle!</button>
                 }
-                <button style={{ height: 40 }} onClick={()=>setIsModal(true)}>modal</button>
+                {/* <button style={{ height: 40 }} onClick={()=>setIsModal(true)}>modal</button> */}
               </> :
               null
           }

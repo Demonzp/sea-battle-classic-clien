@@ -185,7 +185,7 @@ const sliceGame = createSlice({
     },
 
     setFleatShema(state, action: PayloadAction<TShipOnFleetShema[]>) {
-      //console.log('FleatShema = ', action.payload);
+      console.log('setFleatShema = ', action.payload);
       state.fleetShema = action.payload;
     },
 

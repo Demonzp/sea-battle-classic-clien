@@ -78,6 +78,7 @@ export default class Battle extends Scene{
     store.subscribe(()=>{
       if(store.getState().game.gameScene==='gameOver'){
         this.input.off(this.idPointerMoveHandl);
+        return;
       }
       shema = store.getState().game.fieldShema;
       for (let i = 0; i < shema.length; i++) {
