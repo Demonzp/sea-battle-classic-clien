@@ -1,4 +1,3 @@
-import { it } from 'node:test';
 import { useEffect, useRef, useState } from 'react';
 import Battle from '../../game/scenes/BattleScene';
 import FleatShema from '../../game/scenes/FleatShema';
@@ -76,7 +75,10 @@ const GameComp = () => {
         dispatch(gameOver(data));
         //dispatch(initGame(data));
       });
-      socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
+      socketInst.on('disconnect', (reason) => { 
+        console.log('reason = ', reason)
+        
+      });
     }
 
     // if(isLoadedGame){

@@ -33,3 +33,15 @@ export const getUser = createAsyncThunk<TUser, undefined,
             }
         }
     );
+
+export const setDisconnect = createAsyncThunk<void, undefined, 
+    {
+        state: AppState,
+        rejectValue: TAny
+    }
+>
+    (
+        'app/setDisconnect',
+        async () => {
+        }
+    );

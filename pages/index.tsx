@@ -14,7 +14,7 @@ import styles from '../styles/Home.module.css';
 //<InferGetStaticPropsType<typeof getServerSideProps>></InferGetStaticPropsType>
 const Home: NextPage = () => {
 
-  const { user } = useAppSelector(state=>state.app);
+  const { user, isConnected } = useAppSelector(state=>state.app);
   const isForceShow = useMemo(()=>user?false:true, [user]);
 
   const dispath = useAppDispatch();
@@ -23,14 +23,22 @@ const Home: NextPage = () => {
     dispath(setUser(data));
   };
 
-
   return (
     <div className={styles.container}>
       <div className={styles.main}>
-        {/* <SignInWithGoogleBtn onSuccess={onSignIn} isForceShow={isForceShow}/> */}
+        {!user&&
+          <SignInWithGoogleBtn onSuccess={onSignIn} isForceShow={isForceShow}/>
+        }
         {
-          user&&
+          (isConnected)&&
           <GameComp />
+        }
+        {
+          (!isConnected)&&
+          <div>
+            <label>connect to the server</label>
+            <button>connect</button>
+          </div>
         }
       </div>
     </div>

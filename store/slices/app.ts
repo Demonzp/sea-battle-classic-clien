@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import jwtDecode from 'jwt-decode';
 import { TGoogleAuthData, TGoogleAuthRes } from '../../components/SignInWithGoogleBtn/SignInWithGoogleBtn';
-import { getUser } from '../actions/app';
+import { getUser, setDisconnect } from '../actions/app';
 
 const between = (min:number, max:number)=>{
     return Math.floor(min + Math.random() * (max + 1 - min));
@@ -26,14 +26,17 @@ export interface IApp{
     token: string|null;
     user: TUser|null;
     initUser: boolean;
-    isConnect: boolean; 
+    isConnect: boolean;
+    //isCanConnect: boolean; 
+    isConnected: boolean;
 }
 
 const initialState: IApp = {
     token: null,
     user: fackeUser,
     initUser: false,
-    isConnect: false
+    isConnect: false,
+    isConnected: false,
 };
 
 const sliceApp = createSlice({
@@ -54,6 +57,7 @@ const sliceApp = createSlice({
             //console.log('user = ', action.payload);
             state.user = tempUser;
             state.token = token;
+            state.isConnected = true;
             //state.user = fackeUser;
         },
         setGuest(state){
@@ -61,6 +65,10 @@ const sliceApp = createSlice({
         }
     },
     extraReducers:(builder)=>{
+        builder.addCase(setDisconnect.fulfilled, (state)=>{
+            state.isConnected = false;
+        });
+
         builder.addCase(getUser.pending, ()=>{
             //console.log('go to server!!!');
         });

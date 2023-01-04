@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
+import { setDisconnect } from '../actions/app';
 import { gameOver, initGame, shotRes } from '../actions/game';
 
 export type TGameError = {
@@ -202,6 +203,14 @@ const sliceGame = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(setDisconnect.fulfilled, ()=>{
+      // for (const key in initialState) {
+      //   const k = key as keyof IGame;
+      //   state[k] as IGame = initialState[k];
+      // }
+      return initialState;
+    });
+
     builder.addCase(gameOver.fulfilled, (state, { payload }) => {
       console.log('gameOver payload = ', payload);
       state.gameStatistic = payload;
