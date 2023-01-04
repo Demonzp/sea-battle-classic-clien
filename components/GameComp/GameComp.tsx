@@ -8,9 +8,9 @@ import Queue from '../../game/scenes/QueueScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser } from '../../store/actions/app';
-import { gameErrorRes, initGame, shotRes } from '../../store/actions/game';
+import { gameErrorRes, gameOver, initGame, shotRes } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { IGameServerStateRes, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setGameOver, setScene, setToQueue, TGameError, TGameStatistic } from '../../store/slices/game';
+import { IGameServerStateRes, IGameStatisticBasic, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setScene, setToQueue, TGameError } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
@@ -71,9 +71,9 @@ const GameComp = () => {
         //console.log('init-game = ', data);
         dispatch(initGame(data));
       });
-      socketInst.on<TGameStatistic>('game-over', (data) => {
+      socketInst.on<IGameStatisticBasic>('game-over', (data) => {
         console.log('game-over = ', data);
-        dispatch(setGameOver(data));
+        dispatch(gameOver(data));
         //dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => { console.log('reason = ', reason) });
@@ -89,7 +89,7 @@ const GameComp = () => {
 
   useEffect(() => {
     //console.log('gameScene= ', gameScene);
-    if (gameScene === 'loading' || gameScene === 'queue' || gameScene === 'battle') {
+    if (gameScene === 'loading' || gameScene === 'queue' || gameScene === 'battle' || gameScene === 'gameOver') {
       //console.log('setIsShowMainButtons= ', false);
       setIsShowMainButtons(false);
     } else {
@@ -113,6 +113,10 @@ const GameComp = () => {
       case 'battle':
         console.log('scene.start(Battle)');
         game?.scene.start('Battle');
+        break;
+      case 'gameOver':
+        console.log('scene.start(gameOver)');
+        setIsModal(true);
         break;
       default:
         break;
@@ -174,10 +178,20 @@ const GameComp = () => {
     //setMessage('');
   };
 
+  const overBattle = ()=>{
+    toShipyard();
+    setIsModal(false);
+  };
+
   return (
     //<canvas ref={refCanvas}/>
     <div className={styles.mainCont} style={{ cursor }}>
-      <Modal isActive={isModal} setIsActive={setIsModal}>
+      <Modal 
+        isActive={isModal} 
+        setIsActive={setIsModal}
+        isStaticBackground={true}
+        onConfirm={overBattle}
+      >
         <BattleTable />
       </Modal>
       <div className={styles.cont}>

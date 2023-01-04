@@ -1,12 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TShips } from '../../game/objects/Ship';
-import { initGame, shotRes } from '../actions/game';
+import { gameOver, initGame, shotRes } from '../actions/game';
 
 export type TGameError = {
   message: string;
 }
 
-export type TGameStatistic = {
+export interface IGameStatistic extends IGameStatisticBasic{
+  text: string;
+}
+
+export interface IGameStatisticBasic{
+  winnerId: string;
   time: number;
   shots: number;
   you: TUserStatistic;
@@ -14,7 +19,7 @@ export type TGameStatistic = {
 }
 
 export type TUserStatistic = {
-  shoots: number;
+  shots: number;
   hits: number;
   miss: number;
   lossesShips: number;
@@ -74,7 +79,7 @@ export interface IQueue {
   queue: number;
 };
 
-export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle';
+export type TGameScenes = 'queue' | 'loading' | 'shipyard' | 'fleatShema' | 'battle' | 'gameOver';
 export type TShipOnFleetShema = {
   id: string;
   type: TShips;
@@ -106,7 +111,7 @@ export interface IGame {
   isLoaded: boolean;
   timeToBegin: number;
   enemyInfo: TEnemy | null;
-  gameStatistic: TGameStatistic | null;
+  gameStatistic: IGameStatistic | null;
 }
 
 const initialState: IGame = {
@@ -195,12 +200,15 @@ const sliceGame = createSlice({
     updateAfterShot(state, action: PayloadAction<IShotParseRes>){
       state.whoStep = action.payload.whoStep;
     },
-
-    setGameOver(state, action: PayloadAction<TGameStatistic>){
-      state.gameStatistic = action.payload;
-    }
   },
   extraReducers: (builder) => {
+    builder.addCase(gameOver.fulfilled, (state, { payload }) => {
+      console.log('gameOver payload = ', payload);
+      state.gameStatistic = payload;
+      state.gameScene = 'gameOver';
+      state.cursor = 'auto';
+    });
+
     builder.addCase(initGame.fulfilled, (state, { payload }) => {
       //console.log('getUser.fulfilled = ', payload);
       state.whoStep = payload.whoStep;
@@ -246,6 +254,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg, setGameOver } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg } = sliceGame.actions;
 
 export default sliceGame;

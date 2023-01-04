@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import Game from '../../gameLib/Game';
 import socketInst from '../../utils/socket';
-import { IGameServerStateParseRes, IGameServerStateRes, IShotParseRes, IShotRes, setBubbleMsg, setFleatShema, setStatusLoading, TGameError, TWhoStep } from '../slices/game';
+import { IGameServerStateParseRes, IGameServerStateRes, IGameStatistic, IGameStatisticBasic, IShotParseRes, IShotRes, setBubbleMsg, setFleatShema, setStatusLoading, TGameError, TWhoStep } from '../slices/game';
 import { AppState } from '../store';
 
 const parseWhoStep = (userId: string, whoId: string): TWhoStep => {
@@ -23,9 +23,9 @@ export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerSt
                 whoStep: parseWhoStep(getState().app.user!.id, serverData.whoStep)
             }
 
-            if(parseData.whoStep==='enemy'){
+            if (parseData.whoStep === 'enemy') {
                 dispatch(createBubbleMsg(`is '${getState().game.enemyInfo?.name}' turn!`));
-            }else{
+            } else {
                 dispatch(createBubbleMsg(`is Your turn!`));
             }
 
@@ -49,9 +49,9 @@ export const shotRes = createAsyncThunk<IShotParseRes, IShotRes,
                 whoStep: parseWhoStep(getState().app.user!.id, serverData.whoStep)
             }
 
-            if(parseData.whoStep==='enemy'){
+            if (parseData.whoStep === 'enemy') {
                 dispatch(createBubbleMsg(`is '${getState().game.enemyInfo?.name}' turn!`));
-            }else{
+            } else {
                 dispatch(createBubbleMsg(`is Your turn!`));
             }
 
@@ -96,6 +96,22 @@ export const gameErrorRes = createAsyncThunk<void, TGameError,
             dispatch(setStatusLoading(true));
             //console.log('Стреляю!!!');
             //socketInst.emit('shot', data);
+        }
+    );
+
+export const gameOver = createAsyncThunk<IGameStatistic, IGameStatisticBasic,
+    {
+        state: AppState
+    }
+>
+    (
+        'game/gameOver',
+        async (data, { getState }) => {
+            const parceData = {...data} as IGameStatistic;
+            
+            parceData.text = getState().app.user?.id===data.winnerId?'You Win!':'You Lost!'
+            
+            return parceData;
         }
     );
 

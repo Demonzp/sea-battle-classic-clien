@@ -12,6 +12,7 @@ export default class Battle extends Scene{
   prevShemaEnemy: TFieldShemaCell [] = [];
   ships: Ship[] = [];
   shipsEnamy: Ship[] = [];
+  idPointerMoveHandl = '';
 
   constructor(){
     super('Battle');
@@ -37,7 +38,7 @@ export default class Battle extends Scene{
     this.plFieldEnemy = new PlayerField(this, this.plField.width+stepX,0);
     this.plFieldEnemy.setType('enemy');
 
-    this.input.on('pointermove', (point)=>{
+    this.idPointerMoveHandl = this.input.on('pointermove', (point)=>{
       this.plFieldEnemy?.pointerMove(point);
       this.ships.forEach(ship=>ship.setTarget(point));
       //console.log('pointermove');
@@ -75,6 +76,9 @@ export default class Battle extends Scene{
     this.prevShemaEnemy = shemaEnemy;
     this.parseField();
     store.subscribe(()=>{
+      if(store.getState().game.gameScene==='gameOver'){
+        this.input.off(this.idPointerMoveHandl);
+      }
       shema = store.getState().game.fieldShema;
       for (let i = 0; i < shema.length; i++) {
         const cell = shema[i];

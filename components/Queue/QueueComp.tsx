@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setScene } from '../../store/slices/game';
 import styles from '../../styles/GameUI.module.css';
+import { msToString } from '../../utils/global';
 import socketInst from '../../utils/socket';
 
 const QueueComp = () => {
@@ -15,14 +16,18 @@ const QueueComp = () => {
     useEffect(() => {
         const timer = setInterval(() => {
             const time = (Date.now() - timeCreate);
+            const timeObj = msToString(time);
             //const time = 10699000;
-            const hours = Math.trunc((time / 1000) / 60 / 60);
-            const hoursToSec = hours * 60 * 60;
-            setHour(() => hours < 10 ? '0' + hours : String(hours));
-            const minuts = Math.trunc((time / 1000 - hoursToSec) / 60);
-            setMin(() => minuts < 10 ? '0' + minuts : String(minuts));
-            const seconds = Math.trunc((time / 1000 - hoursToSec - (minuts * 60)));
-            setSec(() => seconds < 10 ? '0' + seconds : String(seconds));
+            // const hours = Math.trunc((time / 1000) / 60 / 60);
+            // const hoursToSec = hours * 60 * 60;
+            // setHour(() => hours < 10 ? '0' + hours : String(hours));
+            // const minuts = Math.trunc((time / 1000 - hoursToSec) / 60);
+            // setMin(() => minuts < 10 ? '0' + minuts : String(minuts));
+            // const seconds = Math.trunc((time / 1000 - hoursToSec - (minuts * 60)));
+            // setSec(() => seconds < 10 ? '0' + seconds : String(seconds));
+            setHour(timeObj.h);
+            setMin(timeObj.m);
+            setSec(timeObj.s);
         }, 1000);
         return () => clearInterval(timer);
     }, []);
