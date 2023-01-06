@@ -84,6 +84,6 @@ export default class Loader{
     this.eventProgressCallbacks = [];
     this.loadImages = [];
     this.eventComplateCallbacks.forEach(callback=>callback(1));
-    console.log('konchil iterirovat!!!');
+    //console.log('konchil iterirovat!!!');
   }
 }

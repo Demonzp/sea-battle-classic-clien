@@ -6,9 +6,10 @@ import Loading from '../../game/scenes/LoadingScene';
 import Queue from '../../game/scenes/QueueScene';
 import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
-import { getUser } from '../../store/actions/app';
+import { getUser, setDisconnect } from '../../store/actions/app';
 import { gameErrorRes, gameOver, initGame, shotRes } from '../../store/actions/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setConnected } from '../../store/slices/app';
 import { IGameServerStateRes, IGameStatisticBasic, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setScene, setToQueue, TGameError } from '../../store/slices/game';
 
 import styles from '../../styles/GameUI.module.css';
@@ -22,7 +23,7 @@ const GameComp = () => {
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
   const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg } = useAppSelector(state => state.game);
-  const { initUser, user, isConnect } = useAppSelector(state => state.app);
+  const { initUser, user } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   const [isModal, setIsModal] = useState(false);
   //const [message, setMessage] = useState('');
@@ -38,10 +39,17 @@ const GameComp = () => {
   // }, []);
 
   useEffect(() => {
-    if (initUser) {
+    if (isLoadedGame) {
+      console.log('try connect!');
       socketInst.init({ path: '/api/socket.io', token: user?.id });
       socketInst.on('connect', () => {
         //toShipyard();
+        dispatch(setConnected(true));
+      });
+      socketInst.on('error', () => {
+        console.log('connect error!');
+        //toShipyard();
+        //dispatch(setConnected(true));
       });
       socketInst.on<{ data: string }>('loged', (data) => {
         toShipyard();
@@ -77,7 +85,7 @@ const GameComp = () => {
       });
       socketInst.on('disconnect', (reason) => { 
         console.log('reason = ', reason)
-        
+        dispatch(setDisconnect());
       });
     }
 
@@ -139,8 +147,12 @@ const GameComp = () => {
   }, []);
 
   useEffect(() => {
-    if (!game) {
-      //console.log('setGame');
+    return ()=>setGame(null);
+  }, []);
+
+  useEffect(() => {
+    if (!game&&initUser) {
+      console.log('new Game');
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,
@@ -148,7 +160,7 @@ const GameComp = () => {
         scenes: [LoaderScene, Shipyard, FleatShema, Queue, Loading, Battle],
       }));
     }
-  }, []);
+  }, [initUser]);
 
   useEffect(() => {
     return () => {

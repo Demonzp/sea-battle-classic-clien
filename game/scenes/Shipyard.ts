@@ -17,6 +17,7 @@ export default class Shipyard extends Scene{
   }
 
   create(): void {
+    console.log('Shipyard create');
     const fon = this.add.sprite('shipyard2', this.width/2, this.height/2);
     this.ship1 = new Ship(this, 320, 105, 4, -16, 1.3);
     this.ship2 = new Ship(this, 330, 144, 3, -18, 1.3);
@@ -29,6 +30,7 @@ export default class Shipyard extends Scene{
     //console.log('time = ', time);
     this.timer.on(this.timerCallback, time, this);
     this.timer.on(this.timerCallback2, time2, this);
+    console.log('Shipyard created');
   }
 
   timerCallback2(){

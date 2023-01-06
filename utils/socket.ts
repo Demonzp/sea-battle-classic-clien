@@ -4,7 +4,11 @@ class SocketInst{
     socket: Socket|null = null;
 
     init({url='/',path='',token=''}){
-        this.socket = io(url, {path,auth:{token}});
+        this.socket = io(url, {
+            reconnection: false,
+            path,
+            auth:{token}
+        });
     }
 
     on<T>(event:string,callback:(args:T)=>void){

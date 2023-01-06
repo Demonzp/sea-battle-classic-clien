@@ -57,12 +57,21 @@ const sliceApp = createSlice({
             //console.log('user = ', action.payload);
             state.user = tempUser;
             state.token = token;
-            state.isConnected = true;
+            state.isConnect = true;
             //state.user = fackeUser;
         },
         setGuest(state){
             state.user = null;
-        }
+        },
+
+        setConnect(state, action: PayloadAction<boolean>){
+            state.isConnected = action.payload;
+        },
+
+        setConnected(state, action: PayloadAction<boolean>){
+            state.isConnected = action.payload;
+            state.isConnect = false;
+        },
     },
     extraReducers:(builder)=>{
         builder.addCase(setDisconnect.fulfilled, (state)=>{
@@ -79,11 +88,14 @@ const sliceApp = createSlice({
         });
 
         builder.addCase(getUser.rejected, (state, {payload})=>{
+            state.isConnect = false;
+            state.isConnected = false;
+            state.initUser = false;
             //console.log('getUser.rejected = ', payload);
         });
     }
 });
 
-export const { setUser, setGuest } = sliceApp.actions;
+export const { setUser, setGuest, setConnect, setConnected } = sliceApp.actions;
 
 export default sliceApp;
