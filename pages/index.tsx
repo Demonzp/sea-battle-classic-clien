@@ -41,7 +41,7 @@ const Home: NextPage = () => {
           <GameComp />
         }
         {
-          (!isConnected&&!isConnect)&&
+          (!isConnected&&!isConnect&&user)&&
           <div>
             <label>connect to the server</label>
             <button onClick={onConnect}>connect</button>

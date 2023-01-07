@@ -23,7 +23,7 @@ const GameComp = () => {
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
   const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg } = useAppSelector(state => state.game);
-  const { initUser, user } = useAppSelector(state => state.app);
+  const { initUser, token, user } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   const [isModal, setIsModal] = useState(false);
   //const [message, setMessage] = useState('');
@@ -41,7 +41,7 @@ const GameComp = () => {
   useEffect(() => {
     if (isLoadedGame) {
       console.log('try connect!');
-      socketInst.init({ path: '/api/socket.io', token: user?.id });
+      socketInst.init({ path: '/api/socket.io', token: JSON.stringify({sub:user!.id}) });
       socketInst.on('connect', () => {
         //toShipyard();
         dispatch(setConnected(true));

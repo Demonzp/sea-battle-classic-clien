@@ -60,6 +60,14 @@ export default class Scene{
     return this._game!.height;
   }
 
+  get halfWidth():number{
+    return this._game!.halfWidth;
+  }
+
+  get halfHeight():number{
+    return this._game!.halfHeight;
+  }
+
   get scene(): ISceneManager{
     return this._game!.scene;
   }

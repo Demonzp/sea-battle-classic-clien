@@ -24,6 +24,8 @@ export default class Game{
   input:InputEvent;
   width = 0;
   height = 0;
+  halfWidth = 0;
+  halfHeight = 0;
   private _scenes = new ScenesManager(this);
   isInit = false;
   requestAnimateId: number|null = null;
@@ -69,6 +71,8 @@ export default class Game{
     }else{
       this.height = width;
     }
+    this.halfWidth = this.width/2;
+    this.halfHeight = this.height/2;
     this._resize();
   }
 

@@ -69,6 +69,9 @@ export default class GunTower {
   }
 
   rotate() {
+    if(this.ship.isOnTarget){
+      return;
+    }
     let kY = Math.sin(this.ship.angle);
     let kX = Math.cos(this.ship.angle);
 
@@ -90,8 +93,9 @@ export default class GunTower {
           dAngle = 360 + dAngle;
         }
     
-        if (Math.abs(dAngle) < this.speedRot) {
+        if (Math.abs(dAngle) <= this.speedRot) {
           //dAngle = 0;
+          this.ship.isOnTarget = true;
           this.angle -= dAngle;
         } else if (dAngle > 0) {
           this.angle -= this.speedRot;

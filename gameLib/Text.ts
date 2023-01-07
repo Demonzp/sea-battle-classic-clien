@@ -27,6 +27,10 @@ export default class Text extends GameObject{
         return this._text;
     }
 
+    set color(val:string){
+        this._color = val;
+    }
+
     set fontSize(val: number){
         this._fontSize = val;
     }

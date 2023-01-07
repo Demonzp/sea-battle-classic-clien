@@ -1,3 +1,4 @@
+import { ELoadEvents } from '../../gameLib/Loader';
 import Scene from '../../gameLib/Scene';
 import { setLoadedGame } from '../../store/slices/game';
 import store from '../../store/store';
@@ -8,13 +9,19 @@ export default class LoaderScene extends Scene{
   }
 
   preload(){
-    //const graphics = this.add.graphics();
-    // this.load.on(ELoadEvents.progress, (value)=>{
-    //     graphics.fillStyle(0xffffff);
-    //     graphics.fillRect(10,10,this.width*value,20);
-    // });
-    // graphics.fillStyle(0xffffff);
-    // graphics.fillRect(10,10,this.width,20);
+    const graphicsFon = this.add.graphics();
+    graphicsFon.fillStyle('#000');
+    graphicsFon.fillRect(0,0,this.width,this.height);
+    const graphics = this.add.graphics();
+    const text = this.add.text('Loading...', this.halfWidth-30, this.halfHeight-40);
+    text.color = 'white';
+    this.load.on(ELoadEvents.progress, (value)=>{
+      graphics.fillStyle('#ffffff');
+      graphics.fillRect(0,this.halfHeight,this.width*value,20);
+    });
+    graphics.fillStyle('#ffffff');
+    graphics.fillRect(0,0,0,20);
+
     this.load.image('ship-body-type-4', './assets/ship-body-type-4.png');
     this.load.image('ship-detail-type-4', './assets/ship-detail-type-4.png');
     this.load.image('ship-body-type-3', './assets/ship-body-type-3.png');
