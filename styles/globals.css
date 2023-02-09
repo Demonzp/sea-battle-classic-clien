@@ -15,6 +15,33 @@ a {
   box-sizing: border-box;
 }
 
+.videoWrapper {
+  display: block;
+  /* height: 100%;
+  width: 100vw; */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: fixed;
+}
+
+.bgVideod {
+  position: absolute;
+  /* top: 0;
+  left: 0; */
+  /* top: 50%;
+  left: 50%; */
+  /* width: 100%; */
+  height: 100%;
+  min-height: 100%;
+  min-width: 100%;
+}
+
+.mainWraper {
+  height: 100%;
+  position: relative;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
