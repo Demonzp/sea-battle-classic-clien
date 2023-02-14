@@ -19,7 +19,9 @@ export default class Battle extends Scene{
   }
 
   create(): void {
-    //console.log('Battle create');
+    const graphics = this.add.graphics();
+    graphics.fillStyle('red');
+
     this.input.on('pointerup', (point)=>{
       this.plFieldEnemy?.pointerUp(point);
       //console.log('pointerup');
@@ -41,6 +43,8 @@ export default class Battle extends Scene{
     this.idPointerMoveHandl = this.input.on('pointermove', (point)=>{
       this.plFieldEnemy?.pointerMove(point);
       this.ships.forEach(ship=>ship.setTarget(point));
+      //console.log(point.x,'||', point.y);
+      graphics.fillRect(point.x-5,point.y-5,10,10);
       //console.log('pointermove');
     });
 
@@ -109,6 +113,7 @@ export default class Battle extends Scene{
       }
       
     });
+    graphics.setZindex(1);
   }
 
   parserFleatShemaEnamy(fleetShema:TShipOnFleetShema[]){
@@ -152,7 +157,7 @@ export default class Battle extends Scene{
       }
     });
     this.plField?.clearField();
-    this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
+    //this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
   }
 
   parseField(){

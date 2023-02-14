@@ -22,7 +22,7 @@ const GameComp = () => {
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
   const [isShowMainButtons, setIsShowMainButtons] = useState(false);
-  const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg } = useAppSelector(state => state.game);
+  const { gameScene, fleetShema, isLoadedGame, cursor, bubbleMsg, whoStep, enemyInfo } = useAppSelector(state => state.game);
   const { initUser, token, user } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   const [isModal, setIsModal] = useState(false);
@@ -233,6 +233,10 @@ const GameComp = () => {
         {
           gameScene === 'queue' &&
           <QueueComp />
+        }
+        {
+          gameScene === 'battle' &&
+          <div className={styles.contBtns}>{whoStep==='you'?'is your turn':`is ${enemyInfo?.name} turn`}</div>
         }
         {
           <div className={styles.contMsg}>

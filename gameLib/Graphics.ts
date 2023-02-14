@@ -6,7 +6,7 @@ export type TComands = {
   val: any;
 }
 
-type TKeys = 'fillStyle'|'strokeStyle'|'lineStyle';
+type TKeys = 'fillStyle'|'strokeStyle'|'lineStyle'|'fillRect';
 
 export default class Graphics{
   scene: Scene;
@@ -22,6 +22,11 @@ export default class Graphics{
 
   clear(){
     this.arr = [];
+  }
+
+  setZindex(val:number){
+    this.zIndex = val;
+    this.scene.sortByZindex();
   }
 
   addCommand(key: TKeys, val:any){
@@ -68,10 +73,11 @@ export default class Graphics{
   }
 
   fillRect(x:number,y:number,width:number,height:number){
-    this.arr.push({
-      key: 'fillRect',
-      val: {x,y,width,height}
-    });
+    this.addCommand('fillRect', {x,y,width,height});
+    // this.arr.push({
+    //   key: 'fillRect',
+    //   val: {x,y,width,height}
+    // });
   }
 
   strokeStyle(color: string, alpha?: number){

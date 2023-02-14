@@ -188,7 +188,7 @@ export default class PlayerField {
         }
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
-        //console.log('cells = ', this.cells);
+        console.log('cells = ', this.cells);
         this.cursor.setZindex(2);
     }
 
@@ -325,8 +325,10 @@ export default class PlayerField {
         });
 
         ship.cellsOnField?.sup.forEach(cellId => {
-            const cell = this.findCellById(cellId.col + '-' + cellId.row);
-            let findedCell = undefined;
+            //console.log('cellId = ', cellId);
+            const cell = this.findCellById(cellId.row + '-' + cellId.col);
+            //console.log('cell = ', cell);
+            let findedCell = null;
             for (let i = 0; i < this.ships.length; i++) {
                 const s = this.ships[i];
                 findedCell = s.findCell(cellId);

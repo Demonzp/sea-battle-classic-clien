@@ -73,14 +73,15 @@ export default class Ship {
       case 4:
 
         this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
+        //this.bodySprite.angle = 180;
         this.mainContainer.setInteractiveRect((step * 4) * this.scale, (step - 3) * this.scale);
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
-          { x: -42 * this.scale, y: 0, angle: 0 },
-          { x: -25 * this.scale, y: 0, angle: 0 },
-          { x: 52 * this.scale, y: 0, angle: 180 },
+          // { x: -42 * this.scale, y: 0, angle: 0 },
+          // { x: -25 * this.scale, y: 0, angle: 0 },
+          // { x: 52 * this.scale, y: 0, angle: 180 },
           { x: 38 * this.scale, y: 0, angle: 180 },
         ];
         for (let i = 0; i < arrPosGuns.length; i++) {
@@ -231,9 +232,11 @@ export default class Ship {
   }
 
   setTarget(point: TPointer){
-    this.isOnTarget = false;
+    //setTimeout(()=>this.isOnTarget = false);
     this.targetPos.x = point.x;
     this.targetPos.y = point.y;
+    this.gunTowers.forEach(g=>g.isOnTarget = false);
+    //this.isOnTarget = false;
   }
 
   setOnField() {

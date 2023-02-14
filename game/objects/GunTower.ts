@@ -1,4 +1,5 @@
 import Container from '../../gameLib/Container';
+import Graphics from '../../gameLib/Graphics';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
 import Ship, { TShips } from './Ship';
@@ -11,21 +12,25 @@ export default class GunTower {
   angle: number;
   scale: number;
   mainContainer: Container;
+  graphics: Graphics;
   bodySprite: Sprite | null = null;
   detailSprite: Sprite | null = null;
   _ship: Ship | null = null;
   speedRot = 2;
   rotCorect = 0;
+  isOnTarget = true;
 
   constructor(scene: Scene, x: number, y: number, parent: Ship, angle = 0, scale = 1) {
     this.scene = scene;
     this.x = x;
     this.y = y;
     this.angle = angle;
+    this.rotCorect = angle;
     this.scale = scale;
     this._ship = parent;
     this.type = parent.type;
     this.mainContainer = scene.add.container(x, y);
+    this.graphics = scene.add.graphics();
 
     this.create();
   }
@@ -66,43 +71,53 @@ export default class GunTower {
       default:
         break;
     }
+
+    this.graphics.fillStyle('red');
+
+    let kY = Math.sin(this.ship.angle * Math.PI / 180);
+    let kX = Math.cos(this.ship.angle * Math.PI / 180);
+    let realX = this.ship.x + this.x * kX - this.y * kY;
+    let realY = this.ship.y + this.x * kY + this.y * kX;
+
+    this.graphics.fillRect(realX-5, realY-5, 10,10);
   }
 
   rotate() {
-    if(this.ship.isOnTarget){
+    if (this.isOnTarget) {
       return;
     }
-    let kY = Math.sin(this.ship.angle);
-    let kX = Math.cos(this.ship.angle);
+    const kY = Math.sin(this.ship.angle * Math.PI / 180);
+    const kX = Math.cos(this.ship.angle * Math.PI / 180);
 
-    let real_x = this.ship.x + this.x * kX + this.y * kY;
-    let real_y = this.ship.y + this.x * kY + this.y * kX;
-
-    let mDx2 = real_x - this.ship.targetPos.x;
-    let mDy2 = real_y - this.ship.targetPos.y;
-    let mAngle = Math.atan2(mDy2, mDx2);
-    let mAngle2 = mAngle / Math.PI * 180;
-    let dAngle = this.ship.angle + this.angle - mAngle2 + this.rotCorect;
-
-    if (dAngle !== 0) {
-      if (Math.abs(dAngle) !== 360) {
-        //trace('еду');
-        if (dAngle > 180) {
-          dAngle = -360 + dAngle;
-        } else if (dAngle < -180) {
-          dAngle = 360 + dAngle;
-        }
+    const realX = this.ship.x + this.x * kX - this.y * kY;
+    const realY = this.ship.y + this.x * kY + this.y * kX;
     
-        if (Math.abs(dAngle) <= this.speedRot) {
-          //dAngle = 0;
-          this.ship.isOnTarget = true;
-          this.angle -= dAngle;
-        } else if (dAngle > 0) {
-          this.angle -= this.speedRot;
-        } else if (dAngle < 0) {
-          this.angle += this.speedRot;
-        }
-      }
+    //console.log(this.ship.targetPos);
+    const mDx = realX - this.ship.targetPos.x;
+    const mDy = realY - this.ship.targetPos.y;
+    const mAngle = Math.atan2(mDy, mDx);
+    const mAngle2 = mAngle / Math.PI * 180;
+    let dAngle = this.ship.angle + this.angle - mAngle2;
+    console.log(dAngle);
+    // if(this.rotCorect===180){
+    //   dAngle = -360 + dAngle;
+    // }
+    // if (dAngle >= 180) {
+    //   dAngle = -360 + dAngle;
+    // } else if (dAngle < -180) {
+    //   dAngle = 360 + dAngle;
+    // }
+    // console.log(dAngle);
+    if (Math.abs(dAngle) <= this.speedRot) {
+
+      this.isOnTarget = true;
+      this.angle = mAngle2;
+      //this.isCanShot();
+      console.log('isOnTarget');
+    } else if (dAngle > 0) {
+      this.angle -= this.speedRot;
+    } else if (dAngle < 0) {
+      this.angle += this.speedRot;
     }
 
     // if (dAngle >= 180) {
@@ -129,7 +144,7 @@ export default class GunTower {
     // }
   }
 
-  update(){
+  update() {
     this.rotate();
     this.mainContainer.angle = this.angle;
   }
