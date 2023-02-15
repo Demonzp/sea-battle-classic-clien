@@ -98,20 +98,22 @@ export default class GunTower {
     const mAngle = Math.atan2(mDy, mDx);
     const mAngle2 = mAngle / Math.PI * 180;
     let dAngle = this.ship.angle + this.angle - mAngle2;
-    console.log(dAngle);
+    //console.log(mAngle2*-1);
     // if(this.rotCorect===180){
     //   dAngle = -360 + dAngle;
     // }
     // if (dAngle >= 180) {
-    //   dAngle = -360 + dAngle;
-    // } else if (dAngle < -180) {
-    //   dAngle = 360 + dAngle;
+    //   this.angle = -360 + this.angle;
+    // } else if (dAngle <= -180) {
+    //   this.angle = 360 + this.angle;
     // }
     // console.log(dAngle);
     if (Math.abs(dAngle) <= this.speedRot) {
 
       this.isOnTarget = true;
-      this.angle = mAngle2;
+      this.angle = mAngle2-this.ship.angle;
+      //this.angle -= this.speedRot;
+      console.log(this.angle);
       //this.isCanShot();
       console.log('isOnTarget');
     } else if (dAngle > 0) {
