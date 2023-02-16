@@ -1,7 +1,8 @@
 import Scene from '../../gameLib/Scene';
-import { TFieldShemaCell, TShipOnFleetShema } from '../../store/slices/game';
+import { clearYourShots, TFieldShemaCell, TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
 import { compairValuesObjs } from '../../utils/global';
+import Bullet from '../objects/Bullet';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
 
@@ -13,6 +14,12 @@ export default class Battle extends Scene{
   ships: Ship[] = [];
   shipsEnamy: Ship[] = [];
   idPointerMoveHandl = '';
+  yorShots: TFieldShemaCell [] = [];
+  targetCell: TFieldShemaCell|null = null;
+  renderCells: TFieldShemaCell [] = [];
+  numShots = 0;
+  numLiviShips = 0;
+  isFleatReadyShot = true;
 
   constructor(){
     super('Battle');
@@ -42,38 +49,39 @@ export default class Battle extends Scene{
 
     this.idPointerMoveHandl = this.input.on('pointermove', (point)=>{
       this.plFieldEnemy?.pointerMove(point);
-      this.ships.forEach(ship=>ship.setTarget(point));
+      this.ships.forEach(ship=>ship.pointerSet(point));
       //console.log(point.x,'||', point.y);
       graphics.fillRect(point.x-5,point.y-5,10,10);
       //console.log('pointermove');
     });
 
-    const shipFour = new Ship(this, 0, 0, 4);
-    const shipTreeOne = new Ship(this, 0, 0, 3);
-    const shipTreeTwo = new Ship(this, 0, 0, 3);
-    const shipTwoOne = new Ship(this, 0, 0, 2);
-    const shipTwoTwo = new Ship(this, 0, 0, 2);
-    const shipTwoTree = new Ship(this, 0, 0, 2);
-    const shipOneOne = new Ship(this, 0, 0, 1);
-    const shipOneTwo = new Ship(this, 0, 0, 1);
-    const shipOneTree = new Ship(this, 0, 0, 1);
-    const shipOneFour = new Ship(this, 0, 0, 1);
-    //shipFour.angle = 40;
-    this.ships.push(
-      shipFour, 
-      shipTreeOne, 
-      shipTreeTwo, 
-      shipTwoOne, 
-      shipTwoTwo, 
-      shipTwoTree,
-      shipOneOne,
-      shipOneTwo,
-      shipOneTree,
-      shipOneFour,
-    );
+    // const shipFour = new Ship(this, 0, 0, 4);
+    // const shipTreeOne = new Ship(this, 0, 0, 3);
+    // const shipTreeTwo = new Ship(this, 0, 0, 3);
+    // const shipTwoOne = new Ship(this, 0, 0, 2);
+    // const shipTwoTwo = new Ship(this, 0, 0, 2);
+    // const shipTwoTree = new Ship(this, 0, 0, 2);
+    // const shipOneOne = new Ship(this, 0, 0, 1);
+    // const shipOneTwo = new Ship(this, 0, 0, 1);
+    // const shipOneTree = new Ship(this, 0, 0, 1);
+    // const shipOneFour = new Ship(this, 0, 0, 1);
+    // //shipFour.angle = 40;
+    // this.ships.push(
+    //   shipFour, 
+    //   shipTreeOne, 
+    //   shipTreeTwo, 
+    //   shipTwoOne, 
+    //   shipTwoTwo, 
+    //   shipTwoTree,
+    //   shipOneOne,
+    //   shipOneTwo,
+    //   shipOneTree,
+    //   shipOneFour,
+    // );
     //console.log('gameObjects = ', this.add.gameObjects);
     const fleetShema = store.getState().game.fleetShema;
     this.parserFleatShema(fleetShema);
+    this.parseDeadShips(store.getState().game.deadShips);
     let shema = store.getState().game.fieldShema;
     let shemaEnemy = store.getState().game.fieldShemaEnemy;
     this.prevShema = shema;
@@ -84,7 +92,8 @@ export default class Battle extends Scene{
         this.input.off(this.idPointerMoveHandl);
         return;
       }
-      shema = store.getState().game.fieldShema;
+      
+      const shema = store.getState().game.fieldShema;
       for (let i = 0; i < shema.length; i++) {
         const cell = shema[i];
         if(this.prevShema[i]){
@@ -97,7 +106,7 @@ export default class Battle extends Scene{
         }
       }
 
-      shemaEnemy = store.getState().game.fieldShemaEnemy;
+      const shemaEnemy = store.getState().game.fieldShemaEnemy;
       for (let i = 0; i < shemaEnemy.length; i++) {
         const cell = shemaEnemy[i];
         if(this.prevShemaEnemy[i]){
@@ -110,6 +119,14 @@ export default class Battle extends Scene{
             return;
           }
         }
+      }
+
+      const shots = store.getState().game.youShotTo;
+
+      if(shots.length>0){
+        this.yorShots = [...this.yorShots, ...shots];
+        console.log('shots = ', this.yorShots);
+        store.dispatch(clearYourShots());
       }
       
     });
@@ -133,28 +150,43 @@ export default class Battle extends Scene{
     this.plFieldEnemy!.clearField();
   }
 
-  parserFleatShema(fleetShema:TShipOnFleetShema[]){
-    //console.log('fleatShema = ', fleatShema);
-    const arrShipId:string[] = [];
-    fleetShema.forEach(shipShema=>{
-      const ship = this.ships.find(s=>{
-        if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
-          return true;
-        }
-
-        return false;
-      });
-
+  parseDeadShips(fleatShema: TShipOnFleetShema[]){
+    fleatShema.forEach(shipShema=>{
+      const ship = this.ships.find(s=>s.id===shipShema.id);
       if(ship){
+        ship.setDead();
+      }
+    });
+  }
+
+  parserFleatShema(fleetShema:TShipOnFleetShema[]){
+    console.log('fleatShema = ', fleetShema);
+    //const arrShipId:string[] = [];
+    fleetShema.forEach(shipShema=>{
+      // const ship = this.ships.find(s=>{
+      //   if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
+      //     return true;
+      //   }
+
+      //   return false;
+      // });
+
+      
+
+      //if(ship){
         //console.log('ship = ', ship);
-        arrShipId.push(ship.id);
+        //arrShipId.push(ship.id);
+        const ship = new Ship(this, 0, 0, shipShema.type);
+        ship.id = shipShema.id;
         ship.angle = shipShema.angle;
         this.plField?.calcFromStartCell(shipShema.startPos, ship, ship.angle);
         //console.log(this.plField?.isGreen);
         ship.x = this.plField?.shipPos.x!;
         ship.y = this.plField?.shipPos.y!;
+        
         this.plField?.dropShip(ship);
-      }
+        this.ships.push(ship);
+      //}
     });
     this.plField?.clearField();
     //this.ships.forEach(ship=>ship.angle===0?ship.angle=180:ship.angle=0);
@@ -165,7 +197,38 @@ export default class Battle extends Scene{
     this.plFieldEnemy?.parseServerData(store.getState().game.fieldShemaEnemy);
   }
 
+  shipShot(_: Ship){
+    this.numShots++;
+    console.log('shot = ', this.numShots);
+    if(this.numShots>=this.ships.filter(s=>s.isLive).length){
+      console.log('this.numShots = ', this.numShots);
+      this.isFleatReadyShot = true;
+      this.numShots = 0;
+      //this.parseField();
+      //this.plFieldEnemy?.parseServerData(this.renderCells);
+      //this.renderCells = [];
+    }
+  }
+
+  bulletOnTarget(bullet: Bullet){
+    //console.log('bullet.cell.isFree = ', bullet.cell.id);
+    const cell = this.plFieldEnemy?.findCellHeadById(bullet.cell.id);
+    console.log('isFree = ', cell);
+  }
+
   update(): void {
+    if(this.isFleatReadyShot&&this.yorShots.length>0){
+      this.isFleatReadyShot = false;
+      const target = this.yorShots.splice(0,1)[0];
+      const cell = this.plFieldEnemy?.findCellById(target.id);
+      
+      //console.log('setShotTarget = ', cell);
+      if(cell){
+        //this.renderCells.push(target);
+        //this.targetCell = cell;
+        this.ships.forEach(s=>s.setShotTarget(cell));
+      }
+    }
     this.ships.forEach(ship=>ship.update());
     this.shipsEnamy.forEach(ship=>ship.update());
   }

@@ -5,6 +5,7 @@ import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
 import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
+import { ICell } from './PlayerField';
 
 export type TShips = 4 | 3 | 2 | 1;
 
@@ -36,6 +37,7 @@ export default class Ship {
   targetPos: TPoint = {...initPos};
   isOnTarget = true;
   cellsOnField: TCells | null = null;
+  cellTarget: ICell | null = null;
   startPos: TPoint;
   speed = 4;
   sx = 0;
@@ -44,6 +46,9 @@ export default class Ship {
   dy = 0;
   timerClick = 0;
   readonly timeIsClick = 140;
+  isLive = false;
+  isCanShot = false;
+  numShutTowers = 0;
 
   constructor(scene: Scene, x: number, y: number, type: TShips, angle = 0, scale = 1) {
     this.scene = scene as FleatShema;
@@ -66,6 +71,7 @@ export default class Ship {
 
   create() {
     //console.log('Ship create');
+    this.isLive = true;
     const lineWidth = 2;
     const min = Math.min(this.scene.width, this.scene.height);
     const step = (min - lineWidth) / 11;
@@ -79,9 +85,9 @@ export default class Ship {
         this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
-          // { x: -42 * this.scale, y: 0, angle: 0 },
-          // { x: -25 * this.scale, y: 0, angle: 0 },
-          // { x: 52 * this.scale, y: 0, angle: 180 },
+          { x: -42 * this.scale, y: 0, angle: 0 },
+          { x: -25 * this.scale, y: 0, angle: 0 },
+          { x: 52 * this.scale, y: 0, angle: 180 },
           { x: 38 * this.scale, y: 0, angle: 180 },
         ];
         for (let i = 0; i < arrPosGuns.length; i++) {
@@ -150,6 +156,10 @@ export default class Ship {
       default:
         break;
     }
+  }
+
+  setDead(){
+    this.isLive = false;
   }
 
   isHasPrevPosField() {
@@ -231,12 +241,26 @@ export default class Ship {
     }
   }
 
+  pointerSet(point: TPointer){
+    if(this.isCanShot){
+      return;
+    }
+    this.setTarget(point);
+  }
+
   setTarget(point: TPointer){
     //setTimeout(()=>this.isOnTarget = false);
+    
     this.targetPos.x = point.x;
     this.targetPos.y = point.y;
     this.gunTowers.forEach(g=>g.isOnTarget = false);
     //this.isOnTarget = false;
+  }
+
+  setShotTarget(cell: ICell){
+    this.isCanShot = true;
+    this.cellTarget = cell;
+    this.setTarget({x:cell.pos.center.x, y:cell.pos.center.y});
   }
 
   setOnField() {
@@ -283,6 +307,15 @@ export default class Ship {
     //console.log(this.sx, '||', this.sy);
   }
 
+  gunShot(_: GunTower){
+    this.numShutTowers++;
+    if(this.numShutTowers>=this.gunTowers.length){
+      this.isCanShot = false;
+      this.numShutTowers = 0;
+      this.scene.shipShot(this);
+    }
+  }
+
   goToDot() {
     if (this.isOnDot) {
       return;
@@ -302,6 +335,9 @@ export default class Ship {
   }
 
   update() {
+    if(!this.isLive){
+      return;
+    }
     //console.log('id = ', this.id);
     //console.log(this.angle);
     this.goToDot();

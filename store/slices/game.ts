@@ -7,11 +7,11 @@ export type TGameError = {
   message: string;
 }
 
-export interface IGameStatistic extends IGameStatisticBasic{
+export interface IGameStatistic extends IGameStatisticBasic {
   text: string;
 }
 
-export interface IGameStatisticBasic{
+export interface IGameStatisticBasic {
   winnerId: string;
   time: number;
   shots: number;
@@ -27,7 +27,7 @@ export type TUserStatistic = {
   killShips: number;
 }
 
-export interface IShotParseRes extends IShotResBase{
+export interface IShotParseRes extends IShotResBase {
   whoStep: typeof initialState.whoStep;
 }
 
@@ -47,7 +47,7 @@ export type TEnemy = {
 }
 
 export type TItemMsg = {
-  id:string;
+  id: string;
   message: string;
 }
 
@@ -68,6 +68,7 @@ export interface IGameServerStateBase {
   fleetShema: TShipOnFleetShema[];
   enemyCells: TFieldShemaCell[];
   enemyShips: TShipOnFleetShema[];
+  deadShips: TShipOnFleetShema[];
   timeToBegin: number;
 }
 
@@ -98,7 +99,7 @@ export type TWhoStep = 'you' | 'enemy';
 
 export interface IGame {
   id: string;
-  bubbleMsg: TItemMsg [];
+  bubbleMsg: TItemMsg[];
   isInitClienGame: boolean;
   isLoadedGame: boolean;
   gameScene: TGameScenes;
@@ -112,6 +113,8 @@ export interface IGame {
   isLoaded: boolean;
   timeToBegin: number;
   enemyInfo: TEnemy | null;
+  youShotTo: TFieldShemaCell[],
+  deadShips: TShipOnFleetShema[],
   gameStatistic: IGameStatistic | null;
 }
 
@@ -146,6 +149,8 @@ const initialState: IGame = {
     queue: 0
   },
   whoStep: 'enemy',
+  deadShips: [],
+  youShotTo: [],
   gameStatistic: null
 };
 
@@ -190,20 +195,24 @@ const sliceGame = createSlice({
       state.fleetShema = action.payload;
     },
 
-    readBubbleMsg(state, action: PayloadAction<string>){
-      state.bubbleMsg = state.bubbleMsg.filter(msg=>msg.id!==action.payload);
+    readBubbleMsg(state, action: PayloadAction<string>) {
+      state.bubbleMsg = state.bubbleMsg.filter(msg => msg.id !== action.payload);
     },
 
-    setBubbleMsg(state, action: PayloadAction<TItemMsg>){
+    setBubbleMsg(state, action: PayloadAction<TItemMsg>) {
       state.bubbleMsg.push(action.payload);
     },
 
-    updateAfterShot(state, action: PayloadAction<IShotParseRes>){
+    updateAfterShot(state, action: PayloadAction<IShotParseRes>) {
       state.whoStep = action.payload.whoStep;
+    },
+
+    clearYourShots(state) {
+      state.youShotTo = [];
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setDisconnect.fulfilled, ()=>{
+    builder.addCase(setDisconnect.fulfilled, () => {
       // for (const key in initialState) {
       //   const k = key as keyof IGame;
       //   state[k] as IGame = initialState[k];
@@ -228,6 +237,7 @@ const sliceGame = createSlice({
       state.timeToBegin = payload.timeToBegin;
       state.isLoaded = true;
       state.gameScene = 'battle';
+      state.deadShips = payload.deadShips;
       // if(payload.whoStep==='enemy'){
       //   state.bubbleMsg.push(`is '${state.enemyInfo?.name}' turn!`);
       // }else{
@@ -241,17 +251,20 @@ const sliceGame = createSlice({
       state.whoStep = payload.whoStep;
       state.fleetShemaEnemy = payload.enemyShips;
       //console.log('enemyInfo = ', state.enemyInfo?.id);
-      
-      if(payload.whoShot!==state.enemyInfo?.id){
-        state.fieldShemaEnemy.forEach(cell=>{
-          if(cell.id===payload.cell.id){
+
+      if (payload.whoShot !== state.enemyInfo?.id) {
+        state.youShotTo.push({
+          ...payload.cell
+        });
+        state.fieldShemaEnemy.forEach(cell => {
+          if (cell.id === payload.cell.id) {
             cell.isLive = payload.cell.isLive;
             cell.isFree = payload.cell.isFree;
           }
         });
-      }else{
-        state.fieldShema.forEach(cell=>{
-          if(cell.id===payload.cell.id){
+      } else {
+        state.fieldShema.forEach(cell => {
+          if (cell.id === payload.cell.id) {
             cell.isLive = payload.cell.isLive;
             cell.isFree = payload.cell.isFree;
           }
@@ -263,6 +276,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg, clearYourShots } = sliceGame.actions;
 
 export default sliceGame;

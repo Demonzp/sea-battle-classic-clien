@@ -1,4 +1,4 @@
-import { ELoadEvents, ILoadItemBase } from './Loader';
+import { ELoadEvents, ILoadItemBase, ILoadSpritesheet, ILoadSpritesheetBase } from './Loader';
 import Scene from './Scene';
 
 export default class LoaderManagerScene{
@@ -18,9 +18,19 @@ export default class LoaderManagerScene{
     this.loadImages.push({key, path});
   }
 
+  spritesheet(key:string, path:string, data:ILoadSpritesheetBase){
+    this.scene.game.load.spritesheet(key, this.scene.key, path, data.frameWidth, data.frameHeight, data.endFrame);
+  }
+
   getImage(key: string):HTMLImageElement|undefined{
     //console.log('this.scene = ', this.scene);
     const image = this.scene.game.load.getImage(key);
     return image;
+  }
+
+  getSpritesheet(key: string):ILoadSpritesheet|undefined{
+    //console.log('this.scene = ', this.scene);
+    const spritesheet = this.scene.game.load.getSpritesheet(key);
+    return spritesheet;
   }
 }

@@ -1,4 +1,4 @@
-import GameObject from './GameObject';
+import GameObject, { TGameObjectEvents } from './GameObject';
 import Graphics from './Graphics';
 import { TPointer } from './InputEvent';
 import Scene from './Scene';
@@ -24,6 +24,10 @@ export default class Container extends GameObject{
     }
 
     this.render();
+  }
+
+  on(event: TGameObjectEvents, handler: (pointer: TPointer)=>void, context?:any){
+    return super._on(event, handler, context);
   }
 
   setInteractiveRect(width: number, height: number, x?:number, y?:number){

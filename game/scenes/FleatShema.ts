@@ -1,12 +1,16 @@
 import Scene from '../../gameLib/Scene';
 import { TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
+import Bullet from '../objects/Bullet';
 import PlayerField from '../objects/PlayerField';
 import Ship from '../objects/Ship';
 
 export default class FleatShema extends Scene{
   plField: PlayerField|null = null;
   ships: Ship[] = [];
+  numShots = 0;
+  isFleatReadyShot = false;
+
   constructor(){
     super('FleatShema');
   }
@@ -78,6 +82,14 @@ export default class FleatShema extends Scene{
         this.plField?.dropShip(ship);
       }
     });
+  }
+
+  shipShot(_: Ship){
+    this.numShots++;
+    if(this.numShots>=this.ships.filter(s=>s.isLive).length){
+      this.isFleatReadyShot = true;
+      this.numShots = 0;
+    }
   }
 
   update(delta: number): void {

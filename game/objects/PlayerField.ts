@@ -17,6 +17,10 @@ type TCellBody = {
     y0: number;
     x1: number;
     y1: number;
+    center: {
+        x: number;
+        y: number;
+    }
 }
 
 type TCellShip = {
@@ -28,7 +32,7 @@ interface ICellHead extends ICellBase {
     text: Text;
 }
 
-interface ICell extends ICellBase {
+export interface ICell extends ICellBase {
     isFree: boolean;
     isLive: boolean;
     ship: TCellShip | null;
@@ -125,6 +129,10 @@ export default class PlayerField {
                             y0: posY,
                             x1: posX + this.step,
                             y1: posY + this.step,
+                            center: {
+                                x: posX+this.step/2,
+                                y: posY+this.step/2
+                            }
                         }
                     }
                     this.cellsHead.push(cell);
@@ -144,6 +152,10 @@ export default class PlayerField {
                             y0: posY,
                             x1: posX + this.step,
                             y1: posY + this.step,
+                            center: {
+                                x: posX+this.step/2,
+                                y: posY+this.step/2
+                            }
                         }
                     }
                     this.cellsHead.push(cell);
@@ -171,6 +183,10 @@ export default class PlayerField {
                             y0: posY,
                             x1: posX + this.step,
                             y1: posY + this.step,
+                            center: {
+                                x: posX+this.step/2,
+                                y: posY+this.step/2
+                            }
                         }
                     }
                     this.cells.push(cell);

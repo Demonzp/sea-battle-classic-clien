@@ -6,11 +6,20 @@ export enum ELoadEvents {
 export interface ILoadItemBase{
   key: string;
   path: string;
-
 }
 
 export interface ILoadItem extends ILoadItemBase{
   keyScene: string
+}
+
+export interface ILoadSpritesheetBase{
+  frameWidth: number, 
+  frameHeight: number, 
+  endFrame: number
+}
+
+export interface ILoadSpritesheet extends ILoadSpritesheetBase{
+  key: string,
 }
 
 export type TLoadedItem = {
@@ -37,12 +46,29 @@ const imgLoad = (blob: Blob)=>{
 
 export default class Loader{
   private loadImages: ILoadItem[] = [];
+  private loadSpritesheet: ILoadSpritesheet[] = [];
   private loadedImages: TLoadedItem[] = [];
   private eventProgressCallbacks: ((value: number)=>void)[] = [];
   private eventComplateCallbacks: ((value: number)=>void)[] = [];
 
   image(key:string, keyScene: string, path:string){
     this.loadImages.push({key, keyScene, path});
+  }
+
+  spritesheet(key:string, keyScene: string, path:string, frameWidth: number, frameHeight: number, endFrame: number){
+    this.image(key, keyScene, path);
+    this.loadSpritesheet.push({
+      key,
+      frameHeight,
+      frameWidth,
+      endFrame
+    });
+  }
+
+  getSpritesheet(key: string){
+    const spritesheet = this.loadSpritesheet.find(el=>el.key===key);
+
+    return spritesheet; 
   }
 
   getImage(key: string):HTMLImageElement|undefined{

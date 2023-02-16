@@ -43,6 +43,8 @@ export default class LoaderScene extends Scene{
     this.load.image('cursor-target', './assets/cursor-target.png');
     this.load.image('shot-cell', './assets/shot-cell.png');
     this.load.image('shot-cell-ship', './assets/shot-cell-ship.png');
+    this.load.image('bullet', './assets/bullet.png');
+    this.load.spritesheet('explosion', 'assets/explosion.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
     // this.load.image('second', './assets/fon2.png');
     // this.load.image('first', './assets/logo512.png');
     // this.load.image('second', './assets/fon2.png');
