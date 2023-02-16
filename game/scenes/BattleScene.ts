@@ -212,8 +212,15 @@ export default class Battle extends Scene{
 
   bulletOnTarget(bullet: Bullet){
     //console.log('bullet.cell.isFree = ', bullet.cell.id);
-    const cell = this.plFieldEnemy?.findCellHeadById(bullet.cell.id);
-    console.log('isFree = ', cell);
+    const cell = store.getState().game.fieldShemaEnemy.find(c=>c.id===bullet.cell.id);
+    //console.log('isFree = ', cell);
+    if(!cell?.isFree){
+      const rndX = this.game.Math.between(-10,10);
+      const rndY = this.game.Math.between(-10,10);
+      const boom = this.add.sprite('explosion', bullet.cell.pos.center.x+rndX, bullet.cell.pos.center.y+rndY, 40,40);
+      boom.play();
+      boom.on('onComplate', ()=>{this.add.remove(boom)});
+    }
   }
 
   update(): void {
