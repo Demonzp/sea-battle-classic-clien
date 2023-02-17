@@ -25,6 +25,7 @@ export default class Sprite extends GameObject{
   isCallbacks = false;
   callbacks: ICallbackSpriteData[] = [];
   repeat = -1;
+  mask: HTMLImageElement|undefined;
   numFrames = 0;
 
   constructor(scene: Scene, key:string, x=0, y=0, width?:number, height?:number){
@@ -112,6 +113,10 @@ export default class Sprite extends GameObject{
     }
   }
 
+  setMask(key: string){
+    this.mask = this.scene.load.getImage(key);
+  }
+
   on(event:TEventsSprite|TGameObjectEvents , handler: ()=>void, context?: any):string{
     if(event==='pointerdown'||event==='pointermove'||event==='pointerup'){
       return super._on(event, handler, context);
@@ -164,13 +169,30 @@ export default class Sprite extends GameObject{
       //console.log('renderSprite!');
       this._play();
       this.scene.ctx?.save();
-
+      
       this.scene.ctx?.translate(this.x, this.y);
       this.scene.ctx?.rotate(this.pi*this.angle);
       this.scene.ctx?.translate(-(this.x), -(this.y));
       this.scene.ctx!.globalAlpha = this.alpha;
-      this.scene.ctx?.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, this.center.x, this.center.y, this.width, this.height);
-      //this.scene.ctx?.drawImage(this.image, this.center.x, this.center.y, this.width, this.height);
+
+      if(this.mask){
+        const vCanvas = this.scene.game.vCanvas;
+        const vCtx = this.scene.game.vCtx;
+
+        vCtx.clearRect(0,0,vCanvas.width, vCanvas.height);
+        vCanvas.width = this.mask.width;
+        vCanvas.height = this.mask.height;
+        vCtx.save();
+        vCtx.drawImage(this.mask, 0, 0, this.mask.width, this.mask.height, 0, 0, this.mask.width, this.mask.height);
+        vCtx.globalCompositeOperation = 'source-in';
+        vCtx.drawImage(this.image, 0, 0, this.image.width, this.image.height, 0, 0, this.mask.width, this.mask.height);
+    
+        this.scene.ctx?.drawImage(vCanvas, 0, 0, vCanvas.width, vCanvas.height, this.center.x, this.center.y, this.width, this.height);
+
+        vCtx.restore();
+      }else{
+        this.scene.ctx?.drawImage(this.image, this.sx, this.sy, this.sWidth, this.sHeight, this.center.x, this.center.y, this.width, this.height);
+      }
       
       this.scene.ctx?.restore();
 

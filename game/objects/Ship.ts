@@ -78,11 +78,13 @@ export default class Ship {
     switch (this.type) {
       case 4:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
+        const bodySprite0 = this.scene.add.sprite('ship-body-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
+        this.bodySprite = this.scene.add.sprite('zebra', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
+        this.bodySprite.setMask('ship-body-type-4');
         //this.bodySprite.angle = 180;
         this.mainContainer.setInteractiveRect((step * 4) * this.scale, (step - 3) * this.scale);
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
-        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.mainContainer.add([bodySprite0, this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
           { x: -42 * this.scale, y: 0, angle: 0 },

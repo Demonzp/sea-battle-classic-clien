@@ -18,6 +18,104 @@ import BattleTable from '../BattleTable';
 import Modal from '../Modal';
 import QueueComp from '../Queue';
 
+const imgLoad = (blob: Blob)=>{
+  return new Promise<HTMLImageElement>((resolve, reject)=>{
+    const img = new Image();
+
+    img.onload = ()=>{
+      //console.log('render sprite!!!');
+      resolve(img);
+      URL.revokeObjectURL(img.src);
+      //this.scene.ctx?.drawImage(img, this.x, this.y);
+    }
+    img.onerror = (err)=>reject(err);
+
+    img.src = URL.createObjectURL(blob);
+  });
+}
+
+const render = async (canvas: HTMLCanvasElement) => {
+  let mask = null;
+  const res = await fetch('./assets/ship-body-type-4.png');
+  const blob = await res.blob();
+  const res2 = await fetch('./assets/pixel.png');
+  const blob2 = await res2.blob();
+  const image = await imgLoad(blob2);
+
+  mask = await imgLoad(blob);
+
+  const res3 = await fetch('./assets/shipyard2.png');
+  const blob3 = await res3.blob();
+  const fon = await imgLoad(blob3);
+
+  
+  
+  const angle = 0;
+  const alpha = 1;
+  
+  const width = 300*0.8;
+  const height = 76*0.8;
+  const x = 200-width/2;
+  const y = 100-height/2;
+  const sx = 0;
+  const sy = 0;
+  const sWidth = 300;
+  const sHeight = 76;
+  canvas.width = 360 * 2 + 30;
+  canvas.height = 360;
+  canvas.style.backgroundColor = 'black';
+  const ctx = canvas.getContext('2d')!;
+
+  ctx.drawImage(fon, 0, 0, fon.width, fon.height, 0, 0, fon.width, fon.height);
+
+  ctx.save();
+
+  ctx.translate(x, y);
+  ctx.rotate((Math.PI / 180) * angle);
+  ctx.translate(-(x), -(y));
+  ctx.globalAlpha = alpha;
+
+
+
+
+  if (mask) {
+
+    const canva = document.createElement('canvas');
+    canva.width = mask.width;
+    canva.height = mask.height;
+
+    const ctx2 = canva.getContext('2d')!;
+
+    //ctx2.save();
+
+    //ctx2.translate(0, 0);
+    //ctx2.rotate((Math.PI / 180) * angle);
+    //ctx2.translate(-(0), -(0));
+    //ctx2.globalAlpha = alpha;
+    //this.scene.ctx!.globalCompositeOperation = 'source-in';
+
+    ctx2.drawImage(mask, 0, 0, sWidth, sHeight, 0, 0, mask.width, mask.height);
+
+    //ctx.globalCompositeOperation = 'destination-atop';
+    ctx2.globalCompositeOperation = 'source-in';
+    ctx2.drawImage(image, 0, 0, image.width, image.height, 0, 0, mask.width, mask.height);
+    ctx.drawImage(canva, sx, sy, sWidth, sHeight, x, y, width, height);
+  }
+
+  
+  ctx.restore();
+
+  //ctx.drawImage(image, sx, sy, sWidth, sHeight, x, y, 300, 76);
+
+
+  //this.scene.ctx?.drawImage(this.image, this.center.x, this.center.y, this.width, this.height);
+  //ctx.globalCompositeOperation = 'destination-atop';
+  
+  ctx.drawImage(mask, sx, sy, sWidth, sHeight, x, y+60, width, height);
+
+  ctx.drawImage(image, sx, sy, sWidth, sHeight, x+260, y, width, height);
+}
+
 const GameComp = () => {
   const refCanvas = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game | null>(null);
@@ -41,7 +139,7 @@ const GameComp = () => {
   useEffect(() => {
     if (isLoadedGame) {
       console.log('try connect!');
-      socketInst.init({ path: '/api/socket.io', token: JSON.stringify({sub:user!.id}) });
+      socketInst.init({ path: '/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
       socketInst.on('connect', () => {
         //toShipyard();
         dispatch(setConnected(true));
@@ -83,7 +181,7 @@ const GameComp = () => {
         dispatch(gameOver(data));
         //dispatch(initGame(data));
       });
-      socketInst.on('disconnect', (reason) => { 
+      socketInst.on('disconnect', (reason) => {
         console.log('reason = ', reason)
         dispatch(setDisconnect());
       });
@@ -147,12 +245,13 @@ const GameComp = () => {
   }, []);
 
   useEffect(() => {
-    return ()=>setGame(null);
+    return () => setGame(null);
   }, []);
 
   useEffect(() => {
-    if (!game&&initUser) {
-      console.log('new Game');
+    if (!game && initUser) {
+      //console.log('new Game');
+      //render(refCanvas.current!);
       setGame(new Game({
         canvas: refCanvas.current!,
         width: 360 * 2 + 30,
@@ -192,7 +291,7 @@ const GameComp = () => {
     //setMessage('');
   };
 
-  const overBattle = ()=>{
+  const overBattle = () => {
     toShipyard();
     setIsModal(false);
   };
@@ -200,8 +299,8 @@ const GameComp = () => {
   return (
     //<canvas ref={refCanvas}/>
     <div className={styles.mainCont} style={{ cursor }}>
-      <Modal 
-        isActive={isModal} 
+      <Modal
+        isActive={isModal}
         setIsActive={setIsModal}
         isStaticBackground={true}
         onConfirm={overBattle}
@@ -236,21 +335,21 @@ const GameComp = () => {
         }
         {
           gameScene === 'battle' &&
-          <div className={styles.contBtns}>{whoStep==='you'?'is your turn':`is ${enemyInfo?.name} turn`}</div>
+          <div className={styles.contBtns}>{whoStep === 'you' ? 'is your turn' : `is ${enemyInfo?.name} turn`}</div>
         }
         {
           <div className={styles.contMsg}>
             {
               bubbleMsg.map((item) => {
                 return (
-                  
-                    <label
-                      key={item.id}
-                      className={styles.msg}
-                      onAnimationEnd={()=>onAnimationEnd(item.id)}
-                    >
-                      {item.message}
-                    </label>
+
+                  <label
+                    key={item.id}
+                    className={styles.msg}
+                    onAnimationEnd={() => onAnimationEnd(item.id)}
+                  >
+                    {item.message}
+                  </label>
                 );
               })
             }

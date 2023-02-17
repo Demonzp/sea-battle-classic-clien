@@ -20,6 +20,8 @@ export default class Game{
 
   canvas: HTMLCanvasElement|null = null;
   ctx: CanvasRenderingContext2D|null = null;
+  vCanvas: HTMLCanvasElement;
+  vCtx: CanvasRenderingContext2D;
   load = new Loader();
   input:InputEvent;
   width = 0;
@@ -39,6 +41,8 @@ export default class Game{
     this.canvas = canvas;
     this.ctx = canvas.getContext('2d');
     this.input = new InputEvent(this);
+    this.vCanvas = document.createElement('canvas');
+    this.vCtx = this.vCanvas.getContext('2d')!;
     this.setSize(width, height);
 
     this._scenes.init(scenes);

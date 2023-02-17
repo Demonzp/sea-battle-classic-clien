@@ -128,7 +128,7 @@ export default class GunTower {
 
       this.isOnTarget = true;
       this.angle = mAngle2-this.ship.angle;
-      this.shot(realX, realY, this.angle, this.ship.targetPos.x, this.ship.targetPos.y);
+      this.shot(realX, realY, this.angle+this.ship.angle, this.ship.targetPos.x, this.ship.targetPos.y);
       //this.angle -= this.speedRot;
       //console.log(this.angle);
       //this.isCanShot();
