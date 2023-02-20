@@ -97,6 +97,13 @@ export type TFieldShemaCell = {
 
 export type TWhoStep = 'you' | 'enemy';
 
+export type TCamo = {
+  id: string;
+  path: string;
+  name: string;
+  selected: boolean;
+}
+
 export interface IGame {
   id: string;
   bubbleMsg: TItemMsg[];
@@ -116,6 +123,7 @@ export interface IGame {
   youShotTo: TFieldShemaCell[],
   deadShips: TShipOnFleetShema[],
   gameStatistic: IGameStatistic | null;
+  camos: TCamo[];
 }
 
 const initialState: IGame = {
@@ -151,7 +159,27 @@ const initialState: IGame = {
   whoStep: 'enemy',
   deadShips: [],
   youShotTo: [],
-  gameStatistic: null
+  gameStatistic: null,
+  camos: [
+    {
+      id:'0',
+      path:'none',
+      name:'none',
+      selected: true
+    },
+    {
+      id:'1',
+      path:'zebra',
+      name:'zebra',
+      selected: false
+    },
+    {
+      id:'2',
+      path:'pixel',
+      name:'pixel',
+      selected: false
+    }
+  ]
 };
 
 const sliceGame = createSlice({
@@ -201,6 +229,20 @@ const sliceGame = createSlice({
 
     setBubbleMsg(state, action: PayloadAction<TItemMsg>) {
       state.bubbleMsg.push(action.payload);
+    },
+
+    selectCamo(state, action: PayloadAction<string>){
+      // const camo = state.camos.find(c=>c.id===action.payload);
+      // if(camo){
+
+      // }
+      state.camos.forEach(c=>{
+        if(c.id===action.payload){
+          c.selected = true;
+        }else{
+          c.selected = false;
+        }
+      });
     },
 
     updateAfterShot(state, action: PayloadAction<IShotParseRes>) {
@@ -276,6 +318,6 @@ const sliceGame = createSlice({
   }
 });
 
-export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg, clearYourShots } = sliceGame.actions;
+export const { createGame, setScene, setFleatShema, setLoadedGame, setToQueue, setCursor, setStatusLoading, setBubbleMsg, readBubbleMsg, clearYourShots, selectCamo } = sliceGame.actions;
 
 export default sliceGame;

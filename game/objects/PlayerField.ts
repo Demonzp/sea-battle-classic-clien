@@ -587,13 +587,13 @@ export default class PlayerField {
         const firsCell = this.shipCells[0];
         if (angle === 0) {
             this.shipPos = {
-                x: firsCell.pos.x0 + ship.bodySprite!.width / 2,
+                x: firsCell.pos.x0 + ship.width/2,
                 y: firsCell.pos.y0 + this.step / 2
             }
         } else {
             this.shipPos = {
                 x: firsCell.pos.x0 + this.step / 2,
-                y: firsCell.pos.y0 + ship.bodySprite!.width / 2,
+                y: firsCell.pos.y0 + ship.width/2,
             }
         }
         //ship.setCellOnField({i:startCell.i,j:startCell.j});

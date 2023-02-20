@@ -1,0 +1,50 @@
+.cont{
+    position: absolute;
+    display: flex;
+    justify-content: end;
+    height: 100%;
+    width: 100%;
+}
+
+.fon{
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(2px);
+    max-width: 100%;
+    overflow:scroll;
+    overflow-x:hidden;
+    pointer-events: auto;
+    /* grid-template-columns: 260px; */
+}
+
+.col{
+    display: grid;
+    justify-content: center;
+    gap: 10px;
+    flex-direction: row;
+    grid-template-columns: 100px 100px;
+}
+
+.headSkin{
+    display:flex;
+    margin-bottom: 10px;
+    background-color: white;
+    font-size: 26px;
+}
+
+.imgCont{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    cursor: pointer;
+}
+
+.selected{
+    border: 5px solid green;
+}
+
+.image{
+    width: 40px;
+    height: 40px;
+}

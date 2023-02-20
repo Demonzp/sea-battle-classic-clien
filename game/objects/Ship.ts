@@ -3,6 +3,7 @@ import Game, { TPoint } from '../../gameLib/Game';
 import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
+import { getCamo } from '../../store/getters/game';
 import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
 import { ICell } from './PlayerField';
@@ -39,6 +40,8 @@ export default class Ship {
   cellsOnField: TCells | null = null;
   cellTarget: ICell | null = null;
   startPos: TPoint;
+  width = 0;
+  height = 0;
   speed = 4;
   sx = 0;
   sy = 0;
@@ -75,16 +78,29 @@ export default class Ship {
     const lineWidth = 2;
     const min = Math.min(this.scene.width, this.scene.height);
     const step = (min - lineWidth) / 11;
+    //const dispatch = useAppDispatch();
+    //const camo = await store.dispatch(getCamo()).unwrap();
+    const camo = getCamo();
+    //console.log('camo = ', camo.name);
+    //const camo = await dispatch(getCamo()).unwrap();
     switch (this.type) {
       case 4:
+        this.width = (step * 4) * this.scale;
+        this.height = (step - 4) * this.scale;
 
-        const bodySprite0 = this.scene.add.sprite('ship-body-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
-        this.bodySprite = this.scene.add.sprite('zebra', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
-        this.bodySprite.setMask('ship-body-type-4');
+        const bodySprite0 = this.scene.add.sprite('ship-body-type-4', 0, 0, this.width, this.height);
+        
         //this.bodySprite.angle = 180;
-        this.mainContainer.setInteractiveRect((step * 4) * this.scale, (step - 3) * this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, (step * 4) * this.scale, (step - 4) * this.scale);
-        this.mainContainer.add([bodySprite0, this.bodySprite, this.detaliSprite]);
+        this.mainContainer.setInteractiveRect(this.width, this.height);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, this.width, this.height);
+        this.mainContainer.add(bodySprite0);
+        if(camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+          this.bodySprite.setMask('ship-body-type-4');
+          this.mainContainer.add(this.bodySprite);
+        }
+        this.mainContainer.add(this.detaliSprite);
+        //this.mainContainer.add([bodySprite0, this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns = [
           { x: -42 * this.scale, y: 0, angle: 0 },
@@ -102,10 +118,20 @@ export default class Ship {
         break;
       case 3:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-3', 0, 0, (step * 3) * this.scale, (step - 5) * this.scale);
-        this.mainContainer.setInteractiveRect((step * 3) * this.scale, (step - 4) * this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-3', 0, 0, (step * 3) * this.scale, (step - 5) * this.scale);
-        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.width = (step * 3) * this.scale;
+        this.height = (step - 5) * this.scale;
+
+        const bodySprite1 = this.scene.add.sprite('ship-body-type-3', 0, 0, this.width, this.height);
+        this.mainContainer.setInteractiveRect(this.width, this.height);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-3', 0, 0, this.width, this.height);
+        this.mainContainer.add(bodySprite1);
+        if(camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+          this.bodySprite.setMask('ship-body-type-3');
+          this.mainContainer.add(this.bodySprite);
+        }
+        this.mainContainer.add(this.detaliSprite);
+        //this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns2 = [
           { x: -24 * this.scale, y: 0, angle: 0 },
@@ -121,10 +147,19 @@ export default class Ship {
         break;
       case 2:
 
-        this.bodySprite = this.scene.add.sprite('ship-body-type-2', 0, 0, (step * 2) * this.scale, (step - 8) * this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0, 0, (step * 2) * this.scale, (step - 8) * this.scale);
-        this.mainContainer.setInteractiveRect((step * 2) * this.scale, (step - 6) * this.scale);
-        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.width = (step * 2) * this.scale;
+        this.height = (step - 8) * this.scale;
+        const bodySprite2 = this.scene.add.sprite('ship-body-type-2', 0, 0, this.width, this.height);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0, 0, this.width, this.height);
+        this.mainContainer.setInteractiveRect(this.width, this.height);
+        this.mainContainer.add(bodySprite2);
+        if(camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+          this.bodySprite.setMask('ship-body-type-2');
+          this.mainContainer.add(this.bodySprite);
+        }
+        this.mainContainer.add(this.detaliSprite);
+        //this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         const arrPosGuns3 = [
           { x: -16 * this.scale, y: 0, angle: 0 },
@@ -138,11 +173,19 @@ export default class Ship {
         }
         break;
       case 1:
-
-        this.bodySprite = this.scene.add.sprite('ship-body-type-1', 0, 0, (step * 1) * this.scale, (step - 16) * this.scale);
-        this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0, 0, (step * 1) * this.scale, (step - 16) * this.scale);
-        this.mainContainer.setInteractiveRect((step * 1) * this.scale, (step - 14) * this.scale);
-        this.mainContainer.add([this.bodySprite, this.detaliSprite]);
+        this.width = (step * 1) * this.scale;
+        this.height = (step - 16) * this.scale;
+        const bodySprite3 = this.scene.add.sprite('ship-body-type-1', 0, 0, this.width, this.height);
+        this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0, 0, this.width, this.height);
+        this.mainContainer.setInteractiveRect(this.width, this.height);
+        this.mainContainer.add(bodySprite3);
+        if(camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+          this.bodySprite.setMask('ship-body-type-1');
+          this.mainContainer.add(this.bodySprite);
+        }
+        this.mainContainer.add(this.detaliSprite);
+        //this.mainContainer.add([this.bodySprite, this.detaliSprite]);
         this.mainContainer.angle = this.angle;
         let arrPosGuns4 = [
           { x: -6 * this.scale, y: 0, angle: 0 },
@@ -158,6 +201,11 @@ export default class Ship {
       default:
         break;
     }
+  }
+
+  destroy(){
+    this.setDead();
+    this.scene.add.remove(this.mainContainer);
   }
 
   setDead(){

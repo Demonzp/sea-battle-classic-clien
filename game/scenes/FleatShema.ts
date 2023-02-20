@@ -56,6 +56,7 @@ export default class FleatShema extends Scene{
     //console.log('gameObjects = ', this.add.gameObjects);
     const fleatShema = store.getState().game.fleetShema;
     this.parserFleatShema(fleatShema);
+    //this.parserFleatShema(fleatShema);
     //this.ships.push(shipTreeOne);
   }
 
