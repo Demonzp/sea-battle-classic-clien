@@ -8,6 +8,7 @@ import Shipyard from '../../game/scenes/Shipyard';
 import Game from '../../gameLib/Game';
 import { getUser, setDisconnect } from '../../store/actions/app';
 import { gameErrorRes, gameOver, initGame, shotRes } from '../../store/actions/game';
+import { getCamo } from '../../store/getters/game';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setConnected } from '../../store/slices/app';
 import { IGameServerStateRes, IGameStatisticBasic, IQueue, IQueueUpdate, IShotRes, readBubbleMsg, setBubbleMsg, setScene, setToQueue, TGameError } from '../../store/slices/game';
@@ -52,7 +53,7 @@ const GameComp = () => {
         //toShipyard();
         //dispatch(setConnected(true));
       });
-      socketInst.on<{ data: string }>('loged', (data) => {
+      socketInst.on<{ data: string }>('to-shipyard', (data) => {
         toShipyard();
         //console.log('loged = ', data?.data);
       });
@@ -60,10 +61,10 @@ const GameComp = () => {
         //console.log('to-queue = ', data);
         dispatch(setToQueue(data));
       });
-      socketInst.on<IQueue>('to-queue', (data) => {
-        //console.log('to-queue = ', data);
-        dispatch(setToQueue(data));
-      });
+      // socketInst.on<IQueue>('to-queue', (data) => {
+      //   //console.log('to-queue = ', data);
+      //   dispatch(setToQueue(data));
+      // });
       socketInst.on<IQueueUpdate>('update-queue', (data) => {
         //console.log('update-queue = ', data);
       });
@@ -76,7 +77,7 @@ const GameComp = () => {
         dispatch(gameErrorRes(data));
       });
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
-        //console.log('init-game = ', data);
+        console.log('init-game = ', data);
         dispatch(initGame(data));
       });
       socketInst.on<IGameStatisticBasic>('game-over', (data) => {
@@ -184,7 +185,7 @@ const GameComp = () => {
   };
 
   const toBattle = () => {
-    socketInst.emit('to-queue', fleetShema);
+    socketInst.emit('to-queue', {fleetShema, camoId: getCamo().id});
     //game?.scene.start('Loading');
   };
 

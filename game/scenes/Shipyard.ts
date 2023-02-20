@@ -1,5 +1,6 @@
 import { TPoint } from '../../gameLib/Game';
 import Scene from '../../gameLib/Scene';
+import { getCamo } from '../../store/getters/game';
 import store from '../../store/store';
 import Ship from '../objects/Ship';
 
@@ -59,11 +60,12 @@ export default class Shipyard extends Scene{
   }
 
   createShips(){
-    this.ship1 = new Ship(this, 320, 105, 4, -16, 1.3);
-    this.ship2 = new Ship(this, 330, 144, 3, -18, 1.3);
+    const camo = getCamo();
+    this.ship1 = new Ship(this, 320, 105, 4, camo, -16, 1.3);
+    this.ship2 = new Ship(this, 330, 144, 3, camo, -18, 1.3);
 
-    this.ship3 = new Ship(this, this.dotFirstShip3.x, this.dotFirstShip3.y, 2, -18, 1.3);
-    this.ship4 = new Ship(this, this.dotFirstShip4.x, this.dotFirstShip4.y, 1, 70, 1.3);
+    this.ship3 = new Ship(this, this.dotFirstShip3.x, this.dotFirstShip3.y, 2, camo, -18, 1.3);
+    this.ship4 = new Ship(this, this.dotFirstShip4.x, this.dotFirstShip4.y, 1, camo, 70, 1.3);
     this.ship4.isRot = true;
     const time = this.game.Math.between(10, 20);
     const time2 = this.game.Math.between(20, 30);

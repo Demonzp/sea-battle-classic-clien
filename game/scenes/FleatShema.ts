@@ -1,4 +1,5 @@
 import Scene from '../../gameLib/Scene';
+import { getCamo } from '../../store/getters/game';
 import { TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
 import Bullet from '../objects/Bullet';
@@ -30,16 +31,17 @@ export default class FleatShema extends Scene{
     // const graphics = this.add.graphics();
     // graphics.fillStyle('#ff0004');
     // graphics.fillRect(300, 400, 5,5);
-    const shipFour = new Ship(this, 490, 70, 4);
-    const shipTreeOne = new Ship(this, 430, 120, 3);
-    const shipTreeTwo = new Ship(this, 520, 160, 3);
-    const shipTwoOne = new Ship(this, 400, 180, 2);
-    const shipTwoTwo = new Ship(this, 500, 220, 2);
-    const shipTwoTree = new Ship(this, 400, 240, 2);
-    const shipOneOne = new Ship(this, 390, 290, 1);
-    const shipOneTwo = new Ship(this, 430, 290, 1);
-    const shipOneTree = new Ship(this, 480, 290, 1);
-    const shipOneFour = new Ship(this, 520, 290, 1);
+    const camo = getCamo();
+    const shipFour = new Ship(this, 490, 70, 4, camo);
+    const shipTreeOne = new Ship(this, 430, 120, 3, camo);
+    const shipTreeTwo = new Ship(this, 520, 160, 3, camo);
+    const shipTwoOne = new Ship(this, 400, 180, 2, camo);
+    const shipTwoTwo = new Ship(this, 500, 220, 2, camo);
+    const shipTwoTree = new Ship(this, 400, 240, 2, camo);
+    const shipOneOne = new Ship(this, 390, 290, 1, camo);
+    const shipOneTwo = new Ship(this, 430, 290, 1, camo);
+    const shipOneTree = new Ship(this, 480, 290, 1, camo);
+    const shipOneFour = new Ship(this, 520, 290, 1, camo);
     //shipFour.angle = 40;
     this.ships.push(
       shipFour, 

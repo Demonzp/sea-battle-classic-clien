@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import Game from '../../gameLib/Game';
 import socketInst from '../../utils/socket';
-import { IGameServerStateParseRes, IGameServerStateRes, IGameStatistic, IGameStatisticBasic, IShotParseRes, IShotRes, setBubbleMsg, setFleatShema, setStatusLoading, TCamo, TGameError, TWhoStep } from '../slices/game';
+import { IGameServerStateParseRes, IGameServerStateRes, IGameStatistic, IGameStatisticBasic, IShotParseRes, IShotRes, selectCamo, setBubbleMsg, setFleatShema, setStatusLoading, TCamo, TGameError, TWhoStep } from '../slices/game';
 import { AppState } from '../store';
 
 const parseWhoStep = (userId: string, whoId: string): TWhoStep => {
@@ -29,27 +29,13 @@ export const initGame = createAsyncThunk<IGameServerStateParseRes, IGameServerSt
                 dispatch(createBubbleMsg(`is Your turn!`));
             }
 
+            dispatch(selectCamo(parseData.camoId));
+
             dispatch(setFleatShema(serverData.fleetShema));
 
             return parseData;
         }
     );
-
-// export const getCamo = createAsyncThunk<TCamo, undefined,
-//     {
-//         state: AppState
-//     }
-// >
-//     (
-//         'game/getCamo',
-//         async (_, { getState }) => {
-//             let camo = getState().game.camos.find(c=>c.selected);
-//             if(!camo){
-//                 camo = getState().game.camos[0];
-//             }
-//             return camo;
-//         }
-//     );
 
 export const shotRes = createAsyncThunk<IShotParseRes, IShotRes,
     {

@@ -1,4 +1,5 @@
 import Scene from '../../gameLib/Scene';
+import { getCamo } from '../../store/getters/game';
 import { clearYourShots, TFieldShemaCell, TShipOnFleetShema } from '../../store/slices/game';
 import store from '../../store/store';
 import { compairValuesObjs } from '../../utils/global';
@@ -135,9 +136,12 @@ export default class Battle extends Scene{
 
   parserFleatShemaEnamy(fleetShema:TShipOnFleetShema[]){
     //const arrShipId:string[] = [];
+    const camos = store.getState().game.camos;
+    const camoId = store.getState().game.enemyInfo?.camoId;
+    const camo = camos.find(c=>c.id===camoId)!;
     fleetShema.forEach(shipShema=>{
       if(!this.shipsEnamy.find(ship=>ship.id===shipShema.id)){
-        const ship = new Ship(this, 0, 0, shipShema.type); 
+        const ship = new Ship(this, 0, 0, shipShema.type, camo); 
         ship.angle = shipShema.angle;
         this.plFieldEnemy!.calcFromStartCell(shipShema.startPos, ship, ship.angle);
         ship.x = this.plFieldEnemy!.shipPos.x!;
@@ -162,6 +166,7 @@ export default class Battle extends Scene{
   parserFleatShema(fleetShema:TShipOnFleetShema[]){
     console.log('fleatShema = ', fleetShema);
     //const arrShipId:string[] = [];
+    const camo = getCamo();
     fleetShema.forEach(shipShema=>{
       // const ship = this.ships.find(s=>{
       //   if(s.type===shipShema.type&&!arrShipId.find(id=>id===s.id)){
@@ -176,7 +181,7 @@ export default class Battle extends Scene{
       //if(ship){
         //console.log('ship = ', ship);
         //arrShipId.push(ship.id);
-        const ship = new Ship(this, 0, 0, shipShema.type);
+        const ship = new Ship(this, 0, 0, shipShema.type, camo);
         ship.id = shipShema.id;
         ship.angle = shipShema.angle;
         this.plField?.calcFromStartCell(shipShema.startPos, ship, ship.angle);

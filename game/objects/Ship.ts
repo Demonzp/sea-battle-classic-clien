@@ -4,6 +4,7 @@ import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
 import { getCamo } from '../../store/getters/game';
+import { TCamo } from '../../store/slices/game';
 import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
 import { ICell } from './PlayerField';
@@ -47,15 +48,17 @@ export default class Ship {
   sy = 0;
   dx = 0;
   dy = 0;
+  camo: TCamo;
   timerClick = 0;
   readonly timeIsClick = 140;
   isLive = false;
   isCanShot = false;
   numShutTowers = 0;
 
-  constructor(scene: Scene, x: number, y: number, type: TShips, angle = 0, scale = 1) {
+  constructor(scene: Scene, x: number, y: number, type: TShips, camo:TCamo, angle = 0, scale = 1) {
     this.scene = scene as FleatShema;
     this.id = Game.createId();
+    this.camo = camo;
     this.startPos = {
       x,
       y
@@ -80,7 +83,7 @@ export default class Ship {
     const step = (min - lineWidth) / 11;
     //const dispatch = useAppDispatch();
     //const camo = await store.dispatch(getCamo()).unwrap();
-    const camo = getCamo();
+    //const camo = getCamo();
     //console.log('camo = ', camo.name);
     //const camo = await dispatch(getCamo()).unwrap();
     switch (this.type) {
@@ -94,8 +97,8 @@ export default class Ship {
         this.mainContainer.setInteractiveRect(this.width, this.height);
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-4', 0, 0, this.width, this.height);
         this.mainContainer.add(bodySprite0);
-        if(camo.name!=='none'){
-          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+        if(this.camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(this.camo.name, 0, 0, this.width, this.height);
           this.bodySprite.setMask('ship-body-type-4');
           this.mainContainer.add(this.bodySprite);
         }
@@ -125,8 +128,8 @@ export default class Ship {
         this.mainContainer.setInteractiveRect(this.width, this.height);
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-3', 0, 0, this.width, this.height);
         this.mainContainer.add(bodySprite1);
-        if(camo.name!=='none'){
-          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+        if(this.camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(this.camo.name, 0, 0, this.width, this.height);
           this.bodySprite.setMask('ship-body-type-3');
           this.mainContainer.add(this.bodySprite);
         }
@@ -153,8 +156,8 @@ export default class Ship {
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-2', 0, 0, this.width, this.height);
         this.mainContainer.setInteractiveRect(this.width, this.height);
         this.mainContainer.add(bodySprite2);
-        if(camo.name!=='none'){
-          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+        if(this.camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(this.camo.name, 0, 0, this.width, this.height);
           this.bodySprite.setMask('ship-body-type-2');
           this.mainContainer.add(this.bodySprite);
         }
@@ -179,8 +182,8 @@ export default class Ship {
         this.detaliSprite = this.scene.add.sprite('ship-detail-type-1', 0, 0, this.width, this.height);
         this.mainContainer.setInteractiveRect(this.width, this.height);
         this.mainContainer.add(bodySprite3);
-        if(camo.name!=='none'){
-          this.bodySprite = this.scene.add.sprite(camo.name, 0, 0, this.width, this.height);
+        if(this.camo.name!=='none'){
+          this.bodySprite = this.scene.add.sprite(this.camo.name, 0, 0, this.width, this.height);
           this.bodySprite.setMask('ship-body-type-1');
           this.mainContainer.add(this.bodySprite);
         }

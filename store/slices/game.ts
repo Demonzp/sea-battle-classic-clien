@@ -44,6 +44,7 @@ export interface IShotResBase {
 export type TEnemy = {
   id: string;
   name: string;
+  camoId: string;
 }
 
 export type TItemMsg = {
@@ -63,6 +64,7 @@ export interface IGameServerStateRes extends IGameServerStateBase {
 
 export interface IGameServerStateBase {
   id: string;
+  camoId: string;
   cells: TFieldShemaCell[];
   whoStep: string;
   fleetShema: TShipOnFleetShema[];
@@ -279,6 +281,7 @@ const sliceGame = createSlice({
       state.timeToBegin = payload.timeToBegin;
       state.isLoaded = true;
       state.gameScene = 'battle';
+      console.log('state.gameScene = "battle"');
       state.deadShips = payload.deadShips;
       // if(payload.whoStep==='enemy'){
       //   state.bubbleMsg.push(`is '${state.enemyInfo?.name}' turn!`);

@@ -6,13 +6,23 @@ import { getUser, setDisconnect } from '../actions/app';
 const between = (min:number, max:number)=>{
     return Math.floor(min + Math.random() * (max + 1 - min));
 } 
-const fackeUser: TUser = {
-    id: String(between(10,1000)),
-    name: 'Petya',
-    firstName: 'Petya',
-    secondName: 'Drisch',
-    email: 'test@gma.com'
-};
+const users = [
+    {
+        id: '1',
+        name: 'Petya',
+        firstName: 'Petya',
+        secondName: 'Drisch',
+        email: 'test@gma.com'
+    },
+    {
+        id: '2',
+        name: 'Vasya',
+        firstName: 'Vasya',
+        secondName: 'Vasya',
+        email: 'Vasya@gma.com'
+    }
+];
+const fackeUser: TUser = users[between(0, users.length-1)];
 
 export type TUser = {
     name: string,
