@@ -20,7 +20,8 @@ export const getUser = createAsyncThunk<TUser, undefined,
                 const res = await axios.post('https://sea-battle-classic.onrender.com/api/auth/',{},
                 {
                     headers:{
-                        Authorization:JSON.stringify(getState().app.user)
+                        //Authorization:JSON.stringify(getState().app.user)
+                        Authorization:getState().app.token
                     }
                 });
                 //const res = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${getState().app.token}`);
