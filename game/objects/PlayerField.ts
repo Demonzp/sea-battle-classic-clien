@@ -204,7 +204,7 @@ export default class PlayerField {
         }
         this.width = Math.max.apply(null, [...this.cells.map(cell => cell.pos.x1)]);
         this.height = this.cells[this.cells.length - 1].pos.y1;
-        console.log('cells = ', this.cells);
+        //console.log('cells = ', this.cells);
         this.cursor.setZindex(2);
     }
 
@@ -418,7 +418,7 @@ export default class PlayerField {
                     }
                 })
             });
-            console.log('addShip');
+            //console.log('addShip');
         }
         this.ships.push(ship);
         store.dispatch(setFleatShema(this.ships.map((ship) => {

@@ -39,7 +39,7 @@ export default class Bullet{
 
     create(){
         this.isLive = true;
-        this._sprite = this.scene.add.sprite('bullet', this.x, this.y, 4, 4);
+        this._sprite = this.scene.add.sprite('bullet', this.x, this.y, 3, 3);
         const rad = this.angle*Math.PI/180;
         const kY = Math.sin(rad);
         const kX = Math.cos(rad);

@@ -23,6 +23,7 @@ const Home: NextPage = () => {
   },[]);
 
   const onSignIn = (data: TGoogleAuthRes)=>{
+    //console.log('onSignIn = ', data);
     dispath(setUser(data));
   };
 
@@ -37,7 +38,7 @@ const Home: NextPage = () => {
           <SignInWithGoogleBtn onSuccess={onSignIn} isForceShow={isForceShow}/>
         }
         {
-          (isConnect||isConnected)&&
+          ((isConnect||isConnected)&&user)&&
           <GameComp />
         }
         {
@@ -51,13 +52,5 @@ const Home: NextPage = () => {
     </div>
   );
 };
-
-// export const getServerSideProps:GetServerSideProps<Props> = async ()=> {
-//   // Fetch data from external API
-  
-//   const data = await axios.get('http://localhost:4000/');
-//   // Pass data to the page via props
-//   return { props: { data: data.data } }
-// }
 
 export default Home;

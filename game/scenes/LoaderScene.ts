@@ -155,7 +155,7 @@ export default class LoaderScene extends Scene{
   }
 
   create(){
-    console.log('complate loaded scene!!!');
+    //console.log('complate loaded scene!!!');
     store.dispatch(setLoadedGame());
     //this.add.sprite('second');
     //this.add.sprite('first', 10,0, 40);

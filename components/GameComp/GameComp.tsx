@@ -16,6 +16,7 @@ import { IGameServerStateRes, IGameStatisticBasic, IQueue, IQueueUpdate, IShotRe
 import styles from '../../styles/GameUI.module.css';
 import socketInst from '../../utils/socket';
 import BattleTable from '../BattleTable';
+import HowToPlay from '../HowToPlay';
 import Modal from '../Modal';
 import QueueComp from '../Queue';
 import SkinManager from '../SkinManager';
@@ -28,6 +29,7 @@ const GameComp = () => {
   const { initUser, token, user } = useAppSelector(state => state.app);
   const dispatch = useAppDispatch();
   const [isModal, setIsModal] = useState(false);
+  const [isModal2, setIsModal2] = useState(false);
   //const [message, setMessage] = useState('');
   //const [labelClass, setLabelClass] = useState(styles.msg);
   //console.log('rerender GameComp');
@@ -42,14 +44,14 @@ const GameComp = () => {
 
   useEffect(() => {
     if (isLoadedGame) {
-      console.log('try connect!');
+      //console.log('try connect!');
       socketInst.init({ path: '/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
       socketInst.on('connect', () => {
         //toShipyard();
         dispatch(setConnected(true));
       });
       socketInst.on('error', () => {
-        console.log('connect error!');
+        //console.log('connect error!');
         //toShipyard();
         //dispatch(setConnected(true));
       });
@@ -77,16 +79,16 @@ const GameComp = () => {
         dispatch(gameErrorRes(data));
       });
       socketInst.on<IGameServerStateRes>('init-game', (data) => {
-        console.log('init-game = ', data);
+        //console.log('init-game = ', data);
         dispatch(initGame(data));
       });
       socketInst.on<IGameStatisticBasic>('game-over', (data) => {
-        console.log('game-over = ', data);
+        //console.log('game-over = ', data);
         dispatch(gameOver(data));
         //dispatch(initGame(data));
       });
       socketInst.on('disconnect', (reason) => {
-        console.log('reason = ', reason)
+        //console.log('reason = ', reason)
         dispatch(setDisconnect());
       });
     }
@@ -123,11 +125,11 @@ const GameComp = () => {
         game?.scene.start('Shipyard');
         break;
       case 'battle':
-        console.log('scene.start(Battle)');
+        //console.log('scene.start(Battle)');
         game?.scene.start('Battle');
         break;
       case 'gameOver':
-        console.log('scene.start(gameOver)');
+        //console.log('scene.start(gameOver)');
         setIsModal(true);
         break;
       default:
@@ -190,7 +192,7 @@ const GameComp = () => {
   };
 
   const onAnimationEnd = (id: string) => {
-    console.log('onTransitionEnd');
+    //console.log('onTransitionEnd');
     dispatch(readBubbleMsg(id));
     //setMessage('');
   };
@@ -211,6 +213,14 @@ const GameComp = () => {
       >
         <BattleTable />
       </Modal>
+      <Modal
+        isActive={isModal2}
+        setIsActive={setIsModal2}
+        isStaticBackground={true}
+        onConfirm={()=>setIsModal2(false)}
+      >
+        <HowToPlay />
+      </Modal>
       <div className={styles.cont}>
         <div className={styles.contBtns}>
           {
@@ -218,7 +228,7 @@ const GameComp = () => {
               <>
                 {
                   gameScene === 'shipyard' &&
-                  <button style={{ height: 40 }} onClick={toFleatShema}>razpologenie flota</button>
+                  <button style={{ height: 40 }} onClick={toFleatShema}>Fleet Shema</button>
                 }
                 {
                   gameScene === 'fleatShema' &&
@@ -232,6 +242,7 @@ const GameComp = () => {
               </> :
               null
           }
+          <button style={{ height: 40 }} onClick={()=>setIsModal2(true)}>how to play?</button>
         </div>
         {
           gameScene === 'queue' &&

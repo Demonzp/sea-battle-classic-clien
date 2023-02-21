@@ -72,13 +72,13 @@ export const shot = createAsyncThunk<void, { cellId: string },
         'game/shot',
         async (data, { dispatch, getState }) => {
             if (!getState().game.isLoaded || getState().game.whoStep === 'enemy') {
-                console.log('game is Locked by server!');
+                //console.log('game is Locked by server!');
                 dispatch(createBubbleMsg('is Not your tunr!'));
                 return;
                 //throw Error('game is Locked by server!');
             }
             dispatch(setStatusLoading(false));
-            console.log('Стреляю!!!');
+            //console.log('Стреляю!!!');
             socketInst.emit('shot', data);
         }
     );

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useSWR from 'swr';
 
 export type TGoogleAuthRes = {
@@ -82,7 +82,33 @@ const SignInWithGoogleBtn: React.FC<Props> = ({onSuccess, isForceShow})=>{
   });
 
   const [isShowGoogle, setIsShowGoogle] = useState(false);
+  const [isTimerHide, setIsTimerHide] = useState(true);
+  const [timer, setTimer] = useState<NodeJS.Timeout|null>(null);
   const [isLoaded, setLoaded] = useState(false);
+
+  const onMouseMove = useMemo(()=>{return ()=>{
+    setIsShowGoogle(true);
+  }},[]);
+
+  useEffect(()=>{
+    document.addEventListener('mousemove', onMouseMove);
+
+    return ()=>{
+      if(timer){
+        clearTimeout(timer);
+      }
+      document.removeEventListener('mousemove', onMouseMove);
+    }
+  }, []);
+
+  useEffect(()=>{
+    if(isTimerHide){
+      if(timer){
+        clearTimeout(timer);
+      }
+      setTimer(setTimeout(()=>{ setIsShowGoogle(false) }, 5000));
+    }
+  }, [isTimerHide]);
 
   useEffect(()=>{
 
@@ -116,8 +142,10 @@ const SignInWithGoogleBtn: React.FC<Props> = ({onSuccess, isForceShow})=>{
   useEffect(()=>{
     if(isShowGoogle){
       googleButton.current!.hidden = false;
+      setIsTimerHide(true);
     }else{
       googleButton.current!.hidden = true;
+      setIsTimerHide(false);
     }
   }, [isShowGoogle]);
 
@@ -128,7 +156,7 @@ const SignInWithGoogleBtn: React.FC<Props> = ({onSuccess, isForceShow})=>{
   }, [isForceShow]);
 
   const googleCallback = (data:TGoogleAuthRes)=>{
-    console.log('data = ', data);
+    //console.log('data = ', data);
     setIsShowGoogle(false);
     onSuccess(data);
   }

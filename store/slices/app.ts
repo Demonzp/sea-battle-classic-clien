@@ -43,7 +43,7 @@ export interface IApp{
 
 const initialState: IApp = {
     token: null,
-    user: fackeUser,
+    user: null,
     initUser: false,
     isConnect: false,
     isConnected: false,

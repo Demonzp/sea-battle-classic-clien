@@ -3,7 +3,6 @@ import Game, { TPoint } from '../../gameLib/Game';
 import { TPointer } from '../../gameLib/InputEvent';
 import Scene from '../../gameLib/Scene';
 import Sprite from '../../gameLib/Sprite';
-import { getCamo } from '../../store/getters/game';
 import { TCamo } from '../../store/slices/game';
 import FleatShema from '../scenes/FleatShema';
 import GunTower from './GunTower';
@@ -117,7 +116,7 @@ export default class Ship {
           this.mainContainer.add(gunTower.mainContainer);
           this.gunTowers.push(gunTower);
         }
-        console.log(this.mainContainer.interactiveRect);
+        //console.log(this.mainContainer.interactiveRect);
         break;
       case 3:
 

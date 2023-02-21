@@ -126,7 +126,7 @@ export default class Battle extends Scene{
 
       if(shots.length>0){
         this.yorShots = [...this.yorShots, ...shots];
-        console.log('shots = ', this.yorShots);
+        //console.log('shots = ', this.yorShots);
         store.dispatch(clearYourShots());
       }
       
@@ -164,7 +164,7 @@ export default class Battle extends Scene{
   }
 
   parserFleatShema(fleetShema:TShipOnFleetShema[]){
-    console.log('fleatShema = ', fleetShema);
+    //console.log('fleatShema = ', fleetShema);
     //const arrShipId:string[] = [];
     const camo = getCamo();
     fleetShema.forEach(shipShema=>{
@@ -204,9 +204,9 @@ export default class Battle extends Scene{
 
   shipShot(_: Ship){
     this.numShots++;
-    console.log('shot = ', this.numShots);
+    //console.log('shot = ', this.numShots);
     if(this.numShots>=this.ships.filter(s=>s.isLive).length){
-      console.log('this.numShots = ', this.numShots);
+      //console.log('this.numShots = ', this.numShots);
       this.isFleatReadyShot = true;
       this.numShots = 0;
       //this.parseField();

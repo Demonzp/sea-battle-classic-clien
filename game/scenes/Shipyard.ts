@@ -21,7 +21,7 @@ export default class Shipyard extends Scene{
 
   async create() {
     
-    console.log('Shipyard create');
+    //console.log('Shipyard create');
     this.add.sprite('shipyard2', this.width/2, this.height/2);
     
     // this.ship4 = new Ship(this, this.width/2, this.height/2, 4, 0, 1.3);

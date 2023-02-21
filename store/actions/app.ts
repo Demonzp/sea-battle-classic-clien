@@ -16,6 +16,7 @@ export const getUser = createAsyncThunk<TUser, undefined,
         'app/getUser',
         async (_, { getState, rejectWithValue }) => {
             try {
+                //console.log('data = ');
                 const res = await axios.post('/api/auth/',{},
                 {
                     headers:{
@@ -24,7 +25,7 @@ export const getUser = createAsyncThunk<TUser, undefined,
                 });
                 //const res = await axios.get(`https://oauth2.googleapis.com/tokeninfo?id_token=${getState().app.token}`);
                 const data = res.data as TGoogleAuthData;
-                console.log('data = ', data);
+                
                 const user = {} as TUser;
                 return user;
             } catch (error) {
