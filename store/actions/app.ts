@@ -17,6 +17,7 @@ export const getUser = createAsyncThunk<TUser, undefined,
         async (_, { getState, rejectWithValue }) => {
             try {
                 //console.log('data = ');
+                //const res = await axios.post('http://localhost:4000/api/auth/',{},
                 const res = await axios.post('https://sea-battle-classic.onrender.com/api/auth/',{},
                 {
                     headers:{

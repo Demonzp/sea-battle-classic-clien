@@ -45,7 +45,9 @@ const GameComp = () => {
   useEffect(() => {
     if (isLoadedGame) {
       //console.log('try connect!');
-      socketInst.init({ path: 'https://sea-battle-classic.onrender.com/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
+      //socketInst.init({url:'http://localhost:4000', path: '/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
+      //socketInst.init({ path: '/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
+      socketInst.init({url:'https://sea-battle-classic.onrender.com', path: '/api/socket.io', token: JSON.stringify({ sub: user!.id }) });
       socketInst.on('connect', () => {
         //toShipyard();
         dispatch(setConnected(true));
